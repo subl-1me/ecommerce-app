@@ -1,0 +1,49 @@
+* {
+    animation: appear .5s forwards;
+}
+
+.panel-leftSide{
+    margin-right: 10%;
+}
+
+.row{
+    justify-content: center;
+}
+
+.container{
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.btn-submit{
+    color:white;
+    background-color: #7367F0 !important;
+    font-weight: 600;
+    /*background-color: #0396FF !important;*/
+}
+
+.btn-submit:hover{
+    transform: translateY(-5px);
+    background-color: #574aee !important;
+    transition: .1s ease-in-out;
+}
+
+.form-control{
+    padding: 5%;
+}
+
+.btn{
+    animation: appear .5s forwards;
+}
+
+@keyframes appear{
+    0%{
+        opacity: 10%;
+    }
+    50%{
+        opacity: 50%;
+    }
+    100%{
+        opacity: 100%;
+    }
+}

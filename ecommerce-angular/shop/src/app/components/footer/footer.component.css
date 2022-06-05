@@ -1,0 +1,50 @@
+.section{
+    width: 250px;
+    font-weight: bold;
+}
+
+.items{
+    font-size: 15px;
+    color: gray;
+}
+
+.icon-fb, .icon-ig, .icon-pt, .icon-tw, .icon-yt{
+    width: 25px;
+    height: 25px;
+}
+
+.icon-fb{
+    background: url(../../../assets/icons/facebook-f-brands.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: wheat;
+}
+
+.icon-ig{
+    background: url(../../../assets/icons/instagram-brands.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: wheat;
+}
+
+.icon-tw{
+    background: url(../../../assets/icons/twitter-brands.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: wheat;
+}
+
+.icon-yt{
+    background: url(../../../assets/icons/youtube-brands.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: wheat;
+}
+
+.icon-pt{
+    background: url(../../../assets/icons/pinterest-p-brands.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: wheat;
+}
+

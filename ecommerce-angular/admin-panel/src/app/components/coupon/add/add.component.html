@@ -1,0 +1,42 @@
+<div class="card shadow">
+    <div class="card-body">
+        <form #addCouponForm="ngForm" (ngSubmit)="addCoupon(addCouponForm)">
+            <div class="form-group mb-2">
+                <labeL>Code</labeL>
+                <input type="text" class="form-control" name="code" [(ngModel)]="coupon.code" placeholder="SUMMER2022" required>
+            </div>
+            <div class="form-group mb-2">
+                <label for="inputType">Type
+                    <fa-icon [icon]="faCircleInfo" class="ms-1">
+                    </fa-icon>
+                </label>
+                <select id="inputType" name="type" [(ngModel)]="coupon.type" class="form-control" required>
+                    <option selected disabled>Choose...</option>
+                    <option>Percentage</option>
+                    <option>Fixed Price</option>
+                </select>
+                <fa-icon [icon]="faAngleDown" class="angleIcon ms-1"> </fa-icon>
+            </div>
+            <div class="typeInput form-group col-sm-5 mb-2" *ngIf="coupon.type === 'Percentage' ">
+                <label>Value (1-100%)</label>
+                <input type="number" class="form-control" name="value" [(ngModel)]="coupon.value" required>
+            </div>
+            <div class="typeInput form-group col-sm-5 mb-2" *ngIf="coupon.type === 'Fixed Price'">
+                <label>Value</label>
+                <input type="number" class="form-control" name="value" [(ngModel)]="coupon.value" required>
+            </div>
+            <div class="form-group col-sm-5 mb-2">
+                <label>Limit
+                    <fa-icon [icon]="faCircleInfo" class="ms-1">
+                    </fa-icon>
+                </label>
+                <input type="number" class="form-control" name="limit" [(ngModel)]="coupon.limit" required>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="addCouponForm.invalid">
+                <fa-icon [icon]="faAdd" class="me-1" ></fa-icon>
+                Add
+            </button>
+        </form>
+    </div>
+</div>
+<div *ngIf="responseMessage === 'success'" class="alert alert-success mt-2 shadow-sm">Coupon Added Sucessfully.</div>

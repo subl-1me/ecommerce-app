@@ -1,0 +1,177 @@
+<script src="https://js.stripe.com/v3"></script>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <span>
+                <a class="float-end" [routerLink]="['/products']">Back to shopping</a>
+            </span>
+            <h1 class="title">Checkout</h1>
+            <hr>
+            <ol>
+                <li class="section">
+                    Order Review
+                    <div class="review-section mt-3">
+                        <table class="table">
+                            <tbody>
+                                <ng-container *ngFor="let item of cart">
+                                    <tr>
+                                        <td>
+                                            <img src="{{item.product?.coverImage}}" class="product-image">
+                                        </td>
+                                        <td class="mt-5">
+                                            <h6>{{item.product?.title}}</h6>
+                                            <h6 class="text-muted">Size: {{item.size}}</h6>
+                                        </td>
+                                        <td class="mt-5">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <input type="text" class="form-control text-center" value="{{item.amount}}" readonly>
+                                                </div>
+                                                <div class="col">
+                                                    <h5 class="text-muted">${{calculatePrice(item.product?.price, item.amount)}}</h5>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="mt-5">
+                                            <button class="btn btn-add" (click)="deleteProductCart(item._id)">Delete</button>
+                                            <h6 class="mv-fav mt-2 text-center">
+                                                Move to
+                                                <fa-icon [icon]="faHeart" class="faHeart"></fa-icon>
+                                            </h6>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>    
+                          </table>
+                    </div>
+                    <ng-container *ngIf="cart.length == 0">
+                        <div class="alert alert-warning text-center">
+                            Cart is empty. Add some products.
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="isSaleCompleted">
+                        <div class="alert alert-success text-center">
+                            Your buy was completed!.
+                        </div>
+                    </ng-container>
+                </li>
+                <li class="billing-address mb-3">
+                    Billing Address
+                    <div class="card shadow-sm mt-3">
+                        <div class="card-body">
+                            <h6>Addressee</h6>
+                            <h6 class="text-muted">{{defaultDirection.addressee}}</h6>
+                            <h6>Delivery Direction</h6>
+                            <h6 class="text-muted">{{defaultDirection.direction}}</h6>
+                            <h6 class="text-muted">
+                                {{defaultDirection.country}} - {{defaultDirection.province}} - {{defaultDirection.region}}
+                            </h6>
+                            <h6>ZIP - Phone</h6>
+                            <h6 class="text-muted">{{defaultDirection.zip}} - {{defaultDirection.phone}}</h6>
+                        </div>
+                    </div>
+                </li>
+                <li class="shipping">
+                    <div class="shipping-section mb-3">
+                        Shipping Method
+                    </div>
+                    <div class="shippings">
+                        <ng-container *ngFor="let method of shipping">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="shippingCost" value="{{method.price}}"
+                                 id="input" [(ngModel)]="shippingCost" (change)="addShippingCost(method.price, method.title)" required>
+                                <label class="form-check-label" for="input">
+                                    <h6>{{method.title}}</h6>
+                                </label>
+                                <h6 class="text-muted">
+                                    {{method.time}}
+                                    <span class="float-end">${{method.price}}</span>
+                                </h6>
+                            </div>
+                        </ng-container>
+                    </div>
+                </li>
+                <hr>
+                <li class="payment">
+                    <div class="section mb-3">
+                        Payment Method
+                        <div class="small text-danger" *ngIf="!isShippingSelected">
+                            Select a shipping method to continue.
+                        </div>
+                    </div>
+                    <div class="cc-section mb-3 w-50">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="form-check">
+                                    <input class="form-check-input" (click)="ccSelected()" type="radio" id="cc-input" [disabled]="!isShippingSelected">
+                                    <label class="form-check-label" for="cc-input">
+                                        Credit Card
+                                        <fa-icon [icon]="faCreditCard" class="ms-1"></fa-icon>
+                                    </label>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                        <app-stripe></app-stripe>
+
+                    </div>
+                    <div class="paypal-section w-50">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="form-check">
+                                    <input id="paypal-input" class="form-check-input" (click)="paypalSelected()" type="radio" [disabled]="!isShippingSelected" >
+                                    <label class="form-check-label" for="paypal-input">Paypal</label>
+                                </div>
+                                <ng-container *ngIf="isPaypalSelected">
+                                    <ngx-paypal [config]="payPalConfig" class="mt-2"></ngx-paypal>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ol>
+        </div>
+        <div class="total-section col-lg-4">
+            <div class="d-flex justify-content-center">
+                <div class="promo-section">
+                    <h6>Apply a promo code</h6>
+                    <form>
+                        <div class="input-group mb-3 w-100">
+                            <input type="text" class="form-control p-2 shadow-sm" placeholder="Promo Code" aria-label="" aria-describedby="basic-addon1">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-promo p-2 shadow-sm" type="button">Apply</button>
+                              </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center ">
+                <div class="order-section w-50">
+                    <div class="card">
+                        <div class="order-info">
+                            <h4 class="ms-3 mb-5 mt-3">Order Description</h4>
+                            <h6 class="ms-3">
+                                Subtotal:
+                                <span class="float-end me-3">${{subtotal}}</span>
+                            </h6>
+                            <h6 class="ms-3 text-muted">
+                                Shipping costs:
+                                <span class="float-end me-3">${{shippingCost}}</span>
+                            </h6>
+                            <h6 class="ms-3 text-muted">
+                                Discount: 
+                                <span class="float-end me-3">-</span>
+                            </h6>
+                            <hr class="mt-5">
+                            <h5 class="ms-3 mt-3 mb-3">
+                                Order Total:
+                                <span class="float-end me-3">${{orderTotal}}</span>
+                            </h5>
+                        </div>
+                        <button class="btn btn-complete text-center p-2 mt-2" [disabled]="cart.length == 0">Complete Order</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

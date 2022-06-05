@@ -1,0 +1,13 @@
+<app-login *ngIf="!token"></app-login>
+
+<ng-container *ngIf="token">
+    <app-side-bar></app-side-bar>>
+    <div class="card content-card">
+        <div class="content card-body bg-white">
+            <div class="welcome-message">   
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </div>
+</ng-container>
+

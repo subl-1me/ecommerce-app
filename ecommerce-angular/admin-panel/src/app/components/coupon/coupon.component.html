@@ -1,0 +1,40 @@
+
+<div class="container">
+    <h2>Coupons</h2>
+    <div class="row">
+        <div class="col">
+            <div class="card shadow w-100">
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Code</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Value</th>
+                                <th scope="col">Limit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let coupon of coupons; let ind = index">
+                                <tr>
+                                    <th>{{coupon.code}}</th>
+                                    <th>{{coupon.type}}</th>
+                                    <th>{{coupon.value}}</th>
+                                    <th>{{coupon.limit}}</th>
+                                    <th><fa-icon [icon]="faTrash" class="trashIcon" (click)="remove(coupon._id)"></fa-icon></th>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                    <div *ngIf="responseMessage != ''" class="alert alert-warning text-center">{{responseMessage}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <app-add (addSuccess)="addSuccess($event)"></app-add>
+        </div>
+    </div>
+</div>
+
+
+

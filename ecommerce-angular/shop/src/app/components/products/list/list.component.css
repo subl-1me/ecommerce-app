@@ -1,0 +1,82 @@
+.container{
+    margin-bottom: 25%;
+}
+
+.productImage{
+    object-fit: cover;
+    width: 250px;
+    height: 250px;
+}
+
+.onMouseOver{
+    width: 250px;
+    height: 250px;
+}
+
+.product-price{
+    font-weight: 600;
+}
+
+.fav-icon{
+    position: absolute;
+    margin-left: 10px;
+    margin-top: 5px;
+    color: red;
+}
+
+.fav-icon:hover{
+    cursor: pointer;
+}
+
+.search-category{
+    background-image: url(../../../../assets/icons/magnifying-glass-solid.svg);
+    background-repeat: no-repeat;
+    background-position: 95%;
+    background-size: 25px;
+}
+
+.list-group-item{
+    animation: appear .5s forwards;
+    border: none;
+}
+
+.no-products{
+    margin-top: 1%;
+    width: 50%;
+    height: 60%;
+    background-image: url(../../../../assets/no-products.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 600px;
+    position: absolute;
+}
+
+.rating-icon{
+    color: rgb(248, 248, 58);
+    position: absolute;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.product{
+    animation: appear .4s forwards;
+}
+
+.btn{
+    background-color: #7367F0 !important;
+    border-color: #7367F0 !important;
+    
+}
+
+
+@keyframes appear {
+    0%{
+        opacity: 10%;
+    }
+    50%{
+        opacity: 50%;
+    }
+    100%{
+        opacity: 100%;
+    }
+}

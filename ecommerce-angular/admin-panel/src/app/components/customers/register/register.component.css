@@ -1,0 +1,12 @@
+.card{
+    animation: appear 1s forwards;
+}
+
+@keyframes appear {
+    0%{
+        opacity: 10%;
+    }
+    100%{
+        opacity: 100%;
+    }
+}

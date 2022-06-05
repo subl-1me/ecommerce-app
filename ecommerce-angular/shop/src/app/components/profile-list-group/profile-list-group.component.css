@@ -1,0 +1,12 @@
+.active{
+    background-color: #7367F0 !important;
+    border-color: rgb(255, 255, 255);
+}
+
+* {
+    animation: appear .5s forwards;
+}
+
+.list-group-item:hover{
+    cursor: pointer;
+}

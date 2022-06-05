@@ -1,0 +1,21 @@
+.add-product:hover{
+    font-size: 18px;
+    cursor: pointer;
+    transition: .3s ease-in-out;
+}
+
+.add-product{
+    border-radius: 5%;
+    background-color: #1e91ed !important;
+}
+
+.badge-draft{
+    text-align: center;
+    background-color: #ffc107;
+    padding: 2;
+}
+
+.coverImage{
+    width: 100px;
+    height: 100px;
+}

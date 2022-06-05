@@ -1,0 +1,48 @@
+<h1>Register</h1>
+<div class="container-fluid w-25">
+    <div class="card shadow bg-light text-center">
+        <div class="card-body">
+            <hr>
+            <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
+                <div class="form-group row mb-3 justify-content-center">
+                    <label for="names" class="mb-2">Names</label>
+                    <div class="col-sm-8">
+                        <input type="text" name="names" class="form-control" #names="ngModel" [(ngModel)]="customer.names" required>
+                    </div>
+                    <div class="small text-danger" *ngIf="names.touched && names.invalid">Please, provide a valid names.</div>
+                </div>
+                <div class="form-group row mb-3 justify-content-center">
+                    <label for="surnames" class="mb-2">Surnames</label>
+                    <div class="col-sm-8">
+                        <input type="text" name="surnames" class="form-control" #surnames="ngModel" [(ngModel)]="customer.surnames" required>
+                    </div>
+                    <div class="small text-danger" *ngIf="surnames.touched && surnames.invalid">Please, provide a valid surnames.</div>
+                </div>
+                <div class="form-group row mb-3 justify-content-center">
+                    <label for="email" class="mb-2">Email</label>
+                    <div class="col-sm-8">
+                        <input type="text" name="email" class="form-control" #email="ngModel" [(ngModel)]="customer.email" placeholder="example@example.com" required>
+                    </div>
+                    <div class="small text-danger" *ngIf="email.touched && email.invalid">Please, provide a valid email.</div>
+                </div>
+                <div class="form-group row mb-3 justify-content-center">
+                    <label for="password" class="mb-2">Password</label>
+                    <div class="col-sm-8">
+                        <input type="password" name="password" class="form-control" #password="ngModel" [(ngModel)]="customer.password" (change)="isPasswordOk()" required>
+                    </div>
+                </div>
+                <div class="form-group row mb-3 justify-content-center">
+                    <label for="confirmPasswordTemp" class="mb-2">Confirm Password</label>
+                    <div class="col-sm-8">
+                        <input type="password" name="password" class="form-control" [(ngModel)]="confirmPasswordTemp" (change)="isPasswordOk()" required>
+                        <div class="small text-success" *ngIf="onSubmitMessage === 'success'">Password match!</div>
+                        <div class="small text-danger" *ngIf="onSubmitMessage === 'error'">Password does not match.</div>
+                    </div>
+                </div>
+                <input type="submit" value="Register" class="btn btn-success" [disabled]="registerForm.invalid">
+            </form>
+        </div>
+    </div>
+</div>
+
+

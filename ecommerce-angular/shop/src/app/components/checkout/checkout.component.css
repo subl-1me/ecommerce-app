@@ -1,0 +1,113 @@
+.title{
+    font-weight: bolder;
+}
+
+hr{
+    background-color: rgb(148, 147, 147);
+}
+
+.container{
+    margin-bottom: 1000px;
+}
+
+.product-image{
+    width: 150px;
+    height: 150px;
+}
+
+.total-section{
+    position: fixed;
+    left: 50%;
+}
+
+.section, .billing-address, .shipping-section{
+    font-size: 25px;
+    font-weight: 500;
+}
+
+.review-section{
+    background-color: rgb(245, 244, 244);
+}
+
+tr{
+    border-color: rgb(245, 244, 244);
+}
+
+.btn-promo{
+    color: white;
+    background-color: #7367F0 !important;
+}
+
+.btn-promo:hover{
+    background-color: #5548e9 !important;
+
+}
+
+.order-info{
+    background-color: rgb(245, 244, 244);
+    border-color: rgb(245, 244, 244);
+
+}
+
+.card{
+    border-color: rgb(245, 244, 244);
+
+}
+
+.btn-complete{
+    color: white;
+    background-color: #7367F0 !important;
+
+    border-color: #7367F0 !important;
+
+}
+
+.btn-add{
+    /* transform: translateX(-4px); */
+    width: 100px;
+    background-color: white;
+    color: #574aee;
+    border-color: #574aee !important;
+    /* transition: .2s ease-in-out; */
+}
+
+.btn-add:hover{
+    color: white;
+    background-color: #574aee !important;
+    transition: .1s ease-in-out;
+
+}
+
+.faHeart{
+    color: rgb(88, 88, 88);
+}
+
+.shadow-sm{
+    border-color: #574aee !important;
+}
+
+.mv-fav:hover{
+    font-size: 17px;
+    transition: .1s ease-in-out;
+    cursor: pointer;
+}
+
+.cc-form{
+    animation: appear .4s forwards;
+}
+
+@keyframes appear {
+    0%{
+        opacity: 10%;
+    }
+    50%{
+        opacity: 50%;
+    }
+    100%{
+        opacity: 100%;
+    }
+}
+
+#amount{
+    font-size: 18px;
+}

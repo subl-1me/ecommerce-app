@@ -1,0 +1,118 @@
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-sm-3 mt-5">
+            <app-profile-list-group></app-profile-list-group>
+        </div>
+        <div class="col">
+            <h1>
+                <fa-icon [icon]="faMap"></fa-icon>
+                My Directions
+            </h1>
+            <form #directionsForm="ngForm" (ngSubmit)="onSubmit(directionsForm)">
+                <h4>Add an address to recieve your product</h4>
+                <hr>
+                <div class="row mb-2">
+                    <div class="col-5">
+                        <label for="addressee" class="text-muted mb-1">Addressee</label>
+                        <input type="text" class="form-control p-3" id="addressee" name="dni" [(ngModel)]="direction.addressee">
+                    </div>
+                    <div class="col-5 mb-2">
+                        <label for="zip" class="text-muted mb-1">ZIP</label>
+                        <input type="text" class="form-control p-3" id="zip" name="zip" [(ngModel)]="direction.zip">
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-5">
+                        <label for="phone" class="text-muted mb-1">Phone</label>
+                        <input type="text" class="form-control p-3" id="phone" name="phone" [(ngModel)]="direction.phone">
+                    </div>
+                    <div class="col-5">
+                        <label for="dni" class="text-muted mb-1">DNI</label>
+                        <input type="text" class="form-control p-3" id="dni" name="dni" [(ngModel)]="direction.dni">
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col">
+                        <label for="textarea" class="text-muted">Direction</label>
+                        <textarea class="form-control" id="textarea" name="direction" [(ngModel)]="direction.direction"></textarea>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-5">
+                        <label for="country" class="text-muted mb-1">Country</label>
+                        <select class="form-select p-3" name="country" [(ngModel)]="direction.country">
+                            <option selected disabled>Select</option>
+                            <option value="Mexico">Mexico</option>
+                        </select>
+                    </div>
+                    <div class="col-5">
+                        <label for="region" class="text-muted mb-1">Region</label>
+                        <select class="form-select p-3" name="region" [(ngModel)]="direction.region">
+                            <option selected disabled>Select</option>
+                            <option value="Chihuahua">Chihuahua</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-5">
+                        <label for="province" class="text-muted mb-1">Province</label>
+                        <select class="form-select p-3" name="province" [(ngModel)]="direction.province">
+                            <option selected disabled>Select</option>
+                            <option value="Juarez">Juarez</option>
+                        </select>
+                    </div>
+                    <div class="col-5">
+                        <label for="district" class="text-muted mb-1">District</label>
+                        <select class="form-select p-3" name="district" [(ngModel)]="direction.district">
+                            <option selected disabled>Select</option>
+                            <option value="Huevo">Huevo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-5">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="check" name="principal" [(ngModel)]="direction.principal">
+                            <label class="form-check" for="check">Select as Default</label>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-save mt-3 w-25 p-3">
+                    <fa-icon [icon]="faPlus" class="me-1"></fa-icon>
+                    Add Direction
+                </button>
+            </form>
+                
+            <!-- direction list section -->
+            <hr>
+            <h4>Direction List</h4>
+            <ng-container *ngIf="directions.length == 0">
+                <div class="alert alert-warning text-center">List is empty.</div>
+            </ng-container>
+            <ng-container *ngFor="let direction of directions">
+                <div class="card p-3 mt-4 w-50">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h5>{{direction.addressee}}</h5>
+                                <h6 class="text-muted">{{direction.zip}}</h6>
+                                <div class="bg bg-default rounded " *ngIf="direction.principal">
+                                    <h6 class="text-white text-center p-2">Default</h6>
+                                </div>
+                                <div class="bg bg-select rounded " *ngIf="!direction.principal">
+                                    <h6 class="text-center p-2" (click)="setDirectionAsDefault(direction._id)">Select as Default</h6>
+                                </div>
+                            </div>
+                            <div class="col-lg m-auto">
+                                <h6 class="text-muted"t>{{direction.country}} - {{direction.region}} - {{direction.province}} - {{direction.district}}</h6>
+                            </div>
+                            <div class="col-sm-1 m-auto">
+                                <fa-icon [icon]="faTrash" class="float-end faTrash" (click)="deleteDirection(direction._id)"></fa-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

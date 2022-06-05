@@ -1,0 +1,37 @@
+<ul class="list-group shadow rounded">
+    <li class="list-group-item p-4">
+        <h5 class="custName mb-1">{{customer.names}}</h5>
+        <h6 class="text-muted">{{customer.email}}</h6>
+        <ng-container *ngIf="!customer.names || !customer.email">
+            <div class="text-center">
+                <span class="me-2">Loading...</span>
+                <div class="spinner-border text-center" role="status">
+                </div>
+            </div>
+        </ng-container>
+    </li>
+    <li class="list-group-item p-3" [routerLink]="['/profile/', _idStorage]">
+        <fa-icon [icon]="faUser" class="me-1"></fa-icon>
+        My Profile
+    </li>
+    <li class="list-group-item p-3" [routerLink]="['/directions']">
+        <fa-icon [icon]="faMap" class="me-1" ></fa-icon>
+        My Directions
+    </li>
+    <li class="list-group-item p-3">
+        <fa-icon [icon]="faHeart" class="me-1"></fa-icon>
+        Wishlist
+    </li>
+    <li class="list-group-item p-3">
+        <fa-icon [icon]="faEye" class="me-1"></fa-icon>
+        Recently Viewed
+    </li>
+    <li class="list-group-item p-3">
+        <fa-icon [icon]="faStar" class="me-1"></fa-icon>
+        My Reviews
+    </li>
+    <li class="list-group-item p-3" [routerLink]="['/settings']">
+        <fa-icon [icon]="faGear" class="me-1"></fa-icon>
+        Advanced Settings
+    </li>
+</ul>

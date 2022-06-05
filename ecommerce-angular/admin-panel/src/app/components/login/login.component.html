@@ -1,0 +1,40 @@
+<div class="content text-center">
+
+    <div class="title">
+        <span class="text">
+            Sign in
+        </span>
+    </div>
+
+    <div class="advice">
+        <span class="some-advice">
+            Access your account to manage your business!
+        </span>
+    </div>
+
+    <form #loginForm="ngForm" (ngSubmit)="login(loginForm)" class="login-form col-md-2 ml-0 pl-0">
+        <div class="form-group mb-3 mb-4">
+            <label>Email</label>
+            <input type="email" name="email" [(ngModel)]="user.email" class="input form-control" placeholder="name@example.com" required>
+        </div>
+
+        <div class="form-group mb-3 mt-4">
+            <label>Password</label>
+            <input type="password" name="password" [(ngModel)]="user.password" class="input form-control required">
+            <div class="input-group-append-overlay">
+                <label class="btn cs-password-toggle-btn input-group-text">
+                    <input type="checkbox" class="custom-control-input me-2">
+                    <span class="sr-only">Show password</span>
+                </label>
+            </div>
+        </div>
+
+        <input type="submit" value="Test" class="btn btn-success col-md-12" [disabled]="loginForm.invalid"/>
+        <div class="alert alert-danger mt-3" *ngIf="responseMessage != ''">
+            {{responseMessage}}
+        </div>
+    </form>
+
+
+
+</div>

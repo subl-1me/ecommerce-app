@@ -1,0 +1,28 @@
+.btn-save{
+    background-color: #574aee !important;
+    color: white;
+    font-weight: bold;
+}
+
+.card{
+    border-color: #574aee !important;
+}
+
+.faTrash{
+    font-size: 20px;
+}
+
+.bg-default{
+    border-color: #574aee !important;
+    background-color: #574aee !important;
+
+}
+
+.bg-select{
+    border-color: #574aee !important;
+    background-color: #e4e3ee !important;
+}
+
+.bg-select, .bg-default{
+    cursor: pointer;
+}

@@ -1,0 +1,52 @@
+<h1 class="text-center">Inventory</h1>
+<div class="card shadow">
+    <div class="card-header">
+        <form #addNewInventoryRegisterForm="ngForm" (ngSubmit)="addNewInventoryRegister(addNewInventoryRegisterForm)">
+            <div class="col-sm-3 mb-2">
+                New Register
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-3">
+                    <input type="number" name="stock" [(ngModel)]="newProductInventory.stock" class="form-control" placeholder="Stock" required>
+                </div>
+                <div class="col-sm-3">
+                    <input type="text" name="provider" [(ngModel)]="newProductInventory.provider" class="form-control" placeholder="Provider" required>
+                </div>
+                <div class="col-sm-5">
+                    <button type="submit" class="btn btn-primary shadow" [disabled]="addNewInventoryRegisterForm.invalid"><fa-icon [icon]="faPlus" class="me-2"></fa-icon>Add</button>
+                    <small class="valid text-center ms-2" *ngIf="isProductAdded">Product added successfully.</small>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-body text-center">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Admin</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Provider</th>
+                    <th scope="col">Register Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let inventory of inventories; let ind = index">
+                    <tr *ngIf="inventories.length != 0" class="register">
+                        <td>{{ind+1}}</td>
+                        <td>{{inventory.admin.names}} {{inventory.admin.surnames}}</td>
+                        <td>{{inventory.stock}}</td>
+                        <td *ngIf="inventory.provider != 'none'">{{inventory.provider}}</td>
+                        <td *ngIf="inventory.provider == 'none'"><p class="text-muted">Not available for first register.</p></td>
+                        <td>{{inventory.createdAt | date:'medium'}}</td>
+                        <td class="text-center cursor-pointer" (click)="removeInventoryRegister(inventory._id)"><fa-icon [icon]="faTrash"></fa-icon></td>
+                    </tr>
+                </ng-container>
+            </tbody>
+
+        </table>
+    </div>
+    <div class="card-footer">
+        <button class="btn btn-secondary shadow" [routerLink]="['/panel/products']"><fa-icon [icon]="faAngleLeft" class="me-2"></fa-icon>Back</button>
+    </div>
+</div>

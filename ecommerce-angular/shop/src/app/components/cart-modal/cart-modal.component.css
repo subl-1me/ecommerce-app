@@ -1,0 +1,69 @@
+.background{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+}
+
+.card{
+    position: absolute;
+    height: 100vh;
+    width: 20%;
+    z-index: 101;
+    animation: appear .1s forwards;
+}
+
+.product-image{
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.modalGoAway{
+    animation: goAway .1s forwards;
+}
+
+.xmark{
+    font-size: 20px;
+    cursor: pointer;
+}
+
+
+.btn-checkout{
+    color: white;
+    background-color: #7367F0 !important;
+    border-color: #7367F0 !important;
+}
+
+.btn-checkout:hover{
+    background-color: #5f52f0 !important;
+    transform: translateY(-5px);
+    transition: .2s ease-in-out;
+}
+
+@keyframes appear {
+    0%{
+        transform: translateX(-500px);
+    }
+    50%{
+        transform: translateX(-250px);
+    }
+    100%{
+        transform: translateX(0px);
+    }
+}
+
+@keyframes goAway {
+    0%{
+        transform: translateX(0px);
+    }
+    50%{
+        transform: translateX(-250px);
+    }
+    100%{
+        transform: translateX(-500px);
+    }
+}
+
+
+

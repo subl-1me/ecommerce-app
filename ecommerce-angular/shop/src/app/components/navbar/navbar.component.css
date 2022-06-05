@@ -1,0 +1,44 @@
+.searchInput{
+    background: url(../../../assets/icons/magnifying-glass-solid.svg);
+    background-repeat: no-repeat;
+    background-position: 95% 50%;
+    background-size: 15px;
+}
+
+.divisor{
+    color: rgb(170, 170, 170);
+}
+
+.count{
+    background-color: #aed1fc;
+}
+
+.user{
+    font-weight: bold;
+}
+
+.showFavs{
+    position: absolute;
+}
+
+.nav-link:hover{
+    cursor: pointer;
+}
+
+.btn-more{
+    background-color: #7367F0 !important;
+    border-color: #7367F0 !important;
+    color: white;
+}
+
+.btn-more:hover{
+    background-color: #6053eb !important;
+    border-color: #6053eb !important;
+}
+
+.product-coverimage{
+    width: 100px;
+    height: 100px;
+}
+
+

@@ -1,0 +1,30 @@
+.cover-image{
+    width: 100%;
+    z-index: 0;
+}
+
+.woman, .man{
+    object-fit: cover;
+    width: 350px;
+    height: 350px;
+}
+
+.categories{
+    z-index: 10;
+}
+
+.woman:hover, .man:hover, .category:hover{
+    cursor: pointer;
+    transform: scale(102%);
+    transition: .2s ease-in-out;
+}
+
+.trending-products{
+    background-color: rgb(193, 231, 241);
+}
+ 
+.category{
+    object-fit: cover;
+    width: 250px;
+    height: 250px;
+}

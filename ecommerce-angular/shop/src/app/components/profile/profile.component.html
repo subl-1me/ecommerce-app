@@ -1,0 +1,80 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3 mt-5">
+            <app-profile-list-group></app-profile-list-group>
+        </div>
+        <div class="col">
+            <h2> My Profile</h2>
+            <div class="settingsPanel p-3 shadow border border-black rounded">
+                <form #settingsForm="ngForm" (ngSubmit)="onSubmit()">
+                    <h4 class="mb-2">Account</h4>
+                    <div class="row mb-2 justify-content-center">
+                        <div class="col-5">
+                            <label for="names" class="text-muted mb-2 mt-2">Names</label>
+                            <input type="text" class="form-control" id="names" name="names" [(ngModel)]="customer.names">
+                        </div>  
+                        <div class="col-5">
+                            <label for="surnames" class="text-muted mb-2 mt-2">Surnames</label>
+                            <input type="text" class="form-control" id="surnames" name="surnames" [(ngModel)]="customer.surnames">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-5">
+                            <label for="email" class="text-muted mb-2 mt-2">Email</label>
+                            <input type="text" class="form-control" id="email" readonly disabled name="email" [(ngModel)]="customer.email">
+                    </div>
+                    <div class="col-5">
+                            <label for="gender" class="text-muted mb-2 mt-2">Gender</label>
+                            <input type="text" class="form-control" id="gender" name="gender" [(ngModel)]="customer.gender">
+                    </div>
+                </div>
+                <h4 class="mt-3">Delivery Information</h4>
+                <div class="row">
+                    <div class="col-5">
+                        <label for="dni" class="text-muted mb-2 mt-2">DNI</label>
+                        <input type="text" class="form-control" id="dni" name="dni" [(ngModel)]="customer.dni">
+                    </div>
+                    <div class="col-5">
+                        <label for="birthday" class="text-muted mb-2 mt-2">Birthday</label>
+                        <input type="date" class="form-control" id="birthday" name="birthday" [(ngModel)]="customer.birthday">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-5">
+                        <label for="country" class="text-muted mb-2 mt-2">Country</label>
+                        <input type="text" class="form-control" id="country" name="country" [(ngModel)]="customer.country">
+                    </div>
+                    <div class="col-5">
+                        <label for="city" class="text-muted mb-2 mt-2">City</label>
+                        <input type="text" class="form-control" id="city" name="city" [(ngModel)]="customer.city">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-5 mb-2">
+                        <label for="phone" class="text-muted mb-2 mt-2">Phone</label>
+                        <input type="text" class="form-control" id="phone" name="phone" [(ngModel)]="customer.phone">
+                    </div>
+                </div>
+                <ng-container *ngIf="editMessage === ''">
+                    <button type="submit" class="btn btn-submit shadow-sm p-3 mt-2 text-center">
+                        <fa-icon [icon]="faSave" class="me-1"></fa-icon>
+                        Save Changes
+                    </button>
+                </ng-container>
+                <ng-container *ngIf="editMessage === 'Saved!'">
+                    <button type="submit" disabled class="btn btn-success shadow-sm p-3 mt-2 text-center">
+                        <fa-icon [icon]="faCheck" class="me-1"></fa-icon>
+                        {{editMessage}}
+                    </button>
+                </ng-container>
+                <ng-container *ngIf="editMessage !== '' && editMessage != 'Saved!'">
+                    <button type="submit" disabled class="btn btn-danger shadow-sm p-3 mt-2 text-center">
+                        <fa-icon [icon]="faXmark" class="me-1"></fa-icon>
+                        {{editMessage}}
+                    </button>
+                </ng-container>
+            </form>
+        </div>
+        </div>
+    </div>
+</div>

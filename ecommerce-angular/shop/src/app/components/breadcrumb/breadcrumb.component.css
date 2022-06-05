@@ -1,0 +1,14 @@
+.breadcrumb{
+    width: 100%;
+    background-color: rgb(224, 224, 224) !important;
+}
+
+.breadcrumb-2{
+    margin-left: 250px;
+}
+
+li, a {
+    font-weight: 800;
+    color: black !important;
+    text-decoration: none;
+}

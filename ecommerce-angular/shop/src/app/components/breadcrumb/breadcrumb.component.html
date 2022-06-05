@@ -1,0 +1,11 @@
+<div class="container-fluid">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="breadcrumb">
+        <ol class="breadcrumb-2 rounded p-2">
+            Huevito
+            <ng-container *ngFor="let section of urlSections">
+                <li class="breadcrumb-item"><a href="#">{{section}}</a></li>
+            </ng-container>
+            <!--<li class="breadcrumb-item active" aria-current="page">Profile</li>-->
+        </ol>
+    </nav>
+</div>
