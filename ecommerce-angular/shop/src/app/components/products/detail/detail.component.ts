@@ -1,5 +1,5 @@
 import { Component, OnInit, DoCheck } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Product } from 'src/app/models/product';
 import { Review } from 'src/app/models/review';
@@ -16,6 +16,8 @@ import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faCopy } from '@fortawesome/free-solid-svg-icons'
+
 
 @Component({
   selector: 'app-detail',
@@ -50,18 +52,22 @@ export class DetailComponent implements OnInit, DoCheck {
 
   public isAdded: boolean;
 
+  public isURLCoppied: boolean;
+
   // icons
   faHeart = faHeart;
   faCartShopping = faCartShopping;
   faStar = faStar;
   faCheck = faCheck;
   faPlus = faPlus;
+  faCopy = faCopy;
 
   constructor(
     private _productsService: ProductsService,
     private _reviewService: ReviewService,
     private _cartService: CartService,
-    private _router: ActivatedRoute
+    private _router: ActivatedRoute,
+    private _route: Router
   ) { 
     this.product = {_id: '', title: '', description: '', content: '', stock: '',
     price: 0, sales: '', rating: '', gallery: [], coverImage: '', category: ''};
@@ -91,6 +97,8 @@ export class DetailComponent implements OnInit, DoCheck {
     this.review = {};
     this.reviews = [];
     this.getReviews();
+
+    this.isURLCoppied = false;
   }
 
   ngOnInit(): void {
@@ -162,6 +170,12 @@ export class DetailComponent implements OnInit, DoCheck {
 
   // Cart Methods
   addToCart():void{
+    // Case user is not logged
+    if(!this.customerID){
+      this.returnToLogin();
+      return;
+    }
+
     if(this.selectedSize === 'Select Size'){
       this.addToCartMessage = 'Please, select a size.';
       return;
@@ -172,13 +186,14 @@ export class DetailComponent implements OnInit, DoCheck {
       return;
     }
 
+    if(this.addToCartMessage === 'Added!') return;
+
     this.cart.amount = this.selectedAmount;
     this.cart.size = this.selectedSize;
     this.cart.customer = this.customerID;
     this.cart.product = this.productID;
 
     this._cartService.addProductTCart(this.cart).subscribe((response) => {
-      console.log(response);
 
       this.invalidAmountMessage = '';
       this.addToCartMessage = 'Added!';
@@ -187,6 +202,10 @@ export class DetailComponent implements OnInit, DoCheck {
         this.addToCartMessage = '';
       }, 1000)
     })
+  }
+
+  public returnToLogin():void{
+    this._route.navigate(['/login']);
   }
 
   optionSelected():void{
@@ -221,6 +240,17 @@ export class DetailComponent implements OnInit, DoCheck {
     this.showReviewForm = false;
   }
 
+  scrollToReviews(section:string):void{
+    window.location.hash = section;
+  }
 
+  copyToClipboard():void{
+    const productURL = window.location.href;
+
+    navigator.clipboard.writeText(productURL).then( function() {
+    }, function(err) {
+      console.log('Not copied!')
+    })
+  }
 
 }

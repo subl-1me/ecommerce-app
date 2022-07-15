@@ -14,6 +14,8 @@ import { DirectionService } from 'src/app/services/direction.service';
 import { Shipping } from 'src/app/models/shipping';
 import { CheckoutService } from 'src/app/services/checkout.service';
 
+import { CouponApplied } from 'src/app/models/couponApplied';
+
 
 // Payments
 import { IPayPalConfig, ICreateOrderRequest } from 'ngx-paypal';
@@ -22,9 +24,11 @@ import { StripeService } from 'src/app/services/stripe.service';
 // Icons
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons';
-import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons';  
+import { faCheck } from '@fortawesome/free-solid-svg-icons';  
 
 @Component({
   selector: 'app-checkout',
@@ -37,6 +41,9 @@ export class CheckoutComponent implements OnInit {
   // Payments
   public payPalConfig ? : IPayPalConfig;
 
+  // Coupons
+  public couponApplied: CouponApplied;
+
   // Icons
 
   faTrash = faTrash;
@@ -44,10 +51,13 @@ export class CheckoutComponent implements OnInit {
   faHeart = faHeart;
   faCreditCard = faCreditCard;
   faArrowDown = faArrowDown; //
+  faXmark = faXmark;
+  faCheck = faCheck;
 
   public customerID: any;
 
   public defaultDirection: Direction;
+  public directionExists: boolean;
 
   public shipping: Array<Shipping>;
   public shippingCost: number;
@@ -58,11 +68,16 @@ export class CheckoutComponent implements OnInit {
 
   public orderTotal: number;
   public subtotal: number;
+  public isOrderComplete: boolean;
 
   public isPaypalSelected: boolean;
   public isCCSelected: boolean;
-  public isSaleCompleted: boolean;
   public isShippingSelected: boolean;
+
+  public couponCode: string;
+  public couponCodeMessage: string;
+
+  public discount: number;
 
   public cart: Array<Cart>;
 
@@ -86,27 +101,44 @@ export class CheckoutComponent implements OnInit {
     this.isCCSelected = false;
     this.isShippingSelected = false;
 
-    this.sale = {customer: this.customerID};
+    this.sale = {
+      customer: this.customerID,
+      transaction: '',
+      payment_method: '',
+    };
+
     this.orderTotal = 0;
     this.subtotal = 0;
-    this.isSaleCompleted = false;
+    this.isOrderComplete = false;
+
+    this.couponCode = '';
+    this.couponCodeMessage = '';
+    this.couponApplied = {type: '', value: 0, code: '' };
+
+    this.discount = 0;
+
+    this.directionExists = false;
+
   }
 
   ngOnInit(): void {
     this.initPaypalConfig();
-    this.generateOrder();
 
     this.getCart();
+    //this.calculateOrderTotal();
     this.getDefaultDirection();
     this.getShippingMethods(); 
   }
 
   generateOrder():void{
-    var orderData = { id: this.customerID, amount: 40 }
+    if(!this.customerID) return;
+    
+    var orderData = { id: this.customerID, amount: this.orderTotal}
     this._stripeService.generateOrder(orderData).subscribe((response) => {
-      if(!response.data._id) return;
+      //if(!response.data._id) return;
 
-      localStorage.setItem('orderID', response.data._id);
+      const orderId = response.data._id;
+      localStorage.setItem('orderID', orderId);
 
     })
     
@@ -154,23 +186,19 @@ export class CheckoutComponent implements OnInit {
         onApprove: (data, actions) => {
           actions.order.get().then((details:any) => {
 
-              this.sale.customer = this.customerID;
-              this.sale.shippingAddress = this.defaultDirection;
               this.sale.shippingPrice = this.shippingCost;
-              this.sale.shippingType = this.shippingType;
               this.sale.transaction = details.id;
-              this.sale.subtotal = this.subtotal;
-              this.sale.status = '';
-              this.sale.details = this.saleDetails;
+              this.sale.total = this.orderTotal;
+              this.sale.status = 'Success';
+              this.sale.payment_method = "Paypal"
 
               this._saleService.registerCustomerSale(this.sale).subscribe((response) => {
                 if(response.status !== 'SUCCESS') return;
 
-                console.log(response);
                 this._saleService.sendEmailSale(response.saleRegister._id).subscribe((response) => {
                   console.log(response);
                 });
-                this.isSaleCompleted = true;
+                // this.isSaleCompleted = true;
               })
           });
 
@@ -182,9 +210,38 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
+  applyCouponCode():void{
+    if(!this.couponCode) return; // Case empty string
+    // if(this.couponApplied.find(element => element == this.couponCode) ==  this.couponCode) return; // Case coupon has been applied
+
+    this._checkoutService.applyCouponCode(this.couponCode).subscribe((response) => {
+      console.log(response);
+
+      if(response.status === 'error'){
+        this.couponCodeMessage = 'This code is not valid. Try again.';
+
+        setTimeout( () => {
+          this.couponCodeMessage = '';
+        }, 1000)
+
+        return;
+      }
+
+      this.couponCode = '';
+      if(response.coupon.type ='Percentage') this.orderTotal = (this.orderTotal * response.coupon.value) / 100;
+
+      this.couponApplied = response.coupon;
+      this.discount += this.couponApplied.value;
+      //this.couponApplied.push(newCoupon);
+
+    })
+  }
+
   calculateSubtotal():void{
     for(let item of this.cart){
-      if(item.product?.price) this.subtotal += item.product?.price;
+      if(item.product?.price && item.amount){
+        this.subtotal += item.product?.price * item.amount;
+      }
     }
   }
 
@@ -192,35 +249,55 @@ export class CheckoutComponent implements OnInit {
     return price * amount;
   }
 
-  calculateOrderTotal():void{
-    this.orderTotal += this.subtotal;
+  calculateOrderTotal():void{                                                             
+    this.orderTotal = 0;
+    this.orderTotal += this.subtotal + +this.shippingCost;
+    if(this.discount != 0) this.orderTotal = ( this.orderTotal * this.discount ) / 100; 
+    this.sale.total = this.orderTotal;
   }
 
   addShippingCost(methodPrice:any, methodType:any){
     this.isShippingSelected = true;
-    this.getCart();
-    this.orderTotal += parseInt(methodPrice);
-    this.shippingType = methodType;
 
-
+    // calculate order total
+    // if(this.shippingCost != 0 ){
+    //   this.orderTotal -= this.shippingCost;
+    // }
+    // if(this.shippingCost == 0){
     this.calculateOrderTotal();
-    console.log(this.orderTotal);
+    this.sale.shippingPrice = this.shippingCost;
+    this.sale.shippingType = methodType;
+    //   return;
+    // }
+    // this.orderTotal += +this.shippingCost;
+
+    // this.orderTotal += parseInt(methodPrice);
+    // this.shippingType = methodType;
+
+                          
+    // this.calculateOrderTotal();
+    // console.log(this.orderTotal);
+
     // create payment intent (stripe)
-    /*this._stripeService.createPaymentIntent(this.orderTotal).subscribe((response) => {
-      if(!response.intent.client_secret) return;
+    // this._stripeService.createPaymentIntent(this.orderTotal, this.customerID, methodType).subscribe((response) => {
+    //   console.log(response);
+    //   if(!response.intent.client_secret) return;
 
-      localStorage.setItem('current_intent', response.intent.client_secret);
+    //   localStorage.setItem('current_intent', response.intent.client_secret);
 
-    })*/
+    // })
   }
 
   getCart():void{
+    if(!this.customerID) return;
+
     this._cartService.getCart(this.customerID).subscribe((response) => {
       if(!response.cart) return;
 
+      console.log(response);
       this.cart = response.cart;
-
-      this.calculateSubtotal();
+  
+      if(this.subtotal == 0) this.calculateSubtotal();
       this.calculateOrderTotal();
 
       this.saleDetails = [];
@@ -241,6 +318,8 @@ export class CheckoutComponent implements OnInit {
       });
     })
 
+
+    this.sale.details = this.saleDetails;
     console.log(this.saleDetails);
   }
 
@@ -252,11 +331,16 @@ export class CheckoutComponent implements OnInit {
   }
 
   getDefaultDirection():void{
+    if(!this.customerID) return;
     this._directionService.getDefaultDirection(this.customerID).subscribe((response) => {
-      if(!response.direction) return;
+      if(!response.direction){
+        this.directionExists = false;
+      }
 
-
+      this.directionExists = true;
       this.defaultDirection = response.direction;
+
+      this.sale.shippingAddress = this.defaultDirection;
     })
   }
 
@@ -280,5 +364,27 @@ export class CheckoutComponent implements OnInit {
 
     this.isPaypalSelected = false;
     this.isCCSelected = true;
+  }
+
+  completeOrder():void{
+    this.generateOrder();
+    this.isOrderComplete = true;
+  }
+
+  undoOrderComplete():void{
+    this.isOrderComplete = false;
+  }
+
+  removeCoupon():void{
+
+    // RESET coupon
+    this.couponApplied = {
+      value: 0,
+      type: '',
+      code: ''
+    };
+
+    this.discount = 0;
+    this.calculateOrderTotal();
   }
 }

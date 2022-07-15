@@ -1,0 +1,29 @@
+.item{
+    border: none !important;
+}
+
+.section{
+    display: inline;
+}
+
+.payment-icon{
+    width: 30px;
+    height: 30px;
+}
+
+.product-image{
+    margin-right: 0;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+
+.leave-review{
+    cursor: pointer;
+}
+
+.visit-link{
+    text-decoration: underline;
+    cursor: pointer;
+}

@@ -1,0 +1,18 @@
+.review{
+    object-fit: cover;
+    max-width: 300px;
+    max-height: 300px;
+}
+
+.btn-submit{
+    color:white;
+    background-color: #7367F0 !important;
+    font-weight: 600;
+    /*background-color: #0396FF !important;*/
+}
+
+.btn-submit:hover{
+    transform: translateY(-5px);
+    background-color: #574aee !important;
+    transition: .1s ease-in-out;
+}

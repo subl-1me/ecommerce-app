@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 // plgs
 import { NgxPayPalModule } from 'ngx-paypal';
+import { NgxStarRatingModule } from 'ngx-star-rating';
 
 // Components 
 import { AppComponent } from './app.component';
@@ -25,6 +26,12 @@ import { CartModalComponent } from './components/cart-modal/cart-modal.component
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { DirectionsComponent } from './components/profile/directions/directions.component';
 import { StripeComponent } from './components/checkout/stripe/stripe.component';
+import { ContactComponent } from './components/contact/contact.component';
+import { MyOrdersComponent } from './components/profile/my-orders/my-orders.component';
+import { OrderDetailComponent } from './components/profile/order-detail/order-detail.component';
+import { ReviewComponent } from './components/review/review.component';
+import { WishlistComponent } from './components/navbar/wishlist/wishlist.component';
+import { ReviewsComponent } from './components/products/reviews/reviews.component';
 
 
 @NgModule({
@@ -44,7 +51,13 @@ import { StripeComponent } from './components/checkout/stripe/stripe.component';
     CartModalComponent,
     CheckoutComponent,
     DirectionsComponent,
-    StripeComponent
+    StripeComponent,
+    ContactComponent,
+    MyOrdersComponent,
+    OrderDetailComponent,
+    ReviewComponent,
+    WishlistComponent,
+    ReviewsComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +66,8 @@ import { StripeComponent } from './components/checkout/stripe/stripe.component';
     FormsModule,
     HttpClientModule,
     NgxPayPalModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxStarRatingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

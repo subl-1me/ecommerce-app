@@ -15,7 +15,10 @@ const add = async function(req, res){
 
         return res.status(200).send({ cart: cart});
     }catch(err){
-        return res.status(500).send({ message: 'Something went wrong.' });
+        return res.status(500).send({
+            status: 'error',
+            message: 'Something went wrong.'
+        });
     }
 }
 

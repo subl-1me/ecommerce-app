@@ -50,8 +50,24 @@ const remove = async function(req, res){
     }
 }
 
+const coupon = async function(req, res){
+    if(!req.params['code']) return res.status(200).send({ message: 'Coupon code is required.' });
+
+    try {
+        const couponCode = req.params['code'];
+
+        const coupon = await Coupon.findOne({code: couponCode})
+        if(!coupon) return res.status(200).send({ status: 'error', message: 'Code not found.' });
+
+        return res.status(200).send({ coupon: coupon })
+    }catch(err){
+        return res.status(500).send({ message: 'Something went wrong.'})
+    }
+}
+
 module.exports = {
     add,
     coupons,
-    remove
+    remove,
+    coupon
 }

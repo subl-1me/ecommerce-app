@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { environment } from 'src/environments/environment';
+
+import { Sale } from 'src/app/models/sale';
+import { SaleService } from 'src/app/services/sale.service';
 
 // Services
 import { StripeService } from 'src/app/services/stripe.service';
@@ -8,9 +11,13 @@ import { StripeService } from 'src/app/services/stripe.service';
 @Component({
   selector: 'app-stripe',
   templateUrl: './stripe.component.html',
-  styleUrls: ['./stripe.component.css']
+  styleUrls: ['./stripe.component.css'],
+  providers: [ SaleService ] 
 })
 export class StripeComponent implements OnInit {
+
+  @Input() sale: Sale;
+
   private readonly stripe: any; // window.stripe
   private elementStripe: any;
   public cardNumber: any;
@@ -18,23 +25,31 @@ export class StripeComponent implements OnInit {
   public cardExp: any;
   public amount: any;
 
+  public isPaymentSucceeded: boolean;
+
   public form: FormGroup = new FormGroup({});
 
   //public stripe: stripe.Stripe;
   constructor(
     private fb: FormBuilder,
-    private _stripeService: StripeService
+    private _stripeService: StripeService,
+    private _saleService: SaleService
   ) {
-    this.stripe = window.Stripe(environment.stripe_pk);
+    //this.stripe = window.Stripe(environment.stripe_pk);
+    this.stripe = window.Stripe('pk_test_51L1yDyIX0ejDpXz2xriFFkc2ov5XmwysFD5u0BAJJbtt5RLUnxKJY5X0QWVW4gqYxaukYilaFyA8OBPFMtNE2KfS005oWRzBCH');
     this.form = this.fb.group({
       amount: ['', [Validators.required, Validators.min(1), Validators.max(100000)]],
       cardNumber: [false, [Validators.required, Validators.requiredTrue]],
       cardCvc: [false, [Validators.required, Validators.requiredTrue]],
       cardExp: [false, [Validators.required, Validators.requiredTrue]],
     })
+
+    this.sale = {};
+    this.isPaymentSucceeded = false;
    }
 
   ngOnInit():void {
+    console.log(this.sale);
     this.createStripeElement();
   }
 
@@ -124,18 +139,41 @@ export class StripeComponent implements OnInit {
         return;
       }
       
+      // Update current Order adding stripe's ID field
       const { data } = await this._stripeService.sendPayment(orderID, token.id);
 
       // STRIPE SDK will verify bank auth
       this.stripe.handleCardPayment(data.client_secret)
         .then(async () => {
+          if(data.status !== 'requires_confirmation') return;
+
           // Payment success
           console.log('Payment Success');
-          console.log(data);
+          this.isPaymentSucceeded = true;
+
+
+
+          // delete actual order
+          this._stripeService.confirmOrder(orderID).subscribe((response) => {
+            console.log(response);
+          })
+
+          // Register sale 
+          this.sale.payment_method = 'Card'
+          this.sale.transaction = data.id;
+          this._saleService.registerCustomerSale(this.sale).subscribe((response) => {
+            if(response.status !== 'SUCCESS') return;
+
+            this._saleService.sendEmailSale(response.saleRegister._id).subscribe((response) => {
+              console.log(response);
+            });
+
+            console.log(response);
+          })
 
           // Confirm order status
           // await this._stripeService.confirmOrder(orderID);
-          this.stripe.confirmCardPayment(data.client_secret);
+          //this.stripe.confirmCardPayment(data.client_secret);
         }).catch(() => {
           console.log('Payment Error');
         })

@@ -1,0 +1,17 @@
+.product-image{
+    margin-right: 0;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.bg-remove, .btn-more{
+    color: white;
+    background-color: #7367F0 !important;
+    border-color: #7367F0 !important;
+}
+
+.btn-remove:hover{
+    background-color: #6053eb !important;
+    border-color: #6053eb !important;
+}

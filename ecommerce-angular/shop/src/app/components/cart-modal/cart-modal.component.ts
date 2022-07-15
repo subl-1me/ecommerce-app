@@ -48,6 +48,7 @@ export class CartModalComponent implements OnInit {
   }
 
   getCart():void{
+    if(!this.customerID) return;
     this._cartService.getCart(this.customerID).subscribe((response) => {
       if(!response.cart) return;
 

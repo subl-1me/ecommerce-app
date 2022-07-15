@@ -17,6 +17,8 @@ routes.put('/product/gallery/:id', auth.auth, productController.setGalleryImages
 routes.post('/product/gallery/:id', auth.auth, productController.uploadGalleryImages);
 routes.get('/productsByCategory/:category?', productController.productsByCategory);
 routes.put('/product/review/:id', productController.postReview);
+routes.get('/latestsProducts', productController.latestProducts);
+routes.get('/topSellers', productController.topSellers);
 
 module.exports = routes;
 

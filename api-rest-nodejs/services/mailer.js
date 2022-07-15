@@ -42,10 +42,14 @@ const initMailer = async function(saleId){
     const data = {
         customerNames: sale.customer.names + ' ' + sale.customer.surnames,
         saleDate: new Date(sale.createdAt),
-        subtotal: sale.subtotal,
+        subtotal: sale.total,
         customerEmail: sale.customer.email,
         saleDetail: saleDetail
     }
+
+
+    console.log('---------------');
+    console.log(data);
 
     // Send sale detail to html template
     readHTMLFile(process.cwd() + '/mail-template.html', (err, html) =>{
@@ -60,12 +64,14 @@ const initMailer = async function(saleId){
             subject: 'A shop...',
             html: htmlToSend
         };
-    
+
         // res.status(200).send({ data: true });
         transporter.sendMail(mailOptions, function(err, info) {
             if(!err){
                 console.log('Email sent successfully to: ' + sale.customer.email);
             }
+
+            console.log(process.cwd());
         })
     })
 }

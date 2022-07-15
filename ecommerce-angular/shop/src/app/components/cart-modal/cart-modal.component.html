@@ -8,9 +8,18 @@
             <hr>
             
             <!-- Cart empty -->
-            <ng-container *ngIf="cart.length == 0">
+            <ng-container *ngIf="cart.length == 0 && customerID">
                 <div class="alert alert-warning">
                     Your cart is empty. Add some products first.
+                </div>
+            </ng-container>
+
+            <!-- Not logged -->
+            <ng-container *ngIf="!customerID" >
+                <div class="not-logged text-center">
+                    <div class="alert alert-secondary">Please, log in to add products</div>
+                    <button class="btn btn-secondary" [routerLink]="['/login']">Log in</button>
+                    <hr>
                 </div>
             </ng-container>
 
@@ -23,8 +32,9 @@
                     <div class="col-8">
                         <fa-icon [icon]="faTrash" class="float-end" (click)="deleteProductCart(item._id)"></fa-icon>
                         <h5>{{item.product?.title}}</h5>
-                        <h6 class="text-muted">{{item.product?.title}}</h6>
-                        <h6 class="text-muted">{{item.product?.title}}</h6>
+                        <h6 class="text-muted small mb-0">Price: {{item.product?.price}}</h6>
+                        <h6 class="text-muted small mb-0">Amount: {{item.amount}}</h6>
+                        <h6 class="text-muted small">Size: {{item.size}}</h6>
                     </div>
                     <hr class="mt-3">
                 </div>

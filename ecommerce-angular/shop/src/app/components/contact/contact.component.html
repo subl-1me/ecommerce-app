@@ -1,0 +1,68 @@
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-3">
+            <ul class="list-group">
+                <li class="list-group-item">Contact</li>
+                <li class="list-group-item">FAQ</li>
+            </ul>
+        </div>
+        <div class="col-lg">
+            <h6>If you have any questions, concerns or comments,
+                we would love to hear from you! Submit your query
+                using any of the methods below:
+            </h6>
+
+            <ul class="list-group">
+                <li class="list-group-item connect">
+                    <fa-icon [icon]="faMobileScreenButton"></fa-icon>
+                    (405) 555-1234
+                </li>
+                <li class="list-group-item connect">
+                    <fa-icon [icon]="faEnvelope"></fa-icon>
+                    support@example.com
+                </li>
+                <li class="list-group-item connect">Connect on Messenger</li>
+                <li class="list-group-item connect">Tweet us</li>
+            </ul>
+            <hr>
+            <h6 class="mt-3">Or get in touch with us by completing the below form:</h6>
+            <!-- contact form -->
+            <form #contactForm="ngForm" (ngSubmit)="onSubmit(contactForm)">
+                <div class="row">
+                    <div class="col-6 ps-0 mb-2">
+                        <label for="names" class=" mb-2 mt-2">Names *</label>
+                        <input type="text" class="form-control p-2" id="names"
+                        placeholder="John Doe" name="names" [(ngModel)]="contact.names" required>
+                    </div>  
+                    <div class="col-6 ps-0 mb-2">
+                        <label for="email" class=" mb-2 mt-2">Email *</label>
+                        <input type="text" class="form-control p-2" id="email"
+                        placeholder="example@example.com" name="email" [(ngModel)]="contact.email" required>
+                    </div>
+                    <div class="col-6 ps-0 mb-2">
+                        <label for="phone" class=" mb-2 mt-2">Phone</label>
+                        <input type="text" class="form-control p-2" id="phone"
+                        placeholder="00 000 0000" name="phone" [(ngModel)]="contact.phone">
+                    </div>
+                    <div class="col-6 ps-0 mb-2">
+                        <label for="subject" class=" mb-2 mt-2">Subject *</label>
+                        <input type="text" class="form-control p-2" id="subject"
+                        placeholder="Title of your message" name="subject" [(ngModel)]="contact.subject" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg ps-0 mb-2">
+                        <label for="message" class=" mt-2 mb-2">Message * </label>
+                        <textarea class="form-control" id="message"
+                        placeholder="Write your message here!" name="message" [(ngModel)]="contact.message" required></textarea>
+                    </div>
+                </div>
+                <button class="btn btn-send mt-3 p-3" *ngIf="!isMessageSend" [disabled]="contactForm.invalid">Send message</button>
+                <button class="btn btn-success mt-3" *ngIf="isMessageSend">
+                    <fa-icon [icon]="faCheck"></fa-icon>
+                </button>
+                <div class="small text-success" *ngIf="isMessageSend">Your message was send. Thank you for your comments.</div>
+            </form>
+        </div>
+    </div>
+</div>

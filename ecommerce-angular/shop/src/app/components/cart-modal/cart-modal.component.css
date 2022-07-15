@@ -6,8 +6,10 @@
 }
 
 .card{
-    position: absolute;
-    height: 100vh;
+    overflow: scroll;
+    overflow-x: hidden;
+    position: fixed;
+    height: 100%;
     width: 20%;
     z-index: 101;
     animation: appear .1s forwards;

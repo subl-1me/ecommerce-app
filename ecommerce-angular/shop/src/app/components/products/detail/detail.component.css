@@ -167,6 +167,19 @@ li > a{
     max-height: 600px;
 }
 
+.product-image-detail{
+    max-width: 600px;
+    max-height: 600px;
+}
+
+.payment-image{
+    filter: grayscale(20%);
+}
+
+.clipboard:hover{
+    cursor: pointer;
+}
+
 @keyframes jump {
     0%{
         transform: translateY(-4px);

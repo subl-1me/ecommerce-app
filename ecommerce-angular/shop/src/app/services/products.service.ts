@@ -30,4 +30,17 @@ export class ProductsService {
 
     return this._http.get(GLOBAL.url+'productsByCategory/'+category, {headers: headers});
   }
+
+  public getLatestProducts():Observable<any>{
+    var headers = new HttpHeaders().set('Content-Type', 'application/json');
+  
+    return this._http.get(GLOBAL.url+'latestsProducts', {headers: headers});
+
+  }
+
+  public getTopSellers():Observable<any>{
+    var headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+    return this._http.get(GLOBAL.url+'topSellers', {headers: headers});
+  }
 }

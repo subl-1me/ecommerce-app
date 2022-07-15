@@ -4,13 +4,21 @@
 
 .productImage{
     object-fit: cover;
-    width: 250px;
-    height: 250px;
+    max-width: 300px;
+    height: 300px;
+}
+
+.productImage:hover{
+    cursor: pointer;
 }
 
 .onMouseOver{
     width: 250px;
     height: 250px;
+}
+
+.card{
+    border: none;
 }
 
 .product-price{
@@ -62,11 +70,27 @@
     animation: appear .4s forwards;
 }
 
-.btn{
+.product:hover{
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+}
+
+.btn, .btn-add-cart{
+    color: white;
     background-color: #7367F0 !important;
     border-color: #7367F0 !important;
     
 }
+
+.btn-add-cart{
+    width: 100%;
+}
+
+.btn-add-cart:hover{
+    background-color: #5e51f0 !important;
+    border-color: #5e51f0 !important;
+}
+
+
 
 
 @keyframes appear {

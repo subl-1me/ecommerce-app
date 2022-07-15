@@ -1,0 +1,39 @@
+<div class="container">
+    <div class="myproducts-list">
+        <div class="card-body bg-light">
+            <table class="table ">
+                <tbody>
+                    <ng-container *ngFor="let product of loadedProducts">
+                        <tr>
+                            <td>
+                                <div class="row text-center">
+                                    <div class="col">
+                                        <img src="{{product.coverImage}}" class="product-image">
+                                    </div>
+                                    <div class="col mt-2">
+                                        <h6 class="mb-0">{{product.title}}</h6>
+                                        <div class="small text-muted">
+                                            Price: ${{product.price}}
+                                        </div>
+
+                                        <div class="leave-review mt-3 float-end">
+                                            <div class="small badge bg-remove">
+                                                <fa-icon [icon]="faTrash" class="me-1">faTrash</fa-icon>
+                                                Remove
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+            <button class="btn btn-more w-100 mt-2">
+                <fa-icon [icon]="faPlus" class="me-1"></fa-icon>
+                Show more
+            </button>
+
+        </div>
+    </div>
+</div>

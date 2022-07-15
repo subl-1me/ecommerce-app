@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var cartSchema = Schema({
-    customer: { type: Schema.ObjectId, ref: 'customer', require: true },
+    customer: { type: Schema.ObjectId, ref: 'customer', required: true },
     product: { type: Schema.ObjectId, ref: 'product', require: true },
     amount: { type: Number, require: true },
     size: { type: String, require: true },

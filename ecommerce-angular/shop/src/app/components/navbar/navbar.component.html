@@ -8,7 +8,7 @@
               <a class="nav-link" href="#">Home</a>
             </li>
             <li class="nav-item">
-              <div class="dropdown" *ngIf="customer.names && customer.surnames">
+              <div class="dropdown">
                       <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuLink" data-bs-toggle="dropdown" >
                           Products
                       </a>
@@ -29,7 +29,7 @@
                     </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Menu</a>
+                <a class="nav-link" [routerLink]="['/contact']">Contact</a>
               </li>
           </ul>
 
@@ -67,27 +67,8 @@
                           <fa-icon [icon]="faHeart" class="faHeart"></fa-icon>
                           {{productsFav.length}}
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                          <ng-container *ngFor="let product of loadedProducts">
-                            <li class="product text-center">
-                              <a class="dropdown-item" [routerLink]="['/products/detail', product._id]" (click)="updatedBreadcrumb()">
-                                <img src="{{product.coverImage}}" class="product-coverimage rounded">
-                                <h6>{{product.title}}</h6>
-                                <h6>${{product.price}}</h6>
-                                <hr>
-                              </a>
-                            </li>
-                          </ng-container>
-                          <button *ngIf="loadedProducts.length > 3" class="btn btn-more w-100">More</button>
-                          <ng-container *ngIf="loadedProducts.length == 0">
-                            <div class="text-muted text-center p-2">
-                              <h6>Your Wishlist is Empty.</h6>
-                              <button class="btn btn-more" [routerLink]="['/products']">
-                                <fa-icon [icon]="faPlus"></fa-icon>
-                                Add Products
-                              </button>
-                            </div>
-                          </ng-container>
+                        <ul class="dropdown-menu favs-menu" aria-labelledby="dropdownMenuLink">
+                          <app-wishlist></app-wishlist>
                         </ul>
                       </div>
                   </a>

@@ -10,6 +10,10 @@ hr{
     margin-bottom: 1000px;
 }
 
+.checkout-section{
+    width: 100%;
+}
+
 .product-image{
     width: 150px;
     height: 150px;
@@ -17,16 +21,12 @@ hr{
 
 .total-section{
     position: fixed;
-    left: 50%;
+    left: 70%;
 }
 
 .section, .billing-address, .shipping-section{
     font-size: 25px;
     font-weight: 500;
-}
-
-.review-section{
-    background-color: rgb(245, 244, 244);
 }
 
 tr{
@@ -38,9 +38,14 @@ tr{
     background-color: #7367F0 !important;
 }
 
+.btn-fail{
+    color: white;
+    background-color: #ee5c5c !important;
+    border-color: #ee5c5c !important;
+}
+
 .btn-promo:hover{
     background-color: #5548e9 !important;
-
 }
 
 .order-info{
@@ -83,7 +88,7 @@ tr{
 }
 
 .shadow-sm{
-    border-color: #574aee !important;
+    /* border-color: #574aee !important; */
 }
 
 .mv-fav:hover{
@@ -96,6 +101,39 @@ tr{
     animation: appear .4s forwards;
 }
 
+.invalidCoupon{
+    animation: appear .2s ease-in-out;
+}
+
+.product-image{
+    margin-right: 0;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.item-size, .item-color{
+    font-weight: normal;
+    font-size: 15px;
+}
+
+.change-address{
+    cursor: pointer;
+}
+
+.list-group-item{
+    border: none;
+}
+
+.remove-coupon{
+    color: #574aee !important;
+    text-decoration: underline;
+}
+
+.remove-coupon:hover{
+    cursor: pointer;
+}
+
 @keyframes appear {
     0%{
         opacity: 10%;
@@ -106,6 +144,14 @@ tr{
     100%{
         opacity: 100%;
     }
+}
+
+.modal-dialog{
+    max-width: 800px;
+}
+
+.paypal-button{
+    width: 100% !important;
 }
 
 #amount{

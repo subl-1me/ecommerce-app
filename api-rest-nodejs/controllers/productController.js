@@ -106,6 +106,32 @@ const products = async function(req, res){
     })
 }
 
+const latestProducts = async function(_req, res){
+
+    try{
+        const latestProducts = await Product.find().sort({createdAt: -1}).limit(4);
+
+        return res.status(200).send({products: latestProducts});
+    }catch(err){
+        return res.status(500).send({message: 'Something went wrong.' });
+    }
+}
+
+const topSellers = async function(_req, res){
+
+    /*try {
+        const topSellers = await Product.find().sort({ sales: ascending }).limit(4);
+
+        return res.status(200).send({ products: topSellers })
+    }catch(err){
+        return res.status(500).send({ message: 'Somethig went wrong.' })
+    }*/
+
+    const topSellers = await Product.find().sort({ sales: -1 }).limit(4);
+
+    return res.status(200).send({ products: topSellers })
+}
+
 const productsByCategory = async function(req, res){
 
     var filter = new RegExp(req.params['category'], 'i');
@@ -171,7 +197,7 @@ const uploadCoverImage = async function(req, res){
     upload(req, res, (err) => {
         if(err) return res.status(500).send({ message: 'Error trying to upload image.' })
 
-        return res.status(200).send({ path: 'http://localhost:4201/' + req.file.filename })
+        return res.status(200).send({ path: 'https://netlify-thinks-subl-1me-is-great.netlify.app/' + req.file.filename })
     });
 }
 
@@ -203,7 +229,7 @@ const uploadGalleryImages = async function(req, res){
 
         var pathArray = []
         req.files.forEach(file => {
-            pathArray.push('http://localhost:4201/' + 'gallery-' + productID + '/' + file.filename);
+            pathArray.push('https://netlify-thinks-subl-1me-is-great.netlify.app/' + 'gallery-' + productID + '/' + file.filename);
         })
         return res.status(200).send({ multipleImages: pathArray });
     })
@@ -281,5 +307,7 @@ module.exports = {
     uploadGalleryImages,
     setGalleryImages,
     productsByCategory,
-    postReview
+    postReview,
+    latestProducts,
+    topSellers
 }

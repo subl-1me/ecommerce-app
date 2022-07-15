@@ -21,6 +21,9 @@ import { LoginComponent } from './components/login/login.component';
   import { CouponComponent } from './components/coupon/coupon.component';
   import { AddComponent } from './components/coupon//add/add.component';
 
+  // Messages
+  import { MessagesComponent } from './components/messages/messages.component';
+
   // Etc
   import { ConfigsComponent } from './components/configs/configs.component';
 
@@ -45,6 +48,8 @@ const routes: Routes = [
 
     { path: 'coupons', component: CouponComponent, canActivate: [ AdminGuard ]},
     { path: 'coupons/add', component: AddComponent, canActivate: [ AdminGuard ]},
+
+    { path : 'messages', component: MessagesComponent, canActivate: [ AdminGuard ]},
 
     { path: 'configurations', component: ConfigsComponent, canActivate: [ AdminGuard ]}
   ]}

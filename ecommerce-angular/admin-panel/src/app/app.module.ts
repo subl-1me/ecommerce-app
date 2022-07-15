@@ -26,6 +26,7 @@ import { ConfigsComponent } from './components/configs/configs.component';
 import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
 import { NgxFileDropModule } from 'ngx-file-drop';
 import { GalleryComponent } from './components/products/gallery/gallery.component';
+import { MessagesComponent } from './components/messages/messages.component';
 
 
 @NgModule({
@@ -46,6 +47,7 @@ import { GalleryComponent } from './components/products/gallery/gallery.componen
     AddComponent,
     ConfigsComponent,
     GalleryComponent,
+    MessagesComponent,
   ],
   imports: [
     BrowserModule,

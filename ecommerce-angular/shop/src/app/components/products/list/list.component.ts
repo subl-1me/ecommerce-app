@@ -5,6 +5,7 @@ import { ConfigsService } from '../../../services/configs.service';
 
 import { faHeart, faThList } from '@fortawesome/free-solid-svg-icons';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 
 import { Product } from 'src/app/models/product';
 import { ProductsService } from 'src/app/services/products.service';
@@ -16,6 +17,8 @@ import { ProductsService } from 'src/app/services/products.service';
   providers: [ ConfigsService, ProductsService ]
 })
 export class ListComponent implements OnInit, DoCheck {
+
+  public customerID: any;
 
   public _idStorage: any;
   public categories: any;
@@ -29,11 +32,17 @@ export class ListComponent implements OnInit, DoCheck {
   public productsAmount: number;
   public totalProducts: number;
   public totalProductsMessage: string;
+  public noItemsFoundMessage: string;
+
+  public addToCartMesssage: string;
+
+  public productsCount: any;
 
   public expandProductCard: boolean;
 
   faHeart = faHeart;
   faStar = faStar;
+  faCartShopping = faCartShopping;
 
   public products = Array<Product>();
 
@@ -42,6 +51,9 @@ export class ListComponent implements OnInit, DoCheck {
     private _productsService: ProductsService,
     private _router: ActivatedRoute
   ) { 
+
+    this.customerID = this._router.snapshot.queryParams['_id'];
+
     this.expandProductCard = false;
     this.min = 0;
     this.max = 0;
@@ -49,6 +61,8 @@ export class ListComponent implements OnInit, DoCheck {
     this.productsAmount = 9;
     this.totalProducts = 0;
     this.totalProductsMessage = '';
+    this.noItemsFoundMessage = '';
+    this.addToCartMesssage = '';
   }
 
   ngOnInit(): void {
@@ -81,6 +95,8 @@ export class ListComponent implements OnInit, DoCheck {
       if(!response.products) return;
 
       this.products = response.products;
+
+
       this.totalProducts = this.products.length;
       this.products = this.products.splice(0, this.productsAmount);
     })
@@ -88,6 +104,12 @@ export class ListComponent implements OnInit, DoCheck {
 
   getProductsByFilter():void{
     this._productsService.getProducts(this.filterCategory).subscribe((response) => {
+      if(response.message){
+        this.noItemsFoundMessage = 'No items found with that name.';
+        return;
+      }
+
+      this.noItemsFoundMessage = '';
       this.products = response.products;
     })
   }
@@ -144,7 +166,6 @@ export class ListComponent implements OnInit, DoCheck {
   }
 
   sortBy():void{
-    console.log(this.sortByOption);
     switch(this.sortByOption){
       case 'popularity':
         this.products.sort(function(a, b) {
@@ -177,6 +198,10 @@ export class ListComponent implements OnInit, DoCheck {
   }
 
   showAmount(){
+    if(this.productsAmount < 0){
+      this.productsAmount = 0;
+      return;
+    }
     if(this.productsAmount > this.totalProducts){
       this.productsAmount = this.totalProducts;
       this.totalProductsMessage = 'You can only show ' + this.totalProducts + ' products.';
@@ -184,10 +209,18 @@ export class ListComponent implements OnInit, DoCheck {
       this.totalProductsMessage = '';
     }
 
-    
     this.getProducts('');
+    this.sortByOption = 'default';
     this.products = this.products.splice(0, this.productsAmount); 
-    console.log(this.products);
+  }
+
+  addToCart(productID:any):void{
+    if(!this.customerID){
+      this.addToCartMesssage = 'Please, log in to add products.';
+      return;
+    }
+
+    this.addToCartMesssage = ''
   }
 
 }

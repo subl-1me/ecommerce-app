@@ -9,10 +9,10 @@
                     <a class="nav-link text-muted" aria-current="page">General</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link text-muted">Details</a>
+                    <a class="nav-link text-muted" (click)="scrollToReviews('details-section')">Details</a>
                   </li>
                   <li class="nav-item">
-                    <a class="review-badge nav-link text-muted" href="#reviews-section">
+                    <a class="review-badge nav-link text-muted" (click)="scrollToReviews('reviews-section')">
                         Reviews
                         <span *ngIf="reviews.length != 0" class="reviews position-absolute translate-middle badge rounded-pill bg-danger">
                             {{reviews.length}}
@@ -32,9 +32,7 @@
     <div class="product-content mb-5">
         <div class="row justify-content-center">
             <div class="col-sm-5">
-                <ng-container *ngIf="product.coverImage">
-                    <img src="{{product.coverImage}}" class="product-image shadow-sm mb-4">
-                </ng-container>
+                <img src="{{product.coverImage}}" class="product-image shadow-sm mb-4">
                 <ng-container *ngFor="let image of product.gallery">
                     <img src="{{image.path}}" class="gallery-image me-3 mb-3 shadow-sm">
                 </ng-container>
@@ -43,11 +41,9 @@
                 <h2 class="product-price mb-3">${{product.price}}</h2>
                 <form #productForm="ngForm" (ngSubmit)="addToCart()">
                     <div class="select-color mb-4">
-                        <h6>Color</h6>
-                        <div class="color-circle">
-                            <div class="circle"></div>
-                            <span>Black</span>
-                        </div>
+                        <h6 class="small">Availables colors:</h6>
+                        <div class="circle"></div>
+                        <div class="circle-2"></div>
                     </div>
     
                     <div class="select-size mb-4 w-50">
@@ -62,7 +58,7 @@
                     </div>
     
                     <div class="available-stock">
-                        <h6 class="text-muted">Available Stock: {{product.stock}}</h6>
+                        <h6 class="text-muted small">Available stock: {{product.stock}}</h6>
                     </div>
 
                     <div class="select-amount">
@@ -74,7 +70,7 @@
                             <fa-icon [icon]="faCartShopping" class="me-1"></fa-icon>
                             Add to Cart
                         </button>
-                        <button class="btn btn-success p-2 w-50 shadow-sm" *ngIf="addToCartMessage === 'Added!'" disabled>
+                        <button class="btn btn-add p-2 w-50 shadow-sm" *ngIf="addToCartMessage === 'Added!'">
                             <fa-icon [icon]="faCheck" class="me-1"></fa-icon>
                             Added!
                         </button>
@@ -108,25 +104,31 @@
                     <hr>
                 </div>
 
-                <div class="share-section">
+                <div class="share-section" (click)="copyToClipboard()">
                     <h5>Share</h5>
+                    <span class="small text-primary clipboard">
+                        <fa-icon [icon]="faCopy" class="me-1"></fa-icon>
+                        <span class="text-primary">Copy URL</span>
+                    </span>
                 </div>
 
-                <div class="validPayment-section">
-                    Icon
+                <div class="validPayment-section mt-5 text-center">
+                    <img src="https://icon-library.com/images/paypal-credit-card-icon/paypal-credit-card-icon-11.jpg"
+                    class="w-50 payment-image">
+                    <div class="small">Secure payment</div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="container.fluid details-section" id="details-section">
+<div class="container-fluid details-section" id="details-section">
     <div class="row justify-content-center align-items-center text-center">
-        <div class="col-sm-5" [innerHTML]="product.content">
+        <div class="col-lg text-center" [innerHTML]="product.content">
             {{product.content}}
         </div>
         <div class="col-sm-7">
-            <img src="{{product.coverImage}}" class="product-image shadow-sm float-end">
+            <img src="{{product.coverImage}}" class="product-image-detail shadow-sm">
         </div>
     </div>
 </div>
@@ -150,39 +152,9 @@
         </div>
     </div>
     <hr>
-    <button class="btn btn-secondary w-25 p-2" (click)="enableReviewForm()" *ngIf="!showReviewForm">Leave a Review</button>
-    <div class="open-review-section" *ngIf="showReviewForm">
-        <form #reviewForm (ngSubmit)="submitReview(reviewForm)">
-            <div class="col-sm-7 mb-2">
-                <label for="content">Content</label>
-                <input type="textarea" id="content" class="form-control" required name="content" [(ngModel)]="review.content">
-            </div>
-            <div class="col-1 mb-2">
-                <label for="rating">Rating</label>
-                <input type="number" id="rating" class="form-control" required name="rating" [(ngModel)]="review.rating">
-            </div>
-            <button class="btn btn-add">
-                <fa-icon [icon]="faPlus"></fa-icon>
-                Post
-            </button>
-            <input type="button" class="btn btn-secondary ms-2" value="Cancel" (click)="disableReviewForm()">
-        </form>
-    </div>
     <div class="row mt-5">
-        <div class="col-sm-5">
-            <ng-container *ngFor="let review of reviews">
-                <div class="comment-info">
-                    <h6>{{review.customer?.names}}</h6>
-                    <h6 class="text-muted small">{{review.createdAt | date}}</h6>
-                    <h6 class="text-muted small">Rating:</h6>
-                    <h6 class="small bg-warning rounded-circle position-absolute p-2 text-center">{{review.rating}}</h6>
-                </div>
-            </ng-container>
-        </div>
-        <div class="col-lg">
-            <ng-container *ngFor="let review of reviews">
-                <h6 class="comment-info">{{review.content}}</h6>
-            </ng-container>
+        <div class="col">
+            <app-reviews></app-reviews>
         </div>
     </div>
 </div>

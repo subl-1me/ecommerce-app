@@ -27,4 +27,18 @@ export class SaleService {
 
     return this._http.get(GLOBAL.url+'mail/'+saleId, {headers: headers});
   }
+
+  public getSales(customerID:any):Observable<any>{
+    var headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+
+    return this._http.get(GLOBAL.url+'sales/'+customerID, {headers: headers});
+  }
+
+  getSaleDetail(transaction:any):Observable<any>{
+    var headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+
+    return this._http.get(GLOBAL.url+'sale/'+transaction, {headers: headers});
+  }
 }

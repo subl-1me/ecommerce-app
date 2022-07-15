@@ -17,6 +17,8 @@ const directionRoutes = require('./routes/direction');
 const saleRoutes = require('./routes/sale');
 const stripeRoutes = require('./routes/stripe');
 const orderRoutes = require('./routes/order');
+const promotionRoutes = require('./routes/promotion');
+const contactRoutes = require('./routes/contact');
 
 const server = require('http').createServer(app);
 const socket = require('socket.io')(server, {
@@ -71,5 +73,7 @@ app.use('/api', directionRoutes);
 app.use('/api', saleRoutes);
 app.use('/api', stripeRoutes);
 app.use('/api', orderRoutes);
+app.use('/api', promotionRoutes);
+app.use('/api', contactRoutes);
 
 module.exports = app;

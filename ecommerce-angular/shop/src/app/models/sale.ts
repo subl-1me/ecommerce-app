@@ -5,14 +5,15 @@ import { SaleDetails } from './saleDetail';
 export interface Sale{
     customer?: Customer,
     nSale?: String,
-    subtotal?: Number,
+    total?: Number,
     details?: Array<SaleDetails>,
     shippingType?: String,
     shippingPrice?: Number,
     shippingAddress?: Direction,
     shippingNote?: String,
+    payment_method?: String,
     transaction?: String,
     coupon?: String,
     status?: String,
-    createdAt?: String
+    createdAt?: Date
 }

@@ -1,10 +1,11 @@
-<div class="container-fluid mb-5">
+<div class="container-fluid">
     <img src="../../../assets/cover/01.jpg" class="cover-image rounded shadow-sm">
 </div>
 
 <div class="container">
     <div class="categories">
         <div class="row justify-content-md-center text-center">
+            <h2 class="margin">Our Categories</h2>
             <div class="col-md-auto me-5">
                 <img src="../../../assets/stock/stock-woman.jpg" class="woman rounded shadow-sm">
                 <h5>Women's</h5>
@@ -15,50 +16,72 @@
             </div>
           </div>
     </div>
-
-    <div class="new-arrivals text-center mt-5">
-        <h2>New arrivals</h2>
-        <h6 class="text-muted">Check out our latest arrivals for the upcoming season</h6>
-        <h6 class="text-muted">See the collecion here</h6>
-    </div>
-
-    <div class="new-products mt-5 text-center">
-            Productos
-    </div>
 </div>
 
-<div class="containter-fluid">
-    <div class="trending-products mt-5 text-center">
-        <h2>Trending now!</h2>
-        products
+<div class="container-fluid mt-5 latest p-5 text-white shadow">
+    
+    <div class="new-arrivals text-center mb-5">
+        <img src="../../../assets/newest-illustration.png" class="newest-illustration">
+        <span>
+            <h2 class="header">Latest Products</h2>
+            <h6 class="header">Check out our latest arrivals for the upcoming season!</h6>
+        </span>
 
-        <br>
-        <button class="btn btn-primary">Explore top sellers</button>
     </div>
+
+    <div class="new-products text-center ">
+        <div class="row justify-content-md-center text-center">
+            <ng-container *ngFor="let product of latestProducts">
+                <div class="col-auto" [routerLink]="['/products/detail/', product._id]">
+                    <img src="{{product.coverImage}}" class="category rounded mt-auto mb-auto shadow-sm me-2 p-2    ">
+                    <!-- <h2 class="item-title mt-2 small text-white">{{product.title}}</h2>
+                    <h5 class="item-price text-white">${{product.price}}</h5> -->
+                    <div class="product-info mt-2 p-3 mb-2">
+                        <p class="title small mb-0">{{product.title}}</p>
+                        <p class="price mb-0 ">${{product.price}}</p>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+        <button class="btn btn-explore p-3 mt-2" [routerLink]="['/products']">Explore more</button>
+    </div>
+    
 </div>
 
-<div class="container mb-5">
-    <div class="popular-categories mt-5 text-center">
-        <h2>Popular categories</h2>
-        
+<div class="containter-fluid trending p-5 ">
+    <div class="text-center">
+        <div class="new-arrivals text-center mb-5">
+            <img src="../../../assets/trending-illustration.png" class="trending-illustration">
+            <span>
+                <h2 class="header">Trending Products</h2>
+                <h6 class="header">Check out our best sellers!</h6>
+            </span>
+        </div>
 
         <div class="row justify-content-md-center text-center">
-            <div class="col-auto">
-                <img src="../../../assets/stock/shirts.jpg" class="category rounded-circle shadow-sm">
-                <h5>T-shirts</h5>
-            </div>
-            <div class="col-auto">
-                <img src="../../../assets/stock/shoes.jpg" class="category rounded-circle shadow-sm">
-                <h5>Shoes</h5>
-            </div>
-            <div class="col-auto">
-                <img src="../../../assets/stock/tops.webp" class="category rounded-circle shadow-sm">
-                <h5>Tops</h5>
-            </div>
+            <ng-container *ngFor="let product of topSellers">
+                <div class="col-auto" [routerLink]="['/products/detail/', product._id]">
+                    <img src="{{product.coverImage}}" class="category-trending rounded p-2">
+                    <div class="product-info mt-2 p-3 mb-2">
+                        <p class="mb-0 small title">{{product.title}}</p>
+                        <p class="mb-0 price">${{product.price}}</p>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+        <button class="btn btn-explore-trending p-3" [routerLink]="['/products']">Explore more</button>
+    </div>
+</div>
+
+<div class="container-fluid text-center apps p-5 shadow">
+    <div class="row justify-content-md-center">
+        <div class="col-auto">
+            <img src="../../../assets/smartphone-illustration.png" class="w-25  ">
+        </div>
+        <div class="col-auto info">
+            <h2>Enjoy our products in your smartphone!</h2>
+            <img class="w-50" src="../../../assets/icons/downloadAt.jpg">
         </div>
     </div>
 </div>
 
-<div class="container-fluid mt-5 text-center">
-    <h2>Enjoy our products in your Smartphone!  </h2>
-</div>

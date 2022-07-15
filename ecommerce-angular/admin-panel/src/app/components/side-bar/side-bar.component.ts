@@ -9,6 +9,7 @@ import { faUserLarge } from '@fortawesome/free-solid-svg-icons';
 import { faTag } from '@fortawesome/free-solid-svg-icons';
 import { faGift } from '@fortawesome/free-solid-svg-icons';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
+import { faMessage } from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -25,6 +26,7 @@ export class SideBarComponent implements OnInit {
   faTag = faTag;
   faGift= faGift;
   faGear = faGear;
+  faMessage = faMessage;
 
   constructor(
     private _identityService: IdentityService

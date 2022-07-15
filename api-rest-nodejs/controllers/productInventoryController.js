@@ -12,7 +12,7 @@ const inventories = async function(req, res){
     try {
         var inventoriesArray = {};
         var inventoriesArray = await ProductInventory.find({product: productID}).populate('admin');
-
+ss
         if(inventoriesArray.length == 0 ) return res.status(200).send({ message: 'No registers.' });
 
         return res.status(200).send({ inventories: inventoriesArray })

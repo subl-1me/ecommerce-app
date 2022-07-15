@@ -1,0 +1,28 @@
+.btn-register{
+    width: 100%;
+    padding: 3%;
+    font-weight: 600;
+    background-color: #7367F0 !important;
+    color: white;
+}
+
+.btn-register:hover{
+    background-color: #5143e9 !important;
+    transition: .3s ease-in-out;
+}
+
+input{
+    width: 100%;
+    padding: 3%;
+}
+
+.list-group-item{
+    border: solid 1px #eeeeee;
+    padding: 0;
+}
+
+.illustration{
+    object-fit: contain;
+    width: 300px;
+    height: 300px;
+}
