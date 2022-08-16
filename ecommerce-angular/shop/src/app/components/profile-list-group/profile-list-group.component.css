@@ -1,0 +1,43 @@
+.active{
+    background-color: #7367F0 !important;
+    border-color: rgb(255, 255, 255);
+}
+
+* {
+    animation: appear .5s forwards;
+}
+
+.list-group-item:hover{
+    cursor: pointer;
+}
+
+.list-group-item{
+    border-left: none;
+    border-right: none;
+    border-top: none;
+}
+
+@media only screen and (max-width: 990px){
+    .customer-info{
+        display: none;
+    }
+
+    .option-title{
+        display: none;
+    }
+
+    .list-group-item{
+        font-size: 20px;
+        text-align: center;
+    }
+}
+
+@media only screen and (max-width: 576px){
+    .option-title{
+        display: block;
+    }
+    
+    .list-group-item{
+        font-size: 1rem;
+    }
+}

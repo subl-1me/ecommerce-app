@@ -1,0 +1,38 @@
+<div class="card shadow">
+    <div class="card-header bg-white">
+        <h3>Your messages</h3>
+    </div>
+    <div class="card-body">
+        <ng-container *ngFor="let message of messages">
+            <div class="row mb-5">
+                <div class="col-auto">
+                        <h5>{{message.names}}</h5>
+                        <h6 class="text-primary">{{message.email}}</h6>
+                        <h6 class="text-muted">{{message.createdAt | date}}</h6>
+                        <div class="col-6">
+                            <div class="bg bg-primary text-center text-white rounded" *ngIf="message.status === 'Pending'">
+                                {{message.status}}
+                            </div>
+                            <div class="bg bg-danger text-center text-white rounded" *ngIf="message.status === 'Closed'">
+                                {{message.status}}
+                            </div>
+                        </div>
+                </div>
+                <div class="col-lg">
+                    <div class="col-auto">
+                        <h6 class="text-muted">{{message.subject}}</h6>
+                    </div>
+                    {{message.message}}
+
+                    <hr *ngIf="message.status === 'Pending'">
+                    <div class="col-auto ">
+                        <p class="mark-message" (click)="closeMessage(message._id)" *ngIf="message.status === 'Pending'">
+                            <fa-icon [icon]="faXmark"></fa-icon>
+                            Mark as Closed
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+
+
+#manage-option{
+    font-weight: bold;
+    cursor: pointer;
+    border-bottom: 1px solid rgb(122, 122, 122);
+}
+
+#manage-option:hover{
+    transform: translateY(-4px);
+}
+
+.form-field{
+    float: left;
+    text-align: center;
+    border: 0;
+    border-bottom: 2px solid #9b9b9b;
+    padding: 7px 0;
+}
+
+.register-user{
+    border-radius: 5%;
+    background-color: #1e91ed !important;
+}
+
+.register-user:hover{
+    cursor: pointer;
+    font-size: 18px;
+    transition: .2s ease;
+}
+
+.card{
+    animation: appear 1s forwards;
+}
+
+@keyframes appear {
+    0%{
+        opacity: 10%;
+    }
+    100%{
+        opacity: 100%;
+    }
+}
+
+.btn{
+    color: black;
+    background-color: white !important;
+}

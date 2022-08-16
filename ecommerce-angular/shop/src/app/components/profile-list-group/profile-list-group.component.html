@@ -1,0 +1,36 @@
+<div class="card bg-light mt-auto mb-3">
+    <div class="card-body">
+        <li class="list-group-item p-4 text-center customer-info">
+            <h5 class="mb-1">{{customer.names}} {{customer.surnames}}</h5>
+            <div class="small text-muted">{{customer.email}}</div>
+        </li>
+        <li class="list-group-item p-4 bg-light" [routerLink]="['/profile/', _idStorage]">
+            <fa-icon [icon]="faUser" class="me-2"></fa-icon>
+            <span class="option-title">My Account</span>
+        </li>
+        <li class="list-group-item p-4 bg-light" [routerLink]="['/directions']">
+            <fa-icon [icon]="faMap" class="me-2"></fa-icon>
+            <span class="option-title">Addresses</span>
+        </li>
+        <li class="list-group-item p-4 bg-light" [routerLink]="['/wishlist']">
+            <fa-icon [icon]="faHeart" class="me-2"></fa-icon>
+            <span class="option-title">Wishlist</span>
+        </li>
+        <li class="list-group-item p-4 bg-light" [routerLink]="['/my-orders']">
+            <fa-icon [icon]="faHeart" class="me-2"></fa-icon>
+            <span class="option-title">My Orders</span>
+        </li>
+        <li class="list-group-item p-4 bg-light">
+            <fa-icon [icon]="faEye" class="me-2"></fa-icon>
+            <span class="option-title">Recently Viewed</span>
+        </li>
+        <li class="list-group-item p-4 bg-light">
+            <fa-icon [icon]="faStar" class="me-2"></fa-icon>
+            <span class="option-title">My Reviews</span>
+        </li>
+        <li class="list-group-item p-4">
+            <fa-icon [icon]="faGear" class="me-2"></fa-icon>
+            <span class="option-title">Advanced</span>
+        </li>
+    </div>
+</div>

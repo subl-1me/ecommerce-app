@@ -1,0 +1,34 @@
+.icon{
+    cursor: pointer;
+}
+
+.upload-message{
+    color: tomato;
+}
+
+.logo{
+    width: 200px;
+}
+
+.text-alert{
+    color: red;
+    transition: .5s ease;
+    animation: appear .5s forwards;
+}
+
+label{
+    font-weight: 500;
+}
+
+
+@keyframes appear {
+    0%{
+        opacity: 10%;
+    }
+    50%{
+        opacity: 50%;
+    }
+    100%{
+        opacity: 100%;
+    }
+}

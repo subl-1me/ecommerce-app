@@ -1,0 +1,17 @@
+[
+    {
+        "title": "Express Shipping",
+        "time": "1 to 2 days",
+        "price": "40"
+    },
+    {
+        "title": "Free Shipping",
+        "time": "1 month",
+        "price": "0"
+    },
+    {
+        "title": "Standard Shipping",
+        "time": "1 to 2 weeks",
+        "price": "25"
+    }
+]

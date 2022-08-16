@@ -1,0 +1,26 @@
+<div class="checkout">
+  <div class="checkout-in">
+    <div class="checkout-card">
+      <form action="" [formGroup]="form" (submit)="initPay()">
+        <div class="input">
+          <label class="label">Card Number</label>
+          <div id="card"></div>
+        </div>
+        <hr>
+        <div class="input">
+          <label class="label">CVC</label>
+          <div id="cvc"></div>
+        </div>
+        <hr>
+        <div class="input">
+          <label class="label">EXP</label>
+          <div id="exp"></div>
+        </div>
+        <button class="button" type="submit">Pay</button>
+      </form>
+    </div>
+    <div class="small text-success" *ngIf="isPaymentSucceeded">
+      Your payment was succeed!
+    </div>
+  </div>
+</div>

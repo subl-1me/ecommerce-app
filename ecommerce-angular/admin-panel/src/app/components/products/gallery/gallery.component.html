@@ -1,0 +1,38 @@
+<div class="info text-center">
+    <h1>Gallery</h1>
+    <h4 class="text-muted">In this module you can add images to display in your product's view</h4>
+</div>
+<div class="card shadow">
+    <div class="card-body">
+        <div *ngIf="tempGalleryImages.length == 0 || !product.gallery" class="text-muted text-center">No images uploaded yet. Add some below.</div>
+        <div *ngIf="tempGalleryImages.length != 0" class="text-center text-muted">
+            <h6>Click an image to delete it.</h6>
+            <hr>
+        </div>
+        <ng-container *ngFor="let tempImage of tempGalleryImages; let ind = index">
+            <img src="{{tempImage}}" class="tempImages m-2 shadow rounded" (click)="removeTempImage(tempImage, ind)">
+        </ng-container>
+        <ng-container *ngFor="let image of product.gallery; let ind = index">
+            <img src="{{image.path}}" class="tempImages m-2 shadow rounded">
+        </ng-container>
+    </div>
+    <div class="card-footer">
+        <div class="text-center">
+            <img src="" id="imageProduct" class="tempImage m-2 shadow rounded">
+            <br>
+            <input type="file" class="p-1" (change)="fileChoosen($event)" name="logo"id="fileUpload" required>
+            <div *ngIf="uploadErrorMessage !== '' && !isFileChoosen" class="uploadError text-danger">{{uploadErrorMessage}}</div>
+            <div *ngIf="reuploadErrorMessage !== ''" class="text-danger">{{reuploadErrorMessage}}</div>
+        </div>
+        <hr>
+        <button class="btn btn-success me-2" (click)="upload()">
+            <fa-icon [icon]="faUpload" class="me-1"></fa-icon>
+            Upload
+        </button>
+        <button class="btn btn-secondary" [routerLink]="['/panel/products']">
+            <fa-icon [icon]="faAngleLeft" class="me-1"></fa-icon>
+            Back
+        </button>
+    </div>
+</div>
+

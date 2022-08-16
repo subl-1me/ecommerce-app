@@ -1,0 +1,109 @@
+.searchInput{
+    background: url(../../../assets/icons/magnifying-glass-solid.svg);
+    background-repeat: no-repeat;
+    background-position: 95% 50%;
+    background-size: 15px;
+}
+
+.divisor{
+    color: rgb(170, 170, 170);
+}
+
+.count{
+    background-color: #aed1fc;
+}
+
+.user{
+    font-weight: bold;
+}
+
+.showFavs{
+    position: absolute;
+}
+
+.nav-link:hover{
+    cursor: pointer;
+}
+
+.btn-more{
+    background-color: #7367F0 !important;
+    border-color: #7367F0 !important;
+    color: white;
+}
+
+.btn-more:hover{
+    background-color: #6053eb !important;
+    border-color: #6053eb !important;
+}
+
+.product-coverimage{
+    width: 100px;
+    height: 100px;
+}
+
+.bar{
+    display: none;
+}
+
+
+
+@media only screen and (max-width: 1200px){
+    .nav-link{
+        padding-right: 0 !important;
+    }
+}
+
+@media only screen and (max-width: 990px){
+    .collapse{
+        display: inherit;
+    }
+
+    #search-input{
+        display: none;
+    }
+
+    .navbar{
+        flex-wrap: nowrap !important;
+    }
+
+    .navbar-nav{
+        flex-direction: unset !important;
+    }
+
+    .nav-item{
+        margin-right: 5%;
+    }
+
+    .count{
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 770px){
+    .navbar{
+        flex-wrap: wrap !important; 
+    }
+}
+
+@media only screen and (max-width: 550px){
+    #search-input{
+        display: inline-block;
+    }
+
+    .nav-item{
+        display: none;
+    }
+
+    .bar{
+        display: block !important;
+        font-size: 30px;
+    }
+
+    .navbar{
+        flex-wrap: nowrap !important;
+    }
+}
+
+.favs-menu{
+}
+

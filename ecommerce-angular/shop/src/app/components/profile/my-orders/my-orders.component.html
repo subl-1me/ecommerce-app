@@ -1,0 +1,55 @@
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-sm-3 mt-5">
+            <app-profile-list-group></app-profile-list-group>
+        </div>
+        <div class="col">
+            <h2>My Orders</h2>
+            <h6 class="text-center text-muted" *ngIf="sales.length != 0">Click on any order to see more details.</h6>
+            <table class="table mt-5">
+                <thead>
+                    <tr>
+                        <th>Transaction</th>
+                        <th class="creation-date">Creation date</th>
+                        <th class="status">Status</th>
+                        <th>Creation date</th>
+                        <th>Status</th>
+                        <th class="float-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let sale of sales">
+                        <tr>
+                            <td>
+                                <p class="transaction mb-0" [routerLink]="['/order/', sale.transaction]">
+                                    <fa-icon [icon]="faHashtag" class="me-1"></fa-icon>
+                                    {{sale.transaction}}
+                                </p>
+                            </td>
+                            <fa-icon [icon]="faCalendar" class="me-1 "></fa-icon>
+                            {{sale.createdAt | date: 'medium'}}
+                            <td class="text-success status">
+                                <fa-icon [icon]="faCheck" class="me-1 "></fa-icon>
+                            <td class="text-muted">
+                                <fa-icon [icon]="faCalendar" class="me-1"></fa-icon>
+                                {{sale.createdAt | date: 'medium'}}
+                            </td>
+                            <td class="text-success">
+                                <fa-icon [icon]="faCheck" class="me-1"></fa-icon>
+                                {{sale.status}}
+                            </td>
+                            <td class="float-end">
+                                <fa-icon [icon]="faCoins" class="me-1"></fa-icon>
+
+                                ${{sale.total}}
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+                <div class="alert alert-warning text-center" *ngIf="sales.length == 0">
+                    Your order list is empty.
+                </div>
+            </table>
+        </div>
+    </div>
+</div>

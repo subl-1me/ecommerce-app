@@ -1,0 +1,58 @@
+.item{
+    border: none !important;
+}
+
+.section{
+    display: inline;
+}
+
+.payment-icon{
+    width: 30px;
+    height: 30px;
+}
+
+.product-image{
+    margin-right: 0;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.product-info-resp{
+    display: none;
+}
+
+
+.leave-review{
+    cursor: pointer;
+}
+
+.visit-link{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+ @media only screen and (max-width: 1200px){
+    .product{
+        width: auto !important;
+    }
+}
+
+
+@media only screen and (max-width: 520px){
+    .product-info{
+        display: none;
+    }
+
+
+    .product-info-resp{
+        display: block;
+        text-align: center;
+        width: 100%;
+    }
+
+    .product-image{
+        max-width: 100% !important;
+        height: auto !important;
+    }
+} 

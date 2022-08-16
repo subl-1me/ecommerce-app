@@ -1,0 +1,33 @@
+.top-panel{
+    position: absolute;
+    width: 100%;
+    height: 5%;
+    z-index: 2;
+}
+
+.account{
+    float: right;
+    cursor: pointer;
+}
+
+.right-panel{
+    position: absolute;
+    width: 20%;
+    height: 100%;
+    z-index: 2;
+}
+
+.controller{
+    list-style-type: none;
+}
+
+.controller > li{
+    cursor: pointer;
+}
+
+.jumbotron{
+    background-color: rgb(248, 248, 248);
+    padding: 5%;
+    border-radius: 5%;
+}
+

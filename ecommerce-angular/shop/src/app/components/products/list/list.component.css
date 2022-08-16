@@ -1,0 +1,156 @@
+.container{
+    margin-bottom: 25%;
+}
+
+.productImage{
+    object-fit: cover;
+    max-width: 300px;
+    height: 300px;
+}
+
+.productImage:hover{
+    cursor: pointer;
+}
+
+.onMouseOver{
+    width: 250px;
+    height: 250px;
+}
+
+.card{
+    padding: 1%;
+    border: 1px solid rgb(194, 194, 194);
+    border: none;
+}
+
+.product-price{
+    font-weight: 600;
+}
+
+.fav-icon{
+    position: absolute;
+    margin-left: 10px;
+    margin-top: 5px;
+    color: red;
+}
+
+.fav-icon:hover{
+    cursor: pointer;
+}
+
+.search-category{
+    background-image: url(../../../../assets/icons/magnifying-glass-solid.svg);
+    background-repeat: no-repeat;
+    background-position: 95%;
+    background-size: 25px;
+}
+
+.list-group-item{
+    animation: appear .5s forwards;
+    border: none;
+}
+
+.no-products{
+    margin-top: 1%;
+    width: 50%;
+    height: 60%;
+    background-image: url(../../../../assets/no-products.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 600px;
+    position: absolute;
+}
+
+.rating-icon{
+    color: rgb(248, 248, 58);
+    position: absolute;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.product{
+    animation: appear .4s forwards;
+}
+
+.card:hover{
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+}
+
+.btn, .btn-add-cart{
+    color: white;
+    background-color: #7367F0 !important;
+    border-color: #7367F0 !important;
+    
+}
+
+.btn-add-cart{
+    width: 100%;
+}
+
+.btn-add-cart:hover{
+    background-color: #5e51f0 !important;
+    border-color: #5e51f0 !important;
+}
+
+.product-title{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+@keyframes appear {
+    0%{
+        opacity: 10%;
+    }
+    50%{
+        opacity: 50%;
+    }
+    100%{
+        opacity: 100%;
+    }
+}
+
+@media only screen and (max-width: 1200px){
+    .filters-section{
+        display: none;
+    }
+}
+
+ @media only screen and (max-width: 770px){
+    /* .productImage{
+        max-width: 100%;
+        height: auto;
+    }
+
+    .btn-add-cart{
+        margin-top: auto;
+    }   
+
+    .row{
+        width: 25%;
+        max-width: 100%;
+    } */
+
+    .card{
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .btn-add-cart{
+        margin-top: auto;
+    }
+
+    .productImage{
+        max-width: 100%;
+        height: 100%;
+    }
+} 
+
+@media only screen and (max-width: 550px){
+    .product{
+        width: 100% !important;
+    }
+}
+

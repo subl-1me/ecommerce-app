@@ -1,0 +1,87 @@
+<div class="container">
+  <nav class="navbar navbar-expand-lg navbar-light p-3">
+    <a class="navbar-brand" href="#">Ecommerce</a>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <div class="dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuLink" data-bs-toggle="dropdown">
+              Products
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+              <li>
+                <a class="dropdown-item" [routerLink]="['/products']">
+                  Show All
+                </a>
+              </li>
+              <ng-container *ngFor="let category of categories">
+                <li>
+                  <a class="dropdown-item" href="#" [routerLink]="['/products', category]"
+                    (click)="updatedBreadcrumb()">
+                    {{category}}
+                  </a>
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/contact']">Contact</a>
+        </li>
+      </ul>
+
+      <!-- Right-hand -->
+      <ul class="navbar-nav mr-auto ms-auto">
+
+        <li class="nav-item bar ms-2">
+          <a class="nav-link">
+            <fa-icon [icon]="faBars"></fa-icon>
+          </a>
+        </li>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="searchInput form-control mr-sm-2 p-2" type="search" placeholder="Search for products..."
+            aria-label="Search">
+        </form>
+        <li class="nav-item ms-2">
+          <a *ngIf="!customer.names && !customer.surnames" [routerLink]="['/login']" class="guest nav-link" href="#">
+            <fa-icon [icon]="faUser" class="me-1"></fa-icon>
+            Log in
+          </a>
+          <div class="dropdown" *ngIf="customer.names && customer.surnames">
+            <a class="user nav-link dropdown-toggle" href="#" id="dropdownMenuLink" data-bs-toggle="dropdown">
+              <fa-icon [icon]="faUser" class="me-1"></fa-icon>
+              {{customer.names}} {{customer.surnames}}
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+              <li><a class="dropdown-item" href="#" [routerLink]="['/profile', _idStorage]"
+                  (click)="updatedBreadcrumb()">
+                  <fa-icon [icon]="faUser" class="me-1"></fa-icon>
+                  Profile
+                </a></li>
+              <li><a class="dropdown-item" href="#" (click)="logOut()">
+                  <fa-icon [icon]="faArrowRightFromBracket" class="me-1"></fa-icon>
+                  Log Out
+                </a></li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item" [routerLink]="['wishlist']" *ngIf="customer.names && customer.surnames">
+          <a class="nav-link">
+            <fa-icon [icon]="faHeart" class="faHeart me-1"></fa-icon>
+          </a>
+        </li>
+        <li class="cart nav-item" (click)="openCart()">
+          <a class="nav-link">
+            <fa-icon [icon]="faCartShopping"></fa-icon>
+            <span class="count ms-1 p-1 rounded">0</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+</div>

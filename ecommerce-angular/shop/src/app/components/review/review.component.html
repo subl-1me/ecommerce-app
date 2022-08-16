@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<div class="small text-muted text-center">
+    <div class="row">
+        <div class="illustration col-4">
+            Tell us what you think of your product!
+            <img src="../../../assets/review-illustration.jpg" class="review">
+        </div>
+        <div class="form-side col mt-auto mb-auto">
+            <form #reviewForm (ngSubmit)="submitReview(reviewForm)">
+                <div class="col-lg">
+                    <label for="rating">Rating</label>
+                    <form [formGroup]="form" id="rating">
+                        <ngx-star-rating formControlName="rating">
+                            <div>Rating: {{form.value.rating}}</div>
+                        </ngx-star-rating>
+                    </form>
+                </div>
+                <div class="col-lg">
+                    <label for="content">Content</label>
+                    <textarea id="content" class="form-control" placeholder="Write your review here!"
+                    name="content" [(ngModel)]="review.content"></textarea>
+                </div>
+
+                <button class="btn btn-submit mt-3">Send Review</button>
+            </form>
+        </div>
+    </div>
+</div>

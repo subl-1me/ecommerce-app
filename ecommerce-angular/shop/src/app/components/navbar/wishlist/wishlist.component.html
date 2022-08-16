@@ -1,0 +1,41 @@
+<div class="container">
+    <h1>My Wishlist</h1>
+    <div class="list-group shadow-sm">
+        <ng-container *ngIf="products.length == 0">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h6>No items found in your wishlist. Add some products.</h6>
+                </div>
+                <div class="card-body">
+                    <img src="../../../../assets/nodata-illustration.png" class="nodata-illustration">
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngFor="let product of products">
+            <div class="list-group-item" class="bg-light mb-2 p-2 border-black">
+                <div class="row">
+                    <div class="col-3">
+                        <img src="{{product.coverImage}}" class="product-image">
+                    </div>
+                    <div class="col">
+                        <h1>{{product.title}}</h1>
+                        <h6>Price: ${{product.price}}</h6>
+                        <hr>
+                        <div class="card">
+                            <div class="card-body">
+                                {{product.description}}
+                            </div>
+                        </div>
+                        <div class="options mt-2">
+                            <h6 class="d-inline-block small visit text-decoration-underline" (click)="goToProductPage(product._id)">Visit product page</h6>
+                            <h6 class="d-inline-block ms-2 me-2">-</h6>
+                            <fa-icon [icon]="faTrash" class="d-inline-block me-1">
+                            </fa-icon>
+                            <h6 class="d-inline-block small visit" (click)="removeFromWishlist(product._id)">Remove from Wishlist</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+</div>

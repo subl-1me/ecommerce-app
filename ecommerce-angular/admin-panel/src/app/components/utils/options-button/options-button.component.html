@@ -1,0 +1,9 @@
+<div class="dropdown text-center">
+  <fa-icon [icon]="faGear" class="dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></fa-icon>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" [routerLink]="[path, id]"><fa-icon [icon]="faPen" class="me-2"></fa-icon>Edit</a>
+      <a *ngIf="context == 'products'" [routerLink]="['/panel/product/inventory', id]" class="dropdown-item"><fa-icon [icon]="faCartFlatbed" class="me-2"></fa-icon>Inventory</a>
+      <a *ngIf="context == 'products'" [routerLink]="['/panel/product/gallery', id]" class="dropdown-item"><fa-icon [icon]="faPlusCircle" class="me-2"></fa-icon>Add Images</a>
+      <a class="dropdown-item" (click)="remove()"><fa-icon [icon]="faTrash" class="me-2"></fa-icon>Delete</a>
+    </div>
+</div>

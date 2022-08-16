@@ -1,0 +1,51 @@
+.content{
+    margin-top: 15%;
+}
+
+.title, .advice{
+    text-align: center;
+}
+
+.text, .some-advice{
+    transition: 1s ease;
+    animation: appear 2s forwards;
+}
+
+.text{
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.some-advice{
+    font-size: 20px;
+    font-weight: 500;
+    color: rgb(109, 109, 109);
+}
+
+label{
+    color: rgb(59, 59, 59);
+}
+
+.login-form{
+    animation: slide .5s forwards;
+    margin-top: 1rem;
+    border-radius: 3%;
+    padding: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@keyframes appear{
+    0%{
+        opacity: 1%;
+    }
+    100%{
+        opacity: 100%;
+    }
+}
+
+@keyframes slide {
+    0%{
+        transform:translateX(-1000px);
+    }
+}

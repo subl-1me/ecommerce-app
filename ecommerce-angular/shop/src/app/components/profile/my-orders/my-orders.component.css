@@ -1,0 +1,28 @@
+.container{
+    margin-top: 5.%;
+    margin-bottom: 5%;
+}
+
+.transaction:hover{
+    font-weight: bold;
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 990px){
+    .col-sm-3{
+        width: 100%;
+    }
+
+    .option-title{
+        display: block !important;
+    }
+}
+
+@media only screen and (max-width: 770px){
+    .creation-date{
+        display: none;
+    }
+    .status{
+        display: none;
+    }
+}

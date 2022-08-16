@@ -1,0 +1,8 @@
+.trashIcon{
+    cursor: pointer;
+}
+
+.trashIcon:hover{
+    opacity: 80%;
+    transition: .3s ease;
+}

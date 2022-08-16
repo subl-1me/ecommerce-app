@@ -1,0 +1,52 @@
+<div id="modal" class="cart-modal">
+    <div class="background">
+    </div>
+    <div class="card shadow">
+        <div class="card-body">
+            <fa-icon [icon]="faXmark" class="xmark float-end" (click)="closeModal()"></fa-icon>
+            <h2>Your Cart ({{cart.length}})</h2>
+            <hr>
+
+            <!-- Cart empty -->
+            <ng-container *ngIf="cart.length == 0 && customerID">
+                <div class="alert alert-warning">
+                    Your cart is empty. Add some products first.
+                </div>
+            </ng-container>
+
+            <!-- Not logged -->
+            <ng-container *ngIf="!customerID">
+                <div class="not-logged text-center">
+                    <div class="alert alert-secondary">Please, log in to add products</div>
+                    <button class="btn btn-secondary" [routerLink]="['/login']">Log in</button>
+                    <hr>
+                </div>
+            </ng-container>
+
+            <!-- Product List -->
+            <ng-container *ngFor="let item of cart">
+                <div class="row">
+                    <div class="col-4 col-resp">
+                        <img src="{{item.product?.coverImage}}" class="product-image">
+                    </div>
+                    <div class="col-8">
+                        <fa-icon [icon]="faTrash" class="float-end" (click)="deleteProductCart(item._id)"></fa-icon>
+                        <h5>{{item.product?.title}}</h5>
+                        <h6 class="text-muted small mb-0">Price: {{item.product?.price}}</h6>
+                        <h6 class="text-muted small mb-0">Amount: {{item.amount}}</h6>
+                        <h6 class="text-muted small">Size: {{item.size}}</h6>
+                    </div>
+                    <hr class="mt-3">
+                </div>
+            </ng-container>
+
+            <div class="footer">
+                <h4>Subtotal: ${{totalToPay}}</h4>
+                <button class="btn btn-checkout w-100 p-2" [routerLink]="['/checkout']" [disabled]="cart.length == 0">
+                    <fa-icon [icon]="faCreditCard" class="me-1"></fa-icon>
+                    Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

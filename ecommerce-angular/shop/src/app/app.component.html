@@ -1,0 +1,4 @@
+<app-cart-modal (closeCartModal)="closeModal($event)" *ngIf="showCartModal"></app-cart-modal>
+<app-navbar (openCartModal)="openModal($event)" *ngIf="showNavBar"></app-navbar>
+<router-outlet></router-outlet>
+<app-footer></app-footer>

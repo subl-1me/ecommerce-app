@@ -1,0 +1,33 @@
+<div class="panel-tools">
+
+    <!-- Top panel -->
+    <div class="row float-end">
+        <!--
+        <div class="card top-panel">
+            <div class="card-body bg-light shadow">
+                <span class="account" (click)="logout()">Logout</span>
+            </div>
+        </div>-->
+        <span class="account position-absolute float-right" (click)="logout()">Logout</span>
+    </div>
+
+    <!-- right-hand panel -->
+    <div class="card right-panel">
+        <div class="card-header text-center bg-white">
+            <h1>Panel</h1>
+        </div>
+        <div class="card-body shadow">
+            <div class="controllers">
+                <ul class="controller">
+                    <li [routerLink]="['']"><fa-icon [icon]="faHouse" class="me-2"></fa-icon>Home</li>
+                    <li [routerLink]="['/panel/customers']" routerLinkActive="active-link"><fa-icon [icon]="faUserLarge" class="me-2"></fa-icon>My Customers</li>
+                    <li [routerLink]="['/panel/products']" routerLinkActive="active-link"><fa-icon [icon]="faTag" class="me-2"></fa-icon>My Products</li>
+                    <li [routerLink]="['/panel/coupons']" routerLinkActive="active-link"><fa-icon [icon]="faGift" class="me-2"></fa-icon>Coupons</li>
+                    <li [routerLink]="['/panel/messages']" routerLinkActive="active-link"><fa-icon [icon]="faMessage" class="me-2"></fa-icon>Messages</li>
+                    <hr>
+                    <li [routerLink]="['/panel/configurations']" routerLinkActive="active-link"><fa-icon [icon]="faGear" class="me-2"></fa-icon>Enviroment Configuration</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

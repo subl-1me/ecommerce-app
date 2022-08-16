@@ -1,0 +1,32 @@
+.product-image{
+    max-width: 100%;
+    height: auto;
+    margin-right: 0;
+    object-fit: cover;
+}
+
+.bg-remove, .btn-more{
+    color: white;
+    background-color: #7367F0 !important;
+    border-color: #7367F0 !important;
+}
+
+.btn-remove:hover{
+    background-color: #6053eb !important;
+    border-color: #6053eb !important;
+}
+
+.images{
+    width: auto;
+}
+
+.visit:hover{
+    cursor: pointer;
+}
+
+.nodata-illustration{
+    object-fit: cover;
+    max-width: 100%;
+    height: auto;
+}
+

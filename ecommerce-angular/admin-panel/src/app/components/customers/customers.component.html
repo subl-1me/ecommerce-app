@@ -1,0 +1,45 @@
+<h1 class="text-center">Customers</h1>
+<hr>
+<div class="card shadow mb-3 w-100">
+  <div class="card-header bg-light">
+    <div class="row justify-content-center">
+      <div class="col">
+        <label>Filter</label>
+        <input type="text" class="form-control" placeholder="Customer Email"
+         aria-label="email" aria-describedby="basic-addon1"
+          [(ngModel)]="filter" (keyup)="filterBy('email')" [disabled]="customers.length == 0">
+      </div>
+      <div class="col-5">
+        <p class="register-user float-end text-white bg-primary shadow p-2" [routerLink]="['/panel/customers/register']">
+          <fa-icon [icon]="faPlus" class="me-2"></fa-icon>
+          Add a Customer
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="card-body text-center">
+    <table class="table bg-light">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Unique ID</th>
+          <th scope="col">Names</th>
+          <th scope="col">Surnames</th>
+          <th scope="col">Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let customer of customers; let ind = index">
+          <tr>
+            <th scope="row">{{ind+1}}</th>
+            <td>{{customer.sub}}</td>
+            <td>{{customer.names}}</td>
+            <td>{{customer.surnames}}</td>
+            <td>{{customer.email}}</td>
+            <app-options-button [id]="customer.sub" [path]="edit" [context]="'customers'"></app-options-button>
+          </tr>
+        </ng-container>
+      </tbody>
+  </table>
+</div>
+

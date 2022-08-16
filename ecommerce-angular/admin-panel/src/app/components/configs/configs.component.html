@@ -1,0 +1,63 @@
+<h1 class="text-center">Enviroment Configurations</h1>
+<h5 class="text-muted text-center">This Configuration are going to be visible in your E-Commerce Business</h5>
+<div class="card shadow">
+    <div class="card-body">
+        <form #configForm="ngForm" (ngSubmit)="onSubmit()">
+            <div class="form-group row mb-4">
+                <label class="col-sm-3 col-form-label">Business Name</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" placeholder="Name" name="shopName" [(ngModel)]="config.shopName" required>
+                </div>
+            </div>
+            <div class="form-group row mb-4">
+                <label class="col-sm-3 col-form-label">Facturation</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" placeholder="001" name="serie" [(ngModel)]="config.serie" required>
+                </div>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" placeholder="000001" name="correlation" [(ngModel)]="config.correlation" required>
+                </div>
+            </div>
+            <div class="form-group row mb-4">
+                <label class="col-sm-3 col-form-label">Available Categories</label>
+                <div class="col-sm-4">
+                    <table class="table table-striped text-center shadow-sm">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let category of config.categories">
+                                <tr>
+                                    <th>{{category}}</th>
+                                    <th><fa-icon [icon]="faTrash" class="icon me-2" (click)="deleteCategory(category)"></fa-icon></th>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                        <div *ngIf="config.categories.length == 0" class="text-muted p-2">There are no categories yet. Add some.</div>
+                    </table>
+                    <input #addCategoryInput="ngModel" type="text" class="form-control" name="categoryName" [(ngModel)]="category.name" placeholder="Category Name">
+                    <div *ngIf="addCategoryMessage != ''" class=" p-2 text-danger">{{addCategoryMessage}}</div>
+                    <button type="button" (click)="addCategory()" class="btn btn-primary mt-2 shadow">
+                        <fa-icon [icon]="faAdd" class="me-1"></fa-icon>
+                        Add
+                    </button>
+                    <hr>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-lavel">
+                    Logo
+                </label>
+                <div class="col-sm-8">  
+                    <img src="{{config.logo}}" id="tempImage" class="w-25 rounded shadow"/>
+                    <input type="file" class="p-1" (change)="fileChoosen($event)" name="logo" id="fileUpload">
+                    <div *ngIf="logoUploadMessage" class="text-muted">{{logoUploadMessage}}</div>
+                </div>
+            </div>
+            <hr>
+            <button class="btn btn-success shadow" [disabled]="configForm.invalid"><fa-icon [icon]="faSave" class="me-2"></fa-icon>Save Changes</button>
+        </form>
+    </div>
+</div>

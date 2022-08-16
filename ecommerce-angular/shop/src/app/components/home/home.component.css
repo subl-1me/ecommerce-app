@@ -1,0 +1,172 @@
+.cover-image{
+    width: 100%;
+    z-index: 0;
+}
+
+.margin{
+    margin-top: 75px;
+    margin-bottom: 75px;
+}
+
+.info{
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.illustation{
+    object-fit: cover;
+    width: 500px;
+    height: 500px;
+}
+
+.woman, .man{
+    object-fit: cover;
+    width: 350px;
+    height: 350px;
+}
+
+.title{
+    font-size: 15px;
+    color: #184d2f;
+    font-weight: bolder;
+}
+
+.header{
+    color: #123822;
+
+}
+
+.price{
+    font-weight: bolder !important;
+    color: #0c2517;
+    font-size: 25px;
+}
+
+
+.categories{
+    /* margin-bottom: 50px; */
+    z-index: 10;
+}
+
+.woman:hover, .man:hover, .category:hover, .category-trending:hover {
+    cursor: pointer;
+    transform: scale(102%);
+    transition: .2s ease-in-out;
+}
+
+
+.latest{
+    /* background-color: rgb(40, 202, 113); */
+    /* background-color: rgb(22, 187, 96); */
+
+
+}
+
+.product-info{
+    /* background-color: #2F8E5A; */
+
+}
+
+
+.new-products{
+    color: white;
+}
+
+.newest-illustration{
+    max-width: 30%;
+    height: auto;
+}
+
+.trending-illustration{
+    max-width: 30%;
+    height: auto;
+    width: 250px;
+    height: 250px;
+}
+
+.trending-illustration{
+    width: 350px;
+    height: 350px;
+}
+
+.btn-explore{
+    color: white;
+    background-color: #31945a;
+    border-color: #309158;
+    border-radius: 8rem;
+}
+
+.btn-explore:hover{
+    cursor: pointer;
+    color: black;
+    background-color: white;
+    border-color: rgb(0, 0, 0);
+    transition: .4s ease-in-out;
+}
+
+.btn-explore-trending{
+    color: rgb(0, 0, 0);
+    background-color: rgb(255, 255, 255);
+    border-color: black;
+    border-radius: 8rem;
+}
+
+.btn-explore-trending:hover{
+    color: white;
+    background-color: black;
+    border-color: black;
+    border-radius: 8rem;
+}
+
+.item-price, .item-title{
+    color: black;
+}
+
+.apps{
+    color: white;
+    background-color: rgb(42, 38, 59);
+}
+ 
+.category{
+    border: 1px solid #31945a;
+    object-fit: cover;
+    width: 300px;
+    height: 300px;
+}
+
+.category-trending{
+    border: 1px solid #cecece;
+    object-fit: cover;
+    width: 300px;
+    height: 300px;
+}
+
+@media only screen and (max-width: 770px){
+    .row{
+        display: block !important;
+    }
+
+    .trending-illustration, .newest-illustration{
+        max-width: 100%;
+        height: auto;
+    }
+
+    .smartphone{
+        display: none;
+    }
+
+    .smart-icons{
+        max-width: 100% !important;
+        height: auto !important;
+    }
+}
+
+@media only screen and (max-width: 500px){
+    .category{
+        max-width: 100%;
+        height: auto;
+    }
+
+
+}
+

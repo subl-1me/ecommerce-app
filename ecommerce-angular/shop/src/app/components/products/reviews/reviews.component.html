@@ -1,0 +1,31 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+<div class="container">
+    <table class="table">
+        <tbody>
+            <ng-container *ngFor="let review of reviews">
+                <tr>
+                    <td>
+                        <h6>{{review.customer?.names}}</h6>
+                        <h6 class="small text-muted">
+                            {{review.createdAt | date }}
+                        </h6>
+                        <h6 class="small text-muted">
+                            Rating:
+                            <ngx-star-rating [disabled]="true" [id]="'{{review.rating}}'" >
+                            </ngx-star-rating>
+                        </h6>
+                    </td>
+                    <td>
+                        <div class="card">
+                            <div class="card-body bg-light">
+                                {{review.content}}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+</div>

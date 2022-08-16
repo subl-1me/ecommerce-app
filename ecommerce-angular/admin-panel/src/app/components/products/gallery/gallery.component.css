@@ -1,0 +1,31 @@
+.tempImage{
+    max-width: 250px;
+}
+
+.tempImages{
+    max-width: 250px;
+    max-height: 150px;
+    animation: softAppear .5s forwards;
+}
+
+.tempImages:hover{
+    filter: brightness(30%);
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+
+@keyframes softAppear {
+    0%{
+        opacity: 0%;
+    }
+    50%{
+        opacity: 50%;
+    }
+    70%{
+        opacity: 70%;
+    }
+    100%{
+        opacity: 100%;
+    }
+}

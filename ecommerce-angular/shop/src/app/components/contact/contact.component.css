@@ -1,0 +1,26 @@
+.list-group-item{
+    margin-bottom: 15px;
+    padding: 0;
+    font-size: 25px;
+    border: none;
+}
+
+.connect{
+    margin-bottom: 0;
+    font-size: 15px;
+}
+
+.row{
+    margin-left: 0 !important;
+}
+
+.btn-send{
+    color:white;
+    background-color: #7367F0 !important;
+}
+
+.btn-send:hover{
+    background-color: #5a4cf0 !important;
+}
+
+
