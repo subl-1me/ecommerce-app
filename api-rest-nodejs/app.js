@@ -4,6 +4,7 @@ const express = require("express");
 const app = express();
 const bodyparser = require("body-parser");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 const routes = require("./routes/customer");
 const admRoutes = require("./routes/admin");
@@ -19,6 +20,13 @@ const stripeRoutes = require("./routes/stripe");
 const orderRoutes = require("./routes/order");
 const promotionRoutes = require("./routes/promotion");
 const contactRoutes = require("./routes/contact");
+
+const corsOptions = {
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+app.use(cors(corsOptions));
 
 const server = require("http").createServer(app);
 const socket = require("socket.io")(server, {
@@ -53,20 +61,6 @@ app.use(bodyparser.json({ limit: "5000mb" }));
 // Directory
 app.use(express.static(__dirname + "/uploads/configs"));
 app.use(express.static(__dirname + "/uploads/products/"));
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Access-Control-Allow-Request-Method"
-  );
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET, PUT, POST, DELETE, OPTIONS, PATCH"
-  );
-  res.header("Allow", "GET, PUT, POST, DELETE, OPTIONS, PATCH");
-  next();
-});
 
 app.use("/api", routes);
 app.use("/api", admRoutes);
