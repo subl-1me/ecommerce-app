@@ -34,7 +34,7 @@ socket.on("connection", function (socket) {
 
 let port = process.env.PORT || 4201;
 
-mongoose.connect("mongodb://127.0.0.1:27017/shop", (err, res) => {
+mongoose.connect(process.env.MONGO_URI || "", (err, res) => {
   if (err) {
     console.log(err);
   } else {
