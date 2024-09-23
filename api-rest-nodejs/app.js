@@ -37,6 +37,7 @@ let port = process.env.PORT || 4201;
 mongoose.connect(process.env.MONGO_URI || "", (err, res) => {
   if (err) {
     console.log(err);
+    console.log("Invalid URI URL");
   } else {
     server.listen(port, function () {
       console.log("Server running in port:" + port);
