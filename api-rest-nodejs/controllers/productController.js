@@ -1,125 +1,135 @@
-'use strict'
+"use strict";
 
-const Product = require('../models/product');
-const ProductInventory = require('../models/productInventory');
+require("dotenv").config();
+const Product = require("../models/product");
+const ProductInventory = require("../models/productInventory");
 
-const path = require('path');
-const _fileService = require('../services/files.service');
-const uniqid = require('uniqid');
+const path = require("path");
+const _fileService = require("../services/files.service");
+const uniqid = require("uniqid");
 
-const multer = require('multer');
-const { db } = require('../models/product');
-const directoryPath = path.join(__dirname, '../uploads/products/');
+const multer = require("multer");
+const { db } = require("../models/product");
+const directoryPath = path.join(__dirname, "../uploads/products/");
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './uploads/products');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
+  destination: (req, file, cb) => {
+    cb(null, "./uploads/products");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
 });
 
-const upload = multer({ storage : storage }).single('image');
+const { UPLOADS_URL_TEST } = process.env;
 
-const add = async function(req, res){
-    if(!req.user || req.user.role !== 'admin') return res.status(403).send({ message: 'You are not authorized.' });
+const upload = multer({ storage: storage }).single("image");
 
-    try{
-        var params = req.body;
-        var productName = req.body.title.toLowerCase();
-        var slug = productName;
-    
-        var newProduct = await Product.create(params);
-        newProduct.slug = slug;
-    
-        // Register Initial Inventory
-        var inventoryData = {
-            product: newProduct._id,
-            stock: params.stock,
-            admin: req.user.sub
-        }
+const add = async function (req, res) {
+  if (!req.user || req.user.role !== "admin")
+    return res.status(403).send({ message: "You are not authorized." });
 
-        var newProductInventory = await ProductInventory.create(inventoryData);
-    
-        return res.status(200).send({
-            status: 'success',
-            product: newProduct,
-            productInventory: newProductInventory
-        });
-    }catch(err){
-        return res.status(200).send({ message: 'Something went wrong adding product.' });
-    }
-}
+  try {
+    var params = req.body;
+    var productName = req.body.title.toLowerCase();
+    var slug = productName;
 
-const remove = async function(req, res){
-    if(!req.user || req.user.role !== 'admin') return res.status(403).send({ message: 'You are not authorized.' });
-    if(!req.params['id']) return res.status(200).send({ message: 'Product ID required.' });
+    var newProduct = await Product.create(params);
+    newProduct.slug = slug;
 
-    var productID = req.params['id'];
+    // Register Initial Inventory
+    var inventoryData = {
+      product: newProduct._id,
+      stock: params.stock,
+      admin: req.user.sub,
+    };
 
-    // Get cover image URL
-    try{
-        var product = await Product.findById(productID);
-    }catch(err){
-        return res.status(200).send({ message: 'Product not found.' });
-    }
-
-    var coverImageURLSplited = product.coverImage.split('/');
-    var fileName = coverImageURLSplited[3];
-
-    // Delete cover image
-    try{
-        _fileService.deleteFile(directoryPath, fileName);
-    }catch(err){
-        return res.status(500).send(err);
-    }
-
-    await Product.findByIdAndDelete(productID);
-    return res.status(200).send({ message: 'Product deleted successfully.' });
-}
-
-const products = async function(req, res){
-    
-    var filter = req.params['title'];
-    var productsArray = {};
-
-    // if there is a filter param
-    if(filter){
-        const title = new RegExp(filter, 'i');
-        productsArray = await Product.find({ title: title});
-
-        if(productsArray.length == 0) return res.status(200).send({ message: 'Product not found. '});
-
-        return res.status(200).send({
-            status: 'success',
-            products: productsArray
-        });
-    }
-
-    productsArray = await Product.find();
-
-    if(productsArray.length == 0) return res.status(200).send({ message: 'Product not found.' });
+    var newProductInventory = await ProductInventory.create(inventoryData);
 
     return res.status(200).send({
-        status: 'success',
-        products: productsArray
-    })
-}
+      status: "success",
+      product: newProduct,
+      productInventory: newProductInventory,
+    });
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(200)
+      .send({ message: "Something went wrong adding product." });
+  }
+};
 
-const latestProducts = async function(_req, res){
+const remove = async function (req, res) {
+  if (!req.user || req.user.role !== "admin")
+    return res.status(403).send({ message: "You are not authorized." });
+  if (!req.params["id"])
+    return res.status(200).send({ message: "Product ID required." });
 
-    try{
-        const latestProducts = await Product.find().sort({createdAt: -1}).limit(4);
+  var productID = req.params["id"];
 
-        return res.status(200).send({products: latestProducts});
-    }catch(err){
-        return res.status(500).send({message: 'Something went wrong.' });
-    }
-}
+  // Get cover image URL
+  try {
+    var product = await Product.findById(productID);
+  } catch (err) {
+    return res.status(200).send({ message: "Product not found." });
+  }
 
-const topSellers = async function(_req, res){
+  var coverImageURLSplited = product.coverImage.split("/");
+  var fileName = coverImageURLSplited[3];
 
-    /*try {
+  // Delete cover image
+  try {
+    _fileService.deleteFile(directoryPath, fileName);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+
+  await Product.findByIdAndDelete(productID);
+  return res.status(200).send({ message: "Product deleted successfully." });
+};
+
+const products = async function (req, res) {
+  var filter = req.params["title"];
+  var productsArray = {};
+
+  // if there is a filter param
+  if (filter) {
+    const title = new RegExp(filter, "i");
+    productsArray = await Product.find({ title: title });
+
+    if (productsArray.length == 0)
+      return res.status(200).send({ message: "Product not found. " });
+
+    return res.status(200).send({
+      status: "success",
+      products: productsArray,
+    });
+  }
+
+  productsArray = await Product.find();
+
+  if (productsArray.length == 0)
+    return res.status(200).send({ message: "Product not found." });
+
+  return res.status(200).send({
+    status: "success",
+    products: productsArray,
+  });
+};
+
+const latestProducts = async function (_req, res) {
+  try {
+    const latestProducts = await Product.find()
+      .sort({ createdAt: -1 })
+      .limit(4);
+
+    return res.status(200).send({ products: latestProducts });
+  } catch (err) {
+    return res.status(500).send({ message: "Something went wrong." });
+  }
+};
+
+const topSellers = async function (_req, res) {
+  /*try {
         const topSellers = await Product.find().sort({ sales: ascending }).limit(4);
 
         return res.status(200).send({ products: topSellers })
@@ -127,187 +137,202 @@ const topSellers = async function(_req, res){
         return res.status(500).send({ message: 'Somethig went wrong.' })
     }*/
 
-    const topSellers = await Product.find().sort({ sales: -1 }).limit(4);
+  const topSellers = await Product.find().sort({ sales: -1 }).limit(4);
 
-    return res.status(200).send({ products: topSellers })
-}
+  return res.status(200).send({ products: topSellers });
+};
 
-const productsByCategory = async function(req, res){
+const productsByCategory = async function (req, res) {
+  var filter = new RegExp(req.params["category"], "i");
+  var productsArray = {};
 
-    var filter = new RegExp(req.params['category'], 'i');
-    var productsArray = {};
+  try {
+    productsArray = await Product.find({ category: filter });
 
-    try {
-        productsArray = await Product.find({category: filter});
+    return res.status(200).send({ products: productsArray });
+  } catch (err) {
+    return res.status(500).send({ message: "Error." });
+  }
+};
 
-        return res.status(200).send({ products: productsArray})
-    }catch(err){
-        return res.status(500).send({ message: 'Error.' });
-    }
-}
+const edit = async function (req, res) {
+  if (!req.user || req.user.role !== "admin")
+    return res.status(403).send({ message: "You are not authorized." });
+  if (!req.params["id"])
+    return res.status(200).send({ message: "Product ID is required." });
 
-const edit = async function(req, res){
-    if(!req.user || req.user.role !== 'admin') return res.status(403).send({ message: 'You are not authorized.' });
-    if(!req.params['id']) return res.status(200).send({ message: 'Product ID is required.' });
+  var id = req.params["id"];
+  var params = req.body;
 
-    var id = req.params['id'];
-    var params = req.body;
+  try {
+    var productName = req.body.title.toLowerCase();
+    var slug = productName.replace(/\s/g, "-");
 
-    try {
+    var updatedProduct = await Product.findByIdAndUpdate(id, {
+      title: params.title,
+      slug: slug,
+      description: params.description,
+      content: params.description,
+      coverImage: params.coverImage,
+      stock: params.stock,
+      price: params.price,
+      category: params.category,
+      category: params.category,
+      updatedAt: Date.now(),
+    });
 
-        var productName = req.body.title.toLowerCase();
-        var slug = productName.replace(/\s/g, '-');
+    return res.status(200).send({
+      updatedProduct: updatedProduct,
+    });
+  } catch (err) {
+    return res
+      .status(200)
+      .send({ message: "Something went wront updating product. Try again." });
+  }
+};
 
-        var updatedProduct = await Product.findByIdAndUpdate(id, {
-            title: params.title,
-            slug: slug,
-            description: params.description,
-            content: params.description,
-            coverImage: params.coverImage,
-            stock: params.stock,
-            price: params.price,
-            category: params.category,
-            category: params.category,
-            updatedAt: Date.now()
-        });
+const uploadCoverImage = async function (req, res) {
+  if (!req.user || req.user.role !== "admin")
+    return res.status(403).send({ message: "You are not authorized." });
 
-        return res.status(200).send({
-            updatedProduct: updatedProduct
-        })
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, "./uploads/products");
+    },
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + "-" + file.originalname);
+    },
+  });
 
-    } catch(err){
-        return res.status(200).send({ message: 'Something went wront updating product. Try again.' });
-    }
-}
+  const upload = multer({ storage: storage }).single("image");
 
-const uploadCoverImage = async function(req, res){
-    if(!req.user || req.user.role !== 'admin') return res.status(403).send({ message: 'You are not authorized.' });
+  upload(req, res, (err) => {
+    if (err)
+      return res.status(500).send({ message: "Error trying to upload image." });
 
-    const storage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, './uploads/products');
+    return res.status(200).send({
+      path: UPLOADS_URL_TEST + req.file.filename,
+    });
+  });
+};
+
+const uploadGalleryImages = async function (req, res) {
+  if (!req.user || req.user.role !== "admin")
+    return res.status(403).send({ message: "You are not authorized." });
+  if (!req.params["id"])
+    return res.status(200).send({ message: "Product ID is required." });
+
+  var productID = req.params["id"];
+
+  try {
+    _fileService.createDirectory(directoryPath, productID);
+  } catch (err) {
+    return res.status(500).send({ message: err });
+  }
+
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, "./uploads/products/" + "gallery-" + productID);
+    },
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + "-" + file.originalname);
+    },
+  });
+
+  const upload = multer({ storage: storage }).array("images", 5);
+
+  upload(req, res, (err) => {
+    if (err)
+      return res.status(500).send({ message: "Error trying to upload image." });
+
+    var pathArray = [];
+    req.files.forEach((file) => {
+      pathArray.push(
+        UPLOADS_URL_TEST + "gallery-" + productID + "/" + file.filename
+      );
+    });
+    return res.status(200).send({ multipleImages: pathArray });
+  });
+};
+
+const setGalleryImages = async function (req, res) {
+  if (!req.user || req.user.role !== "admin")
+    return res.status(403).send({ message: "You are not authorized." });
+  if (!req.params["id"])
+    return res.status(200).send({ message: "Product ID is required." });
+
+  var productID = req.params["id"];
+  var uniqID = uniqid();
+  var pathArrays = req.body;
+
+  for (let i = 0; i < pathArrays.length; i++) {
+    var updatedProduct = await Product.findByIdAndUpdate(productID, {
+      $push: {
+        gallery: {
+          _id: uniqid(),
+          path: pathArrays[i],
         },
-        filename: (req, file, cb) => {
-            cb(null, Date.now() + '-' + file.originalname);
-        }
+      },
     });
-    
-    const upload = multer({ storage : storage }).single('image');
+  }
 
-    upload(req, res, (err) => {
-        if(err) return res.status(500).send({ message: 'Error trying to upload image.' })
+  var updatedProduct = await Product.findById(productID);
+  return res.status(200).send({ product: updatedProduct });
+};
 
-        return res.status(200).send({ path: 'https://netlify-thinks-subl-1me-is-great.netlify.app/' + req.file.filename })
-    });
-}
+const getById = async function (req, res) {
+  if (!req.params["id"])
+    return res.status(200).send({ message: "Product ID is required." });
 
-const uploadGalleryImages = async function(req, res){
-    if(!req.user || req.user.role !== 'admin') return res.status(403).send({ message: 'You are not authorized.' });
-    if(!req.params['id']) return res.status(200).send({ message: 'Product ID is required.' });
+  var id = req.params["id"];
 
-    var productID = req.params['id'];
+  try {
+    var product = await Product.findById(id);
 
-    try {
-        _fileService.createDirectory(directoryPath, productID);
-    }catch(err){
-        return res.status(500).send({ message: err });
-    }
+    return res.status(200).send({ product: product });
+  } catch (err) {
+    return res.status(200).send({ message: "Product not found." });
+  }
+};
 
-    const storage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, './uploads/products/'+ 'gallery-' + productID);
+const postReview = async function (req, res) {
+  if (!req.params["id"])
+    return res.status(200).send({ message: "Product ID is required." });
+
+  var productID = req.params["id"];
+  var params = req.body;
+
+  try {
+    let newReview = await Product.findByIdAndUpdate(productID, {
+      $push: {
+        reviews: {
+          customerID: params.customerId,
+          rating: params.rating,
+          content: params.content,
+          createdAt: Date.now(),
         },
-        filename: (req, file, cb) => {
-            cb(null, Date.now() + '-' + file.originalname);
-        }
+      },
     });
 
-    const upload = multer({ storage: storage }).array('images', 5);
-
-    upload(req, res, (err) => {
-        if(err) return res.status(500).send({ message: 'Error trying to upload image.' });
-
-        var pathArray = []
-        req.files.forEach(file => {
-            pathArray.push('https://netlify-thinks-subl-1me-is-great.netlify.app/' + 'gallery-' + productID + '/' + file.filename);
-        })
-        return res.status(200).send({ multipleImages: pathArray });
-    })
-}
-
-const setGalleryImages = async function(req, res){
-    if(!req.user || req.user.role !== 'admin') return res.status(403).send({ message: 'You are not authorized.' });
-    if(!req.params['id']) return res.status(200).send({ message: 'Product ID is required.' });
-
-    var productID = req.params['id'];
-    var uniqID = uniqid();
-    var pathArrays = req.body;
-
-    for(let i = 0; i < pathArrays.length; i++){
-        var updatedProduct = await Product.findByIdAndUpdate(productID, {
-            $push: {
-                gallery: {
-                    _id: uniqid(), path: pathArrays[i]
-                }
-            }
-        })
-    }
-
-    var updatedProduct = await Product.findById(productID);
-    return res.status(200).send({ product: updatedProduct});
-}
-
-const getById = async function(req, res){
-    if(!req.params['id']) return res.status(200).send({ message: 'Product ID is required.' });
-
-    var id = req.params['id'];
-
-    try {
-        var product = await Product.findById(id);
-
-        return res.status(200).send({ product: product})
-    }catch(err){
-        return res.status(200).send({ message: 'Product not found.' })
-    }
-}
-
-const postReview = async function(req, res){
-    if(!req.params['id']) return res.status(200).send({ message: 'Product ID is required.' });
-
-    var productID = req.params['id'];
-    var params = req.body;
-
-    try{
-        let newReview = await Product.findByIdAndUpdate(productID, {
-            $push: {
-                reviews: {
-                    customerID: params.customerId,
-                    rating: params.rating,
-                    content: params.content,
-                    createdAt: Date.now()
-                }
-            }
-        })
-
-        return res.status(200).send({ message: 'Review created successfully. ' });
-    }catch(err){
-        return res.status(500).send({ message: 'Error trying to create review. Try again.' })
-    }
-    
-}
-
+    return res.status(200).send({ message: "Review created successfully. " });
+  } catch (err) {
+    return res
+      .status(500)
+      .send({ message: "Error trying to create review. Try again." });
+  }
+};
 
 module.exports = {
-    add,
-    products,
-    edit,
-    getById,
-    remove,
-    uploadCoverImage,
-    uploadGalleryImages,
-    setGalleryImages,
-    productsByCategory,
-    postReview,
-    latestProducts,
-    topSellers
-}
+  add,
+  products,
+  edit,
+  getById,
+  remove,
+  uploadCoverImage,
+  uploadGalleryImages,
+  setGalleryImages,
+  productsByCategory,
+  postReview,
+  latestProducts,
+  topSellers,
+};

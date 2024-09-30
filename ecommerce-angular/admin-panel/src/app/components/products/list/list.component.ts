@@ -16,10 +16,9 @@ import * as fs from 'file-saver';
   selector: 'app-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.css'],
-  providers : [  ProductService, IdentityService ]
+  providers: [ProductService, IdentityService],
 })
 export class ListComponent implements OnInit, DoCheck {
-
   // Icons
   faAdd = faAdd;
   faFileExcel = faFileExcel;
@@ -34,13 +33,13 @@ export class ListComponent implements OnInit, DoCheck {
   public file = {
     name: '',
     url: '',
-    mime: ''
-  }
+    mime: '',
+  };
 
   constructor(
     private _productService: ProductService,
     private _identityService: IdentityService
-  ) { 
+  ) {
     this.token = this._identityService.getToken();
     this.products = [];
     this.titleFilter = '';
@@ -51,32 +50,33 @@ export class ListComponent implements OnInit, DoCheck {
     this.list();
   }
 
-  ngDoCheck(): void {
-  }
+  ngDoCheck(): void {}
 
-  list():void{
+  list(): void {
     this._productService.list(this.token).subscribe((res) => {
-      if(res.status == 'success'){
+      if (res.status == 'success') {
         this.products = res.products;
         console.log(this.products);
       }
-    })
+    });
   }
 
-  filter():void{
-    this._productService.listByFilter(this.titleFilter, this.token).subscribe((res) => {
-      if(res.status == 'success'){
-        this.products = res.products;
-        this.responseMessage = '';
-      }else{
-        this.products = [];
-        this.responseMessage = res.message;
-      }
-    })
+  filter(): void {
+    this._productService
+      .listByFilter(this.titleFilter, this.token)
+      .subscribe((res) => {
+        if (res.status == 'success') {
+          this.products = res.products;
+          this.responseMessage = '';
+        } else {
+          this.products = [];
+          this.responseMessage = res.message;
+        }
+      });
   }
 
-  public exportAsExcel(){
-    if(this.products.length == 0){
+  public exportAsExcel() {
+    if (this.products.length == 0) {
       console.log('Cannot export an empty excel.');
       return;
     }
@@ -85,25 +85,24 @@ export class ListComponent implements OnInit, DoCheck {
     let worksheet = workbook.addWorksheet('Products Report');
 
     var arrayToExport: any[] = [];
-    this.products.forEach(product => {
+    this.products.forEach((product) => {
       arrayToExport.push({
         title: product.title,
         category: product.category,
         price: product.price,
         rating: product.rating,
         sales: product.sales,
-        stock: product.stock
-      })
-    })
+        stock: product.stock,
+      });
+    });
 
     worksheet.addRow(undefined);
-    for(let items of arrayToExport){
+    for (let items of arrayToExport) {
       let keys = Object.keys(items);
 
       let tempKeys = [];
-      for(let key of keys){
+      for (let key of keys) {
         tempKeys.push(items[key]);
-
       }
       worksheet.addRow(tempKeys);
     }
@@ -119,11 +118,10 @@ export class ListComponent implements OnInit, DoCheck {
     ] as any;
 
     workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      let blob = new Blob([data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
       fs.saveAs(blob, fileName + '-' + new Date().valueOf() + '.xlsx');
-    })
-
-    
+    });
   }
-
 }

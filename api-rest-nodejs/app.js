@@ -1,5 +1,6 @@
 "use strict";
 
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const bodyparser = require("body-parser");
@@ -40,12 +41,13 @@ socket.on("connection", function (socket) {
   });
 });
 
-let port = process.env.PORT || 4201;
+const port = process.env.PORT || 4201;
+const MONGO_URI = process.env.MONGO_URI || "";
 
-mongoose.connect(process.env.MONGO_URI || "", (err, res) => {
+mongoose.connect(MONGO_URI, (err, res) => {
   if (err) {
     console.log(err);
-    console.log("Invalid URI URL");
+    console.log(`Current URI URL: ${MONGO_URI}`);
   } else {
     server.listen(port, function () {
       console.log("Server running in port:" + port);

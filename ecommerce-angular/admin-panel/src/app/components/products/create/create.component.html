@@ -1,93 +1,158 @@
 <div class="card shadow-lg">
-    <div class="card-header bg-dark">
-        <h1 class="text-white text-center" *ngIf="!isEdit">Create a product</h1>
-        <h1 class="text-white text-center" *ngIf="isEdit">Edit a product</h1>
-    </div>
-    <div class="card-body">
-        <div class="alert alert-warning">* Required fields</div>
-        <hr>
-        <!-- Create product form -->
-        <form #createForm="ngForm" (ngSubmit)="uploadCoverImage()">
-            <div class="row justify-content-center">
-                <h4>Principal Details</h4>
-                <div class="form-group col-md-4 mb-2">
-                    <label for="title">* Title</label>
-                    <input type="text" name="title" [(ngModel)]="product.title" class="form-control" required>
-                </div>
-                <div class="form-group col-md-2 mb-2">
-                    <label for="title">* Stock</label>
-                    <input type="number" name="stock" [(ngModel)]="product.stock" class="form-control" required>
-                </div>
-                <div class="form-group col-md-2 mt-auto mb-2">
-                    <label for="price">* Price</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">$</span>
-                        </div>
-                        <input type="text" class="form-control" name="price" [(ngModel)]="product.price" aria-label="Amount (to the nearest dollar)">
-                    </div>
-                </div>
-                <div class="form-group col-md-5 mb-2">
-                    <label for="exampleFormControlTextarea1">* Short Description</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description" [(ngModel)]="product.description" ></textarea>
-                </div>
-                <div class="form-group col-md-5 mb-2">
-                    <label class="mr-sm-2 me-2" for="inlineFormCustomSelect">Category</label>
-                    <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="category" [(ngModel)]="product.category">
-                      <option selected disabled>Choose...</option>
-                      <ng-container *ngFor="let category of actualConfig.categories">
-                        <option class="p-2" value="{{category}}">{{category}}</option>
-                      </ng-container>
-                    </select>
-                  </div>
+  <div class="card-header bg-dark">
+    <h1 class="text-white text-center" *ngIf="!isEdit">Create a product</h1>
+    <h1 class="text-white text-center" *ngIf="isEdit">Edit a product</h1>
+  </div>
+  <div class="card-body">
+    <div class="alert alert-warning">* Required fields</div>
+    <hr />
+    <!-- Create product form -->
+    <form #createForm="ngForm" (ngSubmit)="uploadCoverImage()">
+      <div class="row justify-content-center">
+        <h4>Principal Details</h4>
+        <div class="form-group col-md-4 mb-2">
+          <label for="title">* Title</label>
+          <input
+            type="text"
+            name="title"
+            [(ngModel)]="product.title"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="form-group col-md-2 mb-2">
+          <label for="title">* Stock</label>
+          <input
+            type="number"
+            name="stock"
+            [(ngModel)]="product.stock"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="form-group col-md-2 mt-auto mb-2">
+          <label for="price">* Price</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">$</span>
             </div>
-            <hr>
-            <div class="row justify-content-center">
-                <h4>Describe Your Product</h4>
-                <div class="form-group col-md-9 mb-2 mt-2">
-                    <div [froalaEditor] [(froalaModel)]="editorContent"></div>
-                </div>
-            </div>
-            <hr>
-            <div class="row justify-content-center" *ngIf="!isEdit">
-                <h4>Upload a cover image</h4>
-                <div class="form-group col-md-9 mb-2 mt-2">
-                    <img id="tempImage" class="w-25 me-2 rounded shadow">
-                    <input type="file" class="p-1" (change)="fileChoosen($event)" name="logo" id="fileUpload">
-                    <div *ngIf="fileChoosenError" class="mt-2 text-danger">{{fileChoosenError}}</div>
-                </div>
-                <span *ngIf="fileUploadError != ''" class="text-danger">{{fileUploadError}}</span>
-            </div>
-            <div class="row justify-content-center" *ngIf="isEdit">
-                <h4>Upload a cover image</h4>
-                <div class="form-group col-md-9 mb-2 mt-2">
-                    <img src="{{product.coverImage}}" id="tempImage" class="w-25 me-2 rounded shadow">
-                    <input type="file" class="p-1" (change)="fileChoosen($event)" name="logo" id="fileUpload">
-                    <div *ngIf="fileChoosenError" class="mt-2 text-danger">{{fileChoosenError}}</div>
-                </div>
-                <span *ngIf="fileUploadError != ''" class="text-danger">{{fileUploadError}}</span>
-            </div>
-            <hr>
-            <div class="summary" *ngIf="isEdit">
-                <h3>Summary</h3>
-                <span class="me-2">Total Sales: {{product.sales}}</span>
-                <span class="me-2">|</span>
-                <span>Product Rating: {{product.rating}}</span>
-            </div>
-            <div class="row justify-content-center mt-2">
-                <button class="btn btn-success w-25 me-2 shadow" *ngIf="!isEdit">
-                    <fa-icon [icon]="faSave"></fa-icon>
-                    Save
-                </button>
-                <button class="btn btn-success w-25 me-2 shadow" value="Save Changes" *ngIf="isEdit" [disabled]="fileChoosenError">
-                    <fa-icon [icon]="faSave"></fa-icon>
-                    Save Changes
-                </button>
-                <button class="btn btn-secondary w-25 shadow" [routerLink]="['/panel/products']">
-                    <fa-icon [icon]="faAngleLeft"></fa-icon>
-                    Back
-                </button>
-            </div>
-        </form>
-    </div>
+            <input
+              type="text"
+              class="form-control"
+              name="price"
+              [(ngModel)]="product.price"
+              aria-label="Amount (to the nearest dollar)"
+            />
+          </div>
+        </div>
+        <div class="form-group col-md-5 mb-2">
+          <label for="exampleFormControlTextarea1">* Short Description</label>
+          <textarea
+            class="form-control"
+            id="exampleFormControlTextarea1"
+            rows="3"
+            name="description"
+            [(ngModel)]="product.description"
+          ></textarea>
+        </div>
+        <div class="form-group col-md-5 mb-2">
+          <label class="mr-sm-2 me-2" for="inlineFormCustomSelect"
+            >Category</label
+          >
+          <select
+            class="custom-select mr-sm-2"
+            id="inlineFormCustomSelect"
+            name="category"
+            [(ngModel)]="product.category"
+          >
+            <option selected disabled>Choose...</option>
+            <ng-container *ngFor="let category of actualConfig.categories">
+              <option class="p-2" value="{{ category.name }}">
+                {{ category.name }}
+              </option>
+            </ng-container>
+          </select>
+        </div>
+      </div>
+      <hr />
+      <div class="row justify-content-center">
+        <h4>Describe Your Product</h4>
+        <div class="form-group col-md-9 mb-2 mt-2">
+          <div [froalaEditor] [(froalaModel)]="editorContent"></div>
+        </div>
+      </div>
+      <hr />
+      <div class="row justify-content-center" *ngIf="!isEdit">
+        <h4>Upload a cover image</h4>
+        <div class="form-group col-md-9 mb-2 mt-2">
+          <img id="tempImage" class="w-25 me-2 rounded shadow" />
+          <input
+            type="file"
+            class="p-1"
+            (change)="fileChoosen($event)"
+            name="logo"
+            id="fileUpload"
+          />
+          <div *ngIf="fileChoosenError" class="mt-2 text-danger">
+            {{ fileChoosenError }}
+          </div>
+        </div>
+        <span *ngIf="fileUploadError != ''" class="text-danger">{{
+          fileUploadError
+        }}</span>
+      </div>
+      <div class="row justify-content-center" *ngIf="isEdit">
+        <h4>Upload a cover image</h4>
+        <div class="form-group col-md-9 mb-2 mt-2">
+          <img
+            src="{{ product.coverImage }}"
+            id="tempImage"
+            class="w-25 me-2 rounded shadow"
+          />
+          <input
+            type="file"
+            class="p-1"
+            (change)="fileChoosen($event)"
+            name="logo"
+            id="fileUpload"
+          />
+          <div *ngIf="fileChoosenError" class="mt-2 text-danger">
+            {{ fileChoosenError }}
+          </div>
+        </div>
+        <span *ngIf="fileUploadError != ''" class="text-danger">{{
+          fileUploadError
+        }}</span>
+      </div>
+      <hr />
+      <div class="summary" *ngIf="isEdit">
+        <h3>Summary</h3>
+        <span class="me-2">Total Sales: {{ product.sales }}</span>
+        <span class="me-2">|</span>
+        <span>Product Rating: {{ product.rating }}</span>
+      </div>
+      <div class="row justify-content-center mt-2">
+        <button class="btn btn-success w-25 me-2 shadow" *ngIf="!isEdit">
+          <fa-icon [icon]="faSave"></fa-icon>
+          Save
+        </button>
+        <button
+          class="btn btn-success w-25 me-2 shadow"
+          value="Save Changes"
+          *ngIf="isEdit"
+          [disabled]="fileChoosenError"
+        >
+          <fa-icon [icon]="faSave"></fa-icon>
+          Save Changes
+        </button>
+        <button
+          class="btn btn-secondary w-25 shadow"
+          [routerLink]="['/panel/products']"
+        >
+          <fa-icon [icon]="faAngleLeft"></fa-icon>
+          Back
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
