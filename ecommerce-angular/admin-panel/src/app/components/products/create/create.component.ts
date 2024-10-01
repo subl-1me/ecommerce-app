@@ -128,7 +128,13 @@ export class CreateComponent implements OnInit, DoCheck {
   }
 
   public isImage(fileMime: string): boolean {
-    var mimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    var mimeTypes = [
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/webp',
+      'image/avif',
+    ];
 
     for (let i = 0; i < mimeTypes.length; i++) {
       if (mimeTypes[i] === fileMime) return true;

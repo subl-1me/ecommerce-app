@@ -13,10 +13,9 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
   selector: 'app-directions',
   templateUrl: './directions.component.html',
   styleUrls: ['./directions.component.css'],
-  providers: [ DirectionService ]
+  providers: [DirectionService],
 })
 export class DirectionsComponent implements OnInit {
-
   public direction: Direction;
   public directions: Array<Direction>;
   public customerID: any;
@@ -26,53 +25,59 @@ export class DirectionsComponent implements OnInit {
   faPlus = faPlus;
   faTrash = faTrash;
 
-  constructor(
-    private _directionService: DirectionService,
-  ) { 
+  constructor(private _directionService: DirectionService) {
     this.directions = [];
     this.customerID = localStorage.getItem('_id');
-    this.direction = { principal: false, customer: this.customerID };
+    this.direction = {
+      principal: false,
+      customer: this.customerID,
+      region: 'Chihuahua',
+      province: 'Juarez',
+      country: 'Mexico',
+      district: 'Mexico',
+    };
   }
 
   ngOnInit(): void {
     this.getDirections();
   }
 
-  onSubmit(form:any):void{
+  onSubmit(form: any): void {
+    this._directionService
+      .addDirection(this.direction)
+      .subscribe((response) => {
+        if (!response.direction) return;
 
-    this._directionService.addDirection(this.direction).subscribe((response) => {
-      if(!response.direction) return;
-
-      this.getDirections();
-    })
+        this.getDirections();
+      });
   }
 
-  getDirections():void{
+  getDirections(): void {
     this._directionService.getDirectionList().subscribe((response) => {
-
-      if(response.message){
+      if (response.message) {
         this.directions = [];
         return;
       }
 
       this.directions = response.directions;
       console.log(this.directions);
-    })
+    });
   }
 
-  deleteDirection(directionID:any):void{
-
-    this._directionService.deleteDirection(directionID).subscribe((response) => {
-
-      this.getDirections();
-    })
-  }
-  
-  setDirectionAsDefault(directionID:any):void{
-    this._directionService.setDirectionAsDefault(directionID, this.customerID).subscribe((response) => {
-      console.log(response);
-      this.getDirections();
-    })
+  deleteDirection(directionID: any): void {
+    this._directionService
+      .deleteDirection(directionID)
+      .subscribe((response) => {
+        this.getDirections();
+      });
   }
 
+  setDirectionAsDefault(directionID: any): void {
+    this._directionService
+      .setDirectionAsDefault(directionID, this.customerID)
+      .subscribe((response) => {
+        console.log(response);
+        this.getDirections();
+      });
+  }
 }
