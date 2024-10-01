@@ -1,60 +1,93 @@
 <h1 class="text-center">Products</h1>
 
 <div class="card shadow">
-    <div class="card-header">
-        <div class="row">
-            <div class="col-md-5">
-                <label>Filter</label>
-                <input type="text" class="form-control" (keyup)="filter()" [(ngModel)]="titleFilter"
-                 placeholder="Product Title" [disabled]="products.length == 0">
-            </div>
-            <div class="col">
-                <p class="add-product bg-primary text-white p-2 shadow-sm float-end text-primary"
-                 [routerLink]="['/panel/products/create']">
-                    <fa-icon [icon]="faAdd" class="me-1" ></fa-icon>
-                    Add a Product
-                </p>
-            </div>
-        </div>
+  <div class="card-header">
+    <div class="row">
+      <div class="col-md-5">
+        <label>Filter</label>
+        <input
+          type="text"
+          class="form-control"
+          (keyup)="filter()"
+          [(ngModel)]="titleFilter"
+          placeholder="Product Title"
+          [disabled]="products.length == 0"
+        />
+      </div>
+      <div class="col">
+        <p
+          class="add-product bg-primary text-white p-2 shadow-sm float-end text-primary"
+          [routerLink]="['/panel/products/create']"
+        >
+          <fa-icon [icon]="faAdd" class="me-1"></fa-icon>
+          Add a Product
+        </p>
+      </div>
     </div>
-    <div class="card-body">
-        <table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Cover Image</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Sales</th>
-                    <th scope="col">Stock</th>
-                    <th scope="col">Rating</th>
-                    <th scope="col">Last Update</th>
-                    <th scope="col">Manage</th>
-                </tr>
-            </thead>
-            <tbody>
-                <ng-container *ngFor="let product of products; let ind = index">
-                    <tr *ngIf="products.length != 0">
-                        <td><img src="{{product.coverImage}}" class="coverImage rounded rounded-circle"/></td>
-                        <td>{{product.title}}</td>
-                        <td>{{product.category}}</td>
-                        <td><div class="badge-draft rounded">{{product.status}}</div></td>
-                        <td>{{product.sales}}</td>
-                        <td>{{product.stock}}</td>
-                        <td>{{product.rating}}</td>
-                        <td>{{product.updatedAt | date:'medium'}}</td>
-                        <app-options-button [id]="product._id" [path]="edit" [context]="'products'"></app-options-button>
-                    </tr>
-                </ng-container>
-            </tbody>
-        </table>
-        <div *ngIf="products.length == 0"class="text-center text-muted">No products found. Add some.</div>
-        <div class="alert alert-warning text-center shadow" *ngIf="responseMessage != ''">
-            {{responseMessage}}
-        </div>
+  </div>
+  <div class="card-body">
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Cover Image</th>
+          <th scope="col">Title</th>
+          <th scope="col">Category</th>
+          <th scope="col">Status</th>
+          <th scope="col">Sales</th>
+          <th scope="col">Stock</th>
+          <th scope="col">Rating</th>
+          <th scope="col">Last Update</th>
+          <th scope="col">Manage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let product of products; let ind = index">
+          <tr *ngIf="products.length != 0">
+            <td>
+              <img
+                src="{{ product.coverImage }}"
+                class="coverImage rounded rounded-circle"
+              />
+            </td>
+            <td>
+              <a
+                href="{{ productLinkHref }}products/detail/{{ product._id }}"
+                class="product-title"
+                target="_blank"
+              >
+                {{ product.title }}
+                <fa-icon [icon]="faLink" class="small text-muted"></fa-icon
+              ></a>
+            </td>
+            <td>{{ product.category }}</td>
+            <td>
+              <div class="badge-draft rounded">{{ product.status }}</div>
+            </td>
+            <td>{{ product.sales }}</td>
+            <td>{{ product.stock }}</td>
+            <td>{{ product.rating }}</td>
+            <td>{{ product.updatedAt | date : "medium" }}</td>
+            <app-options-button
+              [id]="product._id"
+              [path]="edit"
+              [context]="'products'"
+            ></app-options-button>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+    <div *ngIf="products.length == 0" class="text-center text-muted">
+      No products found. Add some.
     </div>
+    <div
+      class="alert alert-warning text-center shadow"
+      *ngIf="responseMessage != ''"
+    >
+      {{ responseMessage }}
+    </div>
+  </div>
 </div>
 <button class="btn btn-success mt-2 shadow" (click)="exportAsExcel()">
-    <fa-icon [icon]="faFileExcel" class="me-1"></fa-icon>
-    Export as Excel
+  <fa-icon [icon]="faFileExcel" class="me-1"></fa-icon>
+  Export as Excel
 </button>

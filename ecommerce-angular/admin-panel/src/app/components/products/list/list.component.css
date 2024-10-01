@@ -1,21 +1,26 @@
-.add-product:hover{
-    font-size: 18px;
-    cursor: pointer;
-    transition: .3s ease-in-out;
+.add-product:hover {
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
 }
 
-.add-product{
-    border-radius: 5%;
-    background-color: #1e91ed !important;
+.product-title {
+  text-decoration: underline;
+  color: black;
 }
 
-.badge-draft{
-    text-align: center;
-    background-color: #ffc107;
-    padding: 2;
+.add-product {
+  border-radius: 5%;
+  background-color: #1e91ed !important;
 }
 
-.coverImage{
-    width: 100px;
-    height: 100px;
+.badge-draft {
+  text-align: center;
+  background-color: #ffc107;
+  padding: 2;
+}
+
+.coverImage {
+  width: 100px;
+  height: 100px;
 }

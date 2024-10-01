@@ -4,10 +4,12 @@ import { ProductService } from 'src/app/services/product.service';
 import { IdentityService } from 'src/app/services/identity.service';
 
 // Icons
-import { faAdd } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faLink } from '@fortawesome/free-solid-svg-icons';
 import { faFileExcel } from '@fortawesome/free-solid-svg-icons';
 
 import { Product } from 'src/app/models/product';
+
+import { constans } from 'src/app/services/const';
 
 import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
@@ -22,11 +24,13 @@ export class ListComponent implements OnInit, DoCheck {
   // Icons
   faAdd = faAdd;
   faFileExcel = faFileExcel;
+  faLink = faLink;
 
   public token: any;
   public products = Array<Product>();
   public titleFilter: string;
   public responseMessage: string;
+  public productLinkHref = constans.productLinkHref;
 
   public edit = '/panel/product/edit/';
 
