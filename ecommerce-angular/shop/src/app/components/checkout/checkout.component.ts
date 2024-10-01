@@ -23,7 +23,7 @@ import { IPayPalConfig, ICreateOrderRequest } from 'ngx-paypal';
 import { StripeService } from 'src/app/services/stripe.service';
 
 // Icons
-import { faTrash, faLink } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faLink, faRefresh } from '@fortawesome/free-solid-svg-icons';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
@@ -60,6 +60,7 @@ export class CheckoutComponent implements OnInit {
   faXmark = faXmark;
   faCheck = faCheck;
   faLink = faLink;
+  faRefresh = faRefresh;
 
   public customerID: any;
 

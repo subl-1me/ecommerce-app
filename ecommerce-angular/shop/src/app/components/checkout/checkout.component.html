@@ -22,89 +22,109 @@
           <div class="review-section mt-3">
             <div class="card">
               <div class="card-body bg-light">
-                <table class="table">
-                  <tbody>
-                    <ng-container *ngFor="let item of cart">
-                      <tr>
-                        <td>
-                          <div class="row">
-                            <div class="col-4">
-                              <img
-                                src="{{ item.product?.coverImage }}"
-                                class="product-image rounded me-5"
-                              />
-                            </div>
-                            <div class="col">
-                              <h6>{{ item.product?.title }}</h6>
-                              <div class="item-size text-muted">
-                                Size: {{ item.size }}
+                <ng-container *ngIf="cart.length == 0">
+                  <div class="no-products text-center p-2">
+                    <h6 class="small text-muted">Your cart is empty.</h6>
+                    <button
+                      class="btn btn-see-more"
+                      [routerLink]="['/products']"
+                    >
+                      See products
+                    </button>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="cart.length > 0">
+                  <h5 class="text-center text-muted">Cart items</h5>
+                  <hr class="w-50 ms-auto me-auto" />
+                  <table class="table">
+                    <tbody>
+                      <ng-container *ngFor="let item of cart">
+                        <tr>
+                          <td>
+                            <div class="row">
+                              <div class="col-4">
+                                <img
+                                  src="{{ item.product?.coverImage }}"
+                                  class="product-image rounded me-5"
+                                />
                               </div>
-                              <div class="item-color text-muted">
-                                Color: black
-                              </div>
+                              <div class="col">
+                                <h6>{{ item.product?.title }}</h6>
+                                <div class="item-size text-muted">
+                                  Size: {{ item.size }}
+                                </div>
+                                <div class="item-color text-muted">
+                                  Color: black
+                                </div>
 
-                              <div
-                                class="item-size mt-3 text-decoration-underline"
-                              >
-                                <a
-                                  href="{{ productHrefUrl }}/products/detail/{{
-                                    item._id
-                                  }}"
-                                  target="_blank"
-                                  class="product-page-link"
-                                >
-                                  Visit product page
-                                  <fa-icon
-                                    [icon]="faLink"
-                                    class="small text-muted"
-                                  ></fa-icon>
-                                </a>
+                                <div class="item-size mt-3">
+                                  <a
+                                    href="{{
+                                      productHrefUrl
+                                    }}/products/detail/{{ item.product?._id }}"
+                                    target="_blank"
+                                    class="product-page-link"
+                                  >
+                                    Visit product page
+                                    <fa-icon
+                                      [icon]="faLink"
+                                      class="small text-muted"
+                                    ></fa-icon>
+                                  </a>
+                                  <p
+                                    class="text-decoration-none"
+                                    (click)="
+                                      deleteProductCart(item.product?._id)
+                                    "
+                                  >
+                                    Remove
+                                    <fa-icon
+                                      [icon]="faTrash"
+                                      class="text-muted"
+                                    ></fa-icon>
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="item-size text-muted">Unit price:</div>
-                          <h6>${{ item.product?.price }}</h6>
-                        </td>
-                        <td>
-                          <div class="item-size text-muted">Quantity:</div>
-                          <h6>{{ item.amount }}</h6>
-                        </td>
-                        <td>
-                          <div class="item-size text-muted">Subtotal:</div>
-                          <h6>
-                            ${{
-                              calculatePrice(item.product?.price, item.amount)
-                            }}
-                          </h6>
-                        </td>
-                      </tr>
-                    </ng-container>
-                  </tbody>
-                </table>
+                          </td>
+                          <td>
+                            <div class="item-size text-muted">Unit price:</div>
+                            <h6>${{ item.product?.price }}</h6>
+                          </td>
+                          <td>
+                            <div class="item-size text-muted">Quantity:</div>
+                            <h6>{{ item.amount }}</h6>
+                          </td>
+                          <td>
+                            <div class="item-size text-muted">Subtotal:</div>
+                            <h6>
+                              ${{
+                                calculatePrice(item.product?.price, item.amount)
+                              }}
+                            </h6>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </ng-container>
               </div>
               <div class="card-footer bg-light">
                 <div class="item-size float-end">Subtotal: ${{ subtotal }}</div>
               </div>
             </div>
-            <ng-container *ngIf="cart.length == 0">
-              <div class="no-products text-center p-2">
-                <h6 class="small text-muted">Your cart is empty.</h6>
-                <button class="btn btn-secondary" [routerLink]="['/products']">
-                  See products
-                </button>
-              </div>
-            </ng-container>
           </div>
         </li>
+
         <li class="billing-address mt-3" *ngIf="!isOrderComplete">
           Billing Address
           <div class="card mt-3">
             <div class="card-body bg-light">
-              <table class="table">
-                <tbody>
-                  <ng-container *ngIf="defaultDirection">
+              <ng-container *ngIf="defaultDirection">
+                <h5 class="text-center text-muted">Default shipping address</h5>
+                <hr class="w-50 ms-auto me-auto" />
+                <table class="table">
+                  <tbody>
                     <tr>
                       <td>
                         <h6>Address</h6>
@@ -136,17 +156,36 @@
                         </div>
                       </td>
                     </tr>
-                  </ng-container>
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </ng-container>
+
+              <ng-container *ngIf="!defaultDirection">
+                <h5 class="text-center text-muted">
+                  Please, add a default shipping address.
+                </h5>
+              </ng-container>
             </div>
 
             <div class="card-footer bg-light">
-              <div
-                class="item-size float-end text-primary change-address"
-                [routerLink]="['/directions']"
-              >
-                Change Address
+              <div class="row">
+                <div class="col-6">
+                  <h6 class="refresh-list" (click)="getDefaultDirection()">
+                    Refresh
+                    <fa-icon [icon]="faRefresh" class="small"></fa-icon>
+                  </h6>
+                </div>
+                <div class="col-6">
+                  <div
+                    class="item-size float-end text-primary change-address"
+                    [routerLink]="['/directions']"
+                  >
+                    <a class="text-decoration-underline text-black">
+                      Manage shipping addresses
+                      <fa-icon [icon]="faLink"></fa-icon>
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -154,6 +193,7 @@
         <h6 class="small text-danger" *ngIf="cart.length == 0">
           Please, add some products to continue.
         </h6>
+
         <li class="shipping mt-3" *ngIf="!isOrderComplete">
           <div class="shipping-section mb-3">Shipping Method</div>
           <div class="card">

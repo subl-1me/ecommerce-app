@@ -81,6 +81,11 @@ tr {
   transition: 0.1s ease-in-out;
 }
 
+.btn-see-more {
+  background-color: #574aee;
+  color: white;
+}
+
 .faHeart {
   color: rgb(88, 88, 88);
 }
@@ -155,4 +160,8 @@ tr {
 
 .product-page-link {
   color: black;
+}
+
+.refresh-list:hover {
+  cursor: pointer;
 }
