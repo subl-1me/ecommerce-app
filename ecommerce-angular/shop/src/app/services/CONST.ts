@@ -3,5 +3,6 @@
 // };
 
 export const GLOBAL = {
-  url: 'http://127.0.0.1:4201/api/',
+  url: 'http://localhost:4201/api/',
+  productHrefUrl: 'http://localhost:4200/',
 };

@@ -1,160 +1,226 @@
-<div class="container header mb-0">
+<ng-container *ngIf="!product._id">
+  <div class="product-not-found" class="text-center">
+    <img src="../../../../assets/not-found-illustration.png" class="w-25" />
+    <h5>Sorry, This product doesn't exist.</h5>
+    <h5 class="small text-muted text-decoration-underline" [routerLink]="['/']">
+      Back home
+    </h5>
+  </div>
+</ng-container>
+
+<ng-container class="" *ngIf="product._id">
+  <div class="container header mb-0">
     <div class="header">
-        <h1 class="product-title">{{product.title}}</h1>
-        <nav class="navbar navbar-expand-sm">
-            <div class="container-fluid">
-              <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                  <li class="nav-item">
-                    <a class="nav-link text-muted" aria-current="page">General</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link text-muted" (click)="scrollToReviews('details-section')">Details</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="review-badge nav-link text-muted" (click)="scrollToReviews('reviews-section')">
-                        Reviews
-                        <span *ngIf="reviews.length != 0" class="reviews position-absolute translate-middle badge rounded-pill bg-danger">
-                            {{reviews.length}}
-                            <span class="visually-hidden">unread messages</span>
-                        </span>
-                    </a>
-                  </li>
-                </ul>
+      <h1 class="product-title">{{ product.title }}</h1>
+      <nav class="navbar navbar-expand-sm">
+        <div class="container-fluid">
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link text-muted" aria-current="page">General</a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link text-muted"
+                  (click)="scrollToReviews('details-section')"
+                  n
+                  >Details</a
+                >
+              </li>
+              <li class="nav-item">
+                <a
+                  class="review-badge nav-link text-muted"
+                  (click)="scrollToReviews('reviews-section')"
+                >
+                  Reviews
+                  <span
+                    *ngIf="reviews.length != 0"
+                    class="reviews position-absolute translate-middle badge rounded-pill bg-danger"
+                  >
+                    {{ reviews.length }}
+                    <span class="visually-hidden">unread messages</span>
+                  </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <div class="container general-section">
+    <hr />
+    <div class="product-content mb-5">
+      <div class="row justify-content-center">
+        <div class="col-sm-5">
+          <img
+            src="{{ product.coverImage }}"
+            class="product-image shadow-sm mb-4"
+          />
+          <ng-container *ngFor="let image of product.gallery">
+            <img
+              src="{{ image.path }}"
+              class="gallery-image me-3 mb-3 shadow-sm"
+            />
+          </ng-container>
+        </div>
+        <div class="col-md-6">
+          <h2 class="product-price mb-3">${{ product.price }}</h2>
+          <form #productForm="ngForm" (ngSubmit)="addToCart()">
+            <div class="select-color mb-4">
+              <h6 class="small">Availables colors:</h6>
+              <div class="circle"></div>
+              <div class="circle-2"></div>
+            </div>
+
+            <div class="select-size mb-4 w-50">
+              <select
+                class="form-select shadow-sm"
+                required
+                name="selectedSize"
+                [(ngModel)]="selectedSize"
+                (change)="optionSelected()"
+              >
+                <option selected disabled>Select Size</option>
+                <option value="1">XL</option>
+                <option value="2">M</option>
+              </select>
+              <div
+                *ngIf="addToCartMessage && addToCartMessage !== 'Added!'"
+                class="text-danger small"
+              >
+                {{ addToCartMessage }}
               </div>
             </div>
-          </nav>
-    </div>
-</div>
 
-<div class="container general-section">
-    <hr>
-    <div class="product-content mb-5">
-        <div class="row justify-content-center">
-            <div class="col-sm-5">
-                <img src="{{product.coverImage}}" class="product-image shadow-sm mb-4">
-                <ng-container *ngFor="let image of product.gallery">
-                    <img src="{{image.path}}" class="gallery-image me-3 mb-3 shadow-sm">
-                </ng-container>
+            <div class="available-stock">
+              <h6 class="text-muted small">
+                Available stock: {{ product.stock }}
+              </h6>
             </div>
-            <div class="col-md-6">
-                <h2 class="product-price mb-3">${{product.price}}</h2>
-                <form #productForm="ngForm" (ngSubmit)="addToCart()">
-                    <div class="select-color mb-4">
-                        <h6 class="small">Availables colors:</h6>
-                        <div class="circle"></div>
-                        <div class="circle-2"></div>
-                    </div>
-    
-                    <div class="select-size mb-4 w-50">
-                        <select class="form-select shadow-sm" required name="selectedSize" [(ngModel)]="selectedSize" (change)="optionSelected()" >
-                            <option selected disabled>Select Size</option>
-                            <option value="1">XL</option>
-                            <option value="2">M</option>
-                        </select>
-                        <div *ngIf="addToCartMessage && addToCartMessage !== 'Added!'" class="text-danger small">
-                            {{addToCartMessage}}
-                        </div>
-                    </div>
-    
-                    <div class="available-stock">
-                        <h6 class="text-muted small">Available stock: {{product.stock}}</h6>
-                    </div>
 
-                    <div class="select-amount">
-                        <input type="number" class="form-control p-2 text-center shadow-sm" name="selectedAmount" [(ngModel)]="selectedAmount" (change)="isNegativeOrZero()" required>
-                    </div>
-    
-                    <div class="addtoCart-button mb-4">
-                        <button class="btn btn-add p-2 w-50 shadow-sm" *ngIf="addToCartMessage !== 'Added!'" [disabled]="productForm.invalid">
-                            <fa-icon [icon]="faCartShopping" class="me-1"></fa-icon>
-                            Add to Cart
-                        </button>
-                        <button class="btn btn-add p-2 w-50 shadow-sm" *ngIf="addToCartMessage === 'Added!'">
-                            <fa-icon [icon]="faCheck" class="me-1"></fa-icon>
-                            Added!
-                        </button>
-                        <div *ngIf="invalidAmountMessage" class="text-danger small">
-                            {{invalidAmountMessage}}
-                        </div>
-                        <button *ngIf="!isProductFavorite()" class="btn btn-neutral p-2 ms-4 shadow-sm w-25" (click)="addToFavorite()" >
-                            <fa-icon [icon]="faHeart" class="me-1"></fa-icon>
-                            Add
-                        </button>
-                        <button *ngIf="isProductFavorite()" class="btn btn-remove ms-4 p-2 shadow-sm w-25" (click)="removeFromFavorite()" >
-                            <fa-icon [icon]="faHeart" class="me-1"></fa-icon>
-                            Remove
-                        </button>
-                    </div>
-                </form>
-
-                <div class="delivery-section">
-                    <h5>
-                        Delivery
-                        <fa-icon [icon]="faPlus" class="float-end"></fa-icon>
-                    </h5>
-                    <hr>
-                </div>
-
-                <div class="return-section">
-                    <h5>
-                        Return
-                        <fa-icon [icon]="faPlus" class="float-end"></fa-icon>
-                    </h5>
-                    <hr>
-                </div>
-
-                <div class="share-section" (click)="copyToClipboard()">
-                    <h5>Share</h5>
-                    <span class="small text-primary clipboard">
-                        <fa-icon [icon]="faCopy" class="me-1"></fa-icon>
-                        <span class="text-primary">Copy URL</span>
-                    </span>
-                </div>
-
-                <div class="validPayment-section mt-5 text-center">
-                    <img src="https://icon-library.com/images/paypal-credit-card-icon/paypal-credit-card-icon-11.jpg"
-                    class="w-50 payment-image">
-                    <div class="small">Secure payment</div>
-                </div>
+            <div class="select-amount">
+              <input
+                type="number"
+                class="form-control p-2 text-center shadow-sm"
+                name="selectedAmount"
+                [(ngModel)]="selectedAmount"
+                (change)="isNegativeOrZero()"
+                required
+              />
             </div>
+
+            <div class="addtoCart-button mb-4">
+              <button
+                class="btn btn-add p-2 w-50 shadow-sm"
+                *ngIf="addToCartMessage !== 'Added!'"
+                [disabled]="productForm.invalid"
+              >
+                <fa-icon [icon]="faCartShopping" class="me-1"></fa-icon>
+                Add to Cart
+              </button>
+              <button
+                class="btn btn-add p-2 w-50 shadow-sm"
+                *ngIf="addToCartMessage === 'Added!'"
+              >
+                <fa-icon [icon]="faCheck" class="me-1"></fa-icon>
+                Added!
+              </button>
+              <div *ngIf="invalidAmountMessage" class="text-danger small">
+                {{ invalidAmountMessage }}
+              </div>
+              <button
+                *ngIf="!isProductFavorite()"
+                class="btn btn-neutral p-2 ms-4 shadow-sm w-25"
+                (click)="addToFavorite()"
+              >
+                <fa-icon [icon]="faHeart" class="me-1"></fa-icon>
+                Add
+              </button>
+              <button
+                *ngIf="isProductFavorite()"
+                class="btn btn-remove ms-4 p-2 shadow-sm w-25"
+                (click)="removeFromFavorite()"
+              >
+                <fa-icon [icon]="faHeart" class="me-1"></fa-icon>
+                Remove
+              </button>
+            </div>
+          </form>
+
+          <div class="delivery-section">
+            <h5>
+              Delivery
+              <fa-icon [icon]="faPlus" class="float-end"></fa-icon>
+            </h5>
+            <hr />
+          </div>
+
+          <div class="return-section">
+            <h5>
+              Return
+              <fa-icon [icon]="faPlus" class="float-end"></fa-icon>
+            </h5>
+            <hr />
+          </div>
+
+          <div class="share-section" (click)="copyToClipboard()">
+            <h5>Share</h5>
+            <span class="small text-primary clipboard">
+              <fa-icon [icon]="faCopy" class="me-1"></fa-icon>
+              <span class="text-primary">Copy URL</span>
+            </span>
+          </div>
+
+          <div class="validPayment-section mt-5 text-center">
+            <img
+              src="https://icon-library.com/images/paypal-credit-card-icon/paypal-credit-card-icon-11.jpg"
+              class="w-50 payment-image"
+            />
+            <div class="small">Secure payment</div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<div class="container-fluid details-section" id="details-section">
+  <div class="container-fluid details-section" id="details-section">
     <div class="row justify-content-center align-items-center text-center">
-        <div class="col-lg text-center" [innerHTML]="product.content">
-            {{product.content}}
-        </div>
-        <div class="col-sm-7">
-            <img src="{{product.coverImage}}" class="product-image-detail shadow-sm">
-        </div>
+      <div class="col-lg text-center" [innerHTML]="product.content">
+        {{ product.content }}
+      </div>
+      <div class="col-sm-7">
+        <img
+          src="{{ product.coverImage }}"
+          class="product-image-detail shadow-sm"
+        />
+      </div>
     </div>
-</div>
+  </div>
 
-<div class="container reviews-section" id="reviews-section">
+  <div class="container reviews-section" id="reviews-section">
     <div class="row">
-        <div class="col-sm-5">
-            <h1>{{reviews.length}} Reviews</h1>
-            <fa-icon [icon]="faStar" class="text-warning"></fa-icon>
-            <fa-icon [icon]="faStar" class="text-warning"></fa-icon>
-            <fa-icon [icon]="faStar" class="text-warning"></fa-icon>
-            <fa-icon [icon]="faStar" class="text-warning"></fa-icon>
-            <fa-icon [icon]="faStar" class="text-secondary"></fa-icon>
-            <h6 class="mt-2">One customer recomends this product.</h6>
-        </div>
-        <div class="col-auto">
-            <div class="blueLine">
-            </div>
-            <div class="redLine mt-2"></div>
-            <div class="yellowLine mt-2"></div>
-        </div>
+      <div class="col-sm-5">
+        <h1>{{ reviews.length }} Reviews</h1>
+        <fa-icon [icon]="faStar" class="text-warning"></fa-icon>
+        <fa-icon [icon]="faStar" class="text-warning"></fa-icon>
+        <fa-icon [icon]="faStar" class="text-warning"></fa-icon>
+        <fa-icon [icon]="faStar" class="text-warning"></fa-icon>
+        <fa-icon [icon]="faStar" class="text-secondary"></fa-icon>
+        <h6 class="mt-2">One customer recomends this product.</h6>
+      </div>
+      <div class="col-auto">
+        <div class="blueLine"></div>
+        <div class="redLine mt-2"></div>
+        <div class="yellowLine mt-2"></div>
+      </div>
     </div>
-    <hr>
+    <hr />
     <div class="row mt-5">
-        <div class="col">
-            <app-reviews></app-reviews>
-        </div>
+      <div class="col">
+        <app-reviews></app-reviews>
+      </div>
     </div>
-</div>
+  </div>
+</ng-container>

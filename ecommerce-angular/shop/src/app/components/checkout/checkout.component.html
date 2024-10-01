@@ -1,141 +1,189 @@
 <script src="https://js.stripe.com/v3"></script>
 
 <div class="container mt-5">
-    <div class="row checkout-section                                                                                                                                                                                                                 justify-content-center">
-        <div class="col-8">
-            <span>
-                <a class="float-end" [routerLink]="['/products']">Back to shopping</a>
-            </span>
-            <h1 class="title">Checkout</h1>
-            <hr>
-            <div class="no-signup" *ngIf="!customerID">
-                <div class="alert alert-secondary text-center">
-                    <h6 class="small">Log in to continue shopping!</h6>
-                    <button class="btn btn-secondary" [routerLink]="['/login']">Log in</button>
+  <div class="row checkout-section justify-content-center">
+    <div class="col-8">
+      <span>
+        <a class="float-end" [routerLink]="['/products']">Back to shopping</a>
+      </span>
+      <h1 class="title">Checkout</h1>
+      <hr />
+      <div class="no-signup" *ngIf="!customerID">
+        <div class="alert alert-secondary text-center">
+          <h6 class="small">Log in to continue shopping!</h6>
+          <button class="btn btn-secondary" [routerLink]="['/login']">
+            Log in
+          </button>
+        </div>
+      </div>
+      <ol *ngIf="customerID">
+        <li class="section" *ngIf="!isOrderComplete">
+          Order Review
+          <div class="review-section mt-3">
+            <div class="card">
+              <div class="card-body bg-light">
+                <table class="table">
+                  <tbody>
+                    <ng-container *ngFor="let item of cart">
+                      <tr>
+                        <td>
+                          <div class="row">
+                            <div class="col-4">
+                              <img
+                                src="{{ item.product?.coverImage }}"
+                                class="product-image rounded me-5"
+                              />
+                            </div>
+                            <div class="col">
+                              <h6>{{ item.product?.title }}</h6>
+                              <div class="item-size text-muted">
+                                Size: {{ item.size }}
+                              </div>
+                              <div class="item-color text-muted">
+                                Color: black
+                              </div>
 
+                              <div
+                                class="item-size mt-3 text-decoration-underline"
+                              >
+                                <a
+                                  href="{{ productHrefUrl }}/products/detail/{{
+                                    item._id
+                                  }}"
+                                  target="_blank"
+                                  class="product-page-link"
+                                >
+                                  Visit product page
+                                  <fa-icon
+                                    [icon]="faLink"
+                                    class="small text-muted"
+                                  ></fa-icon>
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="item-size text-muted">Unit price:</div>
+                          <h6>${{ item.product?.price }}</h6>
+                        </td>
+                        <td>
+                          <div class="item-size text-muted">Quantity:</div>
+                          <h6>{{ item.amount }}</h6>
+                        </td>
+                        <td>
+                          <div class="item-size text-muted">Subtotal:</div>
+                          <h6>
+                            ${{
+                              calculatePrice(item.product?.price, item.amount)
+                            }}
+                          </h6>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer bg-light">
+                <div class="item-size float-end">Subtotal: ${{ subtotal }}</div>
+              </div>
+            </div>
+            <ng-container *ngIf="cart.length == 0">
+              <div class="no-products text-center p-2">
+                <h6 class="small text-muted">Your cart is empty.</h6>
+                <button class="btn btn-secondary" [routerLink]="['/products']">
+                  See products
+                </button>
+              </div>
+            </ng-container>
+          </div>
+        </li>
+        <li class="billing-address mt-3" *ngIf="!isOrderComplete">
+          Billing Address
+          <div class="card mt-3">
+            <div class="card-body bg-light">
+              <table class="table">
+                <tbody>
+                  <ng-container *ngIf="defaultDirection">
+                    <tr>
+                      <td>
+                        <h6>Address</h6>
+                        <div class="item-size text-muted">
+                          {{ defaultDirection.addressee }}
+                        </div>
+                      </td>
+                      <td>
+                        <h6>Delivey direction</h6>
+                        <div class="item-size text-muted">
+                          {{ defaultDirection.direction }}
+                        </div>
+                        <div class="item-size text-muted">
+                          {{ defaultDirection.country }} -
+                          {{ defaultDirection.province }} -
+                          {{ defaultDirection.region }}
+                        </div>
+                      </td>
+                      <td>
+                        <h6>ZIP</h6>
+                        <div class="item-size text-muted">
+                          {{ defaultDirection.zip }}
+                        </div>
+                      </td>
+                      <td>
+                        <h6>Contact phone</h6>
+                        <div class="item-size text-muted">
+                          {{ defaultDirection.phone }}
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="card-footer bg-light">
+              <div
+                class="item-size float-end text-primary change-address"
+                [routerLink]="['/directions']"
+              >
+                Change Address
+              </div>
+            </div>
+          </div>
+        </li>
+        <h6 class="small text-danger" *ngIf="cart.length == 0">
+          Please, add some products to continue.
+        </h6>
+        <li class="shipping mt-3" *ngIf="!isOrderComplete">
+          <div class="shipping-section mb-3">Shipping Method</div>
+          <div class="card">
+            <div class="card-body bg-light">
+              <ng-container *ngFor="let method of shipping">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="shippingCost"
+                    value="{{ method.price }}"
+                    id="input"
+                    [(ngModel)]="shippingCost"
+                    (change)="addShippingCost(method.price, method.title)"
+                    required
+                  />
+                  <label class="form-check-label" for="input">
+                    <h6>{{ method.title }}</h6>
+                  </label>
+                  <h6 class="text-muted small">
+                    {{ method.time }}
+                    <span class="float-end text-black"
+                      >${{ method.price }}</span
+                    >
+                  </h6>
                 </div>
-            </div>                                                                      
-            <ol *ngIf="customerID">
-                <li class="section" *ngIf="!isOrderComplete">
-                    Order Review
-                    <div class="review-section mt-3">
-                        <div class="card">
-                            <div class="card-body bg-light">
-                                <table class="table">
-                                    <tbody>
-                                        <ng-container *ngFor="let item of cart">
-                                            <tr>
-                                                <td>
-                                                    <div class="row">
-                                                        <div class="col-4">
-                                                            <img src="{{item.product?.coverImage}}" class="product-image rounded me-5">
-                                                        </div>
-                                                        <div class="col">
-                                                            <h6>{{item.product?.title}}</h6>
-                                                            <div class="item-size text-muted">
-                                                                Size: {{item.size}}
-                                                            </div>
-                                                            <div class="item-color text-muted">
-                                                                Color: black
-                                                            </div>
-                                                            
-
-                                                            <div class="item-size mt-3 text-decoration-underline">
-                                                                Visit product page
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="item-size text-muted">Unit price:</div>
-                                                    <h6>${{item.product?.price}}</h6>
-                                                </td>
-                                                <td>
-                                                    <div class="item-size text-muted">Quantity:</div>
-                                                    <h6>{{item.amount}}</h6>
-                                                </td>
-                                                <td>
-                                                    <div class="item-size text-muted">Subtotal:</div>
-                                                    <h6>${{calculatePrice(item.product?.price, item.amount)}}</h6>
-                                                </td>
-                                            </tr>
-                                        </ng-container>
-                                    </tbody>    
-                                  </table>
-                            </div>
-                            <div class="card-footer bg-light">
-                                <div class="item-size float-end">Subtotal: ${{subtotal}}</div>
-                            </div>
-                        </div>
-                          <ng-container *ngIf="cart.length == 0" >
-                            <div class="no-products text-center p-2">
-                                <h6 class="small text-muted ">Your cart is empty.</h6>
-                                <button class="btn btn-secondary" [routerLink]="['/products']">See products</button>
-                            </div>
-                        </ng-container>
-                    </div>
-                </li>
-                <li class="billing-address mt-3" *ngIf="!isOrderComplete">
-                    Billing Address
-                    <div class="card mt-3">
-                        <div class="card-body bg-light">
-                            <table class="table">
-                                <tbody>
-                                    <ng-container *ngIf="defaultDirection">
-                                        <tr>
-                                            <td>
-                                                <h6>Address</h6>
-                                                <div class="item-size text-muted">{{defaultDirection.addressee}}</div>
-                                            </td>
-                                            <td>
-                                                <h6>Delivey direction</h6>
-                                                <div class="item-size text-muted">{{defaultDirection.direction}}</div>
-                                                <div class="item-size text-muted">{{defaultDirection.country}} - {{defaultDirection.province}} - {{defaultDirection.region}}</div>
-                                            </td>
-                                            <td>
-                                                <h6>ZIP</h6>
-                                                <div class="item-size text-muted">{{defaultDirection.zip}}</div>
-                                            </td>
-                                            <td>
-                                                <h6>Contact phone</h6>
-                                                <div class="item-size text-muted">{{defaultDirection.phone}}</div>
-                                            </td>
-                                        </tr>
-                                    </ng-container>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="card-footer bg-light">
-                            <div class="item-size float-end text-primary change-address" [routerLink]="['/directions']">Change Address </div>
-                        </div>
-                    </div>  
-                </li>                                                                                                                                                                                                               
-                <h6 class="small text-danger" *ngIf="cart.length == 0">
-                    Please, add some products to continue.
-                </h6>
-                <li class="shipping mt-3" *ngIf="!isOrderComplete">
-                    <div class="shipping-section mb-3">
-                        Shipping Method
-                    </div>
-                    <div class="card">
-                        <div class="card-body bg-light">
-                            <ng-container *ngFor="let method of shipping">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="shippingCost" value="{{method.price}}"
-                                     id="input" [(ngModel)]="shippingCost" (change)="addShippingCost(method.price, method.title)" required>
-                                    <label class="form-check-label" for="input">
-                                        <h6>{{method.title}}</h6>
-                                    </label>
-                                    <h6 class="text-muted small">
-                                        {{method.time}}
-                                        <span class="float-end text-black">${{method.price}}</span>
-                                    </h6>
-                                </div>
-                            </ng-container> 
-                        </div>
-                    </div>
-                    <!-- <div class="shippings bg-light">
+              </ng-container>
+            </div>
+          </div>
+          <!-- <div class="shippings bg-light">
                         <ng-container *ngFor="let method of shipping">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="shippingCost" value="{{method.price}}"
@@ -150,144 +198,211 @@
                             </div>
                         </ng-container>
                     </div> -->
-                </li>
+        </li>
 
-                <li class="coupon-format" *ngIf="!isOrderComplete"                      >
-                    <div class="section mb-3">
-                        Coupons
-                    </div>  
+        <li class="coupon-format" *ngIf="!isOrderComplete">
+          <div class="section mb-3">Coupons</div>
 
-                    <div class="promo-section me-auto ms-auto text-center w-50">
-                        <form>  
-                            <div class="input-group mb-3">
-                                <input type="text" id="input-code" class="form-control p-2 shadow-sm " placeholder="Coupon Code"
-                                 aria-label="" aria-describedby="basic-addon1" name="couponCode" [(ngModel)]="couponCode">
-                                <div class="input-group-prepend">
-                                    <button class="btn btn-promo p-2 shadow-sm" type="button" (click)="applyCouponCode()"
-                                     *ngIf="couponCodeMessage === ''" [disabled]="!customerID"
-                                     [disabled]="couponApplied.code !== ''">Apply</button>
-                                    <button class="btn btn-fail invalidCoupon p-2 shadow-sm" type="button" (click)="applyCouponCode()" *ngIf="couponCodeMessage !== ''">
-                                        <fa-icon [icon]="faXmark"></fa-icon>
-                                    </button>
-                                  </div>
-                            </div>      
-                        </form>
-                        <div class="small invalidCoupon text-danger text-center mb-2 mt-2" *ngIf="couponCodeMessage !== ''">
-                            {{couponCodeMessage}}
-                        </div>
+          <div class="promo-section me-auto ms-auto text-center w-50">
+            <form>
+              <div class="input-group mb-3">
+                <input
+                  type="text"
+                  id="input-code"
+                  class="form-control p-2 shadow-sm"
+                  placeholder="Coupon Code"
+                  aria-label=""
+                  aria-describedby="basic-addon1"
+                  name="couponCode"
+                  [(ngModel)]="couponCode"
+                />
+                <div class="input-group-prepend">
+                  <button
+                    class="btn btn-promo p-2 shadow-sm"
+                    type="button"
+                    (click)="applyCouponCode()"
+                    *ngIf="couponCodeMessage === ''"
+                    [disabled]="!customerID"
+                    [disabled]="couponApplied.code !== ''"
+                  >
+                    Apply
+                  </button>
+                  <button
+                    class="btn btn-fail invalidCoupon p-2 shadow-sm"
+                    type="button"
+                    (click)="applyCouponCode()"
+                    *ngIf="couponCodeMessage !== ''"
+                  >
+                    <fa-icon [icon]="faXmark"></fa-icon>
+                  </button>
+                </div>
+              </div>
+            </form>
+            <div
+              class="small invalidCoupon text-danger text-center mb-2 mt-2"
+              *ngIf="couponCodeMessage !== ''"
+            >
+              {{ couponCodeMessage }}
+            </div>
 
-                        <div class="card" *ngIf="couponApplied.code !== ''">
-                            <div class="card-body bg-light">
-                                <div class="list-group bg-light">
-                                    <div class="list-group-item bg-light">
-                                        <h6 class="me-5">                                                                                                              
-                                            Code:
-                                            <span class="small">{{couponApplied.code}}</span>
-                                        </h6>
-                                    </div>                                                                      
-                                    <div class="list-group-item bg-light">
-                                        <h6 class="me-5">
-                                            Type:
-                                            <span class="small">{{couponApplied.type}}</span>
-                                        </h6>
-                                    </div>
-                                    <div class="list-group-item bg-light">
-                                        <h6 class="me-5">
-                                            Value:
-                                            <span class="small">%{{couponApplied.value}}</span>
-                                        </h6>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer" *ngIf="couponApplied.code !== ''">
-                                <div class="small invalidCoupon text-success text-center mb-2 mt-2">
-                                    Coupon applied successfully!  
-                                </div>         
-                                <div class="small float-end">
-                                    <p class="remove-coupon" (click)="removeCoupon()">Remove</p>  
-                                </div>                                                                                                                         
-                            </div>
-                        </div>
-    
-                    </div>
-                </li>
+            <div class="card" *ngIf="couponApplied.code !== ''">
+              <div class="card-body bg-light">
+                <div class="list-group bg-light">
+                  <div class="list-group-item bg-light">
+                    <h6 class="me-5">
+                      Code:
+                      <span class="small">{{ couponApplied.code }}</span>
+                    </h6>
+                  </div>
+                  <div class="list-group-item bg-light">
+                    <h6 class="me-5">
+                      Type:
+                      <span class="small">{{ couponApplied.type }}</span>
+                    </h6>
+                  </div>
+                  <div class="list-group-item bg-light">
+                    <h6 class="me-5">
+                      Value:
+                      <span class="small">%{{ couponApplied.value }}</span>
+                    </h6>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer" *ngIf="couponApplied.code !== ''">
+                <div
+                  class="small invalidCoupon text-success text-center mb-2 mt-2"
+                >
+                  Coupon applied successfully!
+                </div>
+                <div class="small float-end">
+                  <p class="remove-coupon" (click)="removeCoupon()">Remove</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
 
-                <li class="order-summary ">
-                    <div class="section mb-3">
-                        Order Summary
-                    </div>
+        <li class="order-summary">
+          <div class="section mb-3">Order Summary</div>
 
-                    <div class="content w-50 ms-auto me-auto">
-                        <div class="card ">
-                            <div class="card-body bg-light">
-                                <div class="list-group ">
-                                    <div class="list-group-item bg-light" >
-                                        <h6>Subtotal:
-                                            <span class="float-end">${{subtotal}}</span>
-                                        </h6>
-                                    </div>
-                                    <div class="list-group-item bg-light">
-                                        <h6>Shipping cost:  
-                                            <span class="float-end">${{shippingCost}}</span>
-                                        </h6>
-                                    </div>
-                                    <div class="list-group-item bg-light">                                                                                       
-                                        <h6>Discount:
-                                            <span class="float-end" *ngIf="discount != 0">-%{{discount}}</span>
-                                            <span class="float-end" *ngIf="discount == 0">-</span>
-                                        </h6>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer">
-                                <h6>Total:
-                                    <span class="float-end">${{orderTotal}}</span>
-                                </h6>
-                            </div>
-                        </div>
+          <div class="content w-50 ms-auto me-auto">
+            <div class="card">
+              <div class="card-body bg-light">
+                <div class="list-group">
+                  <div class="list-group-item bg-light">
+                    <h6>
+                      Subtotal:
+                      <span class="float-end">${{ subtotal }}</span>
+                    </h6>
+                  </div>
+                  <div class="list-group-item bg-light">
+                    <h6>
+                      Shipping cost:
+                      <span class="float-end">${{ shippingCost }}</span>
+                    </h6>
+                  </div>
+                  <div class="list-group-item bg-light">
+                    <h6>
+                      Discount:
+                      <span class="float-end" *ngIf="discount != 0"
+                        >-%{{ discount }}</span
+                      >
+                      <span class="float-end" *ngIf="discount == 0">-</span>
+                    </h6>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <h6>
+                  Total:
+                  <span class="float-end">${{ orderTotal }}</span>
+                </h6>
+              </div>
+            </div>
 
-                        <button class="btn btn-complete mt-2 w-100" (click)="completeOrder()" *ngIf="!isOrderComplete">Generate Order</button>
-                        <button class="btn btn-complete mt-2 w-100" disabled *ngIf="isOrderComplete">
-                            <fa-icon [icon]="faCheck" class="me-1"></fa-icon>
-                            Complete
-                        </button>
-                        <div class="small text-decoration-underline text-center" *ngIf="isOrderComplete" (click)="undoOrderComplete()">Undo</div>
-                    </div>
-                </li>
+            <button
+              class="btn btn-complete mt-2 w-100"
+              (click)="completeOrder()"
+              *ngIf="!isOrderComplete"
+            >
+              Generate Order
+            </button>
+            <button
+              class="btn btn-complete mt-2 w-100"
+              disabled
+              *ngIf="isOrderComplete"
+            >
+              <fa-icon [icon]="faCheck" class="me-1"></fa-icon>
+              Complete
+            </button>
+            <div
+              class="small text-decoration-underline text-center"
+              *ngIf="isOrderComplete"
+              (click)="undoOrderComplete()"
+            >
+              Undo
+            </div>
+          </div>
+        </li>
 
-                <li class="payment" *ngIf="isOrderComplete">
-                    <div class="section mb-3">
-                        Payment Method
-                    </div>
+        <li class="payment" *ngIf="isOrderComplete">
+          <div class="section mb-3">Payment Method</div>
 
-                    <button class="btn btn-complete w-100 p-3" data-bs-toggle="modal" data-bs-target="#exampleModal">Credit Card</button>
-                    
-                    <!-- Modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Payment with credit card</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <app-stripe [sale]="sale"></app-stripe>
-                            </div>
-                            <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-  
-                    <div class="small mt-2 mb-2 text-center ">Or</div>
-                    <ngx-paypal [config]="payPalConfig" class="mt-2 w-100 paypal-button"></ngx-paypal>
+          <button
+            class="btn btn-complete w-100 p-3"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal"
+          >
+            Credit Card
+          </button>
 
-                </li>
-            </ol>
-        </div>
+          <!-- Modal -->
+          <div
+            class="modal fade"
+            id="exampleModal"
+            tabindex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">
+                    Payment with credit card
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <app-stripe [sale]="sale"></app-stripe>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        <!-- <div class="total-section col-lg-4">
+          <div class="small mt-2 mb-2 text-center">Or</div>
+          <ngx-paypal
+            [config]="payPalConfig"
+            class="mt-2 w-100 paypal-button"
+          ></ngx-paypal>
+        </li>
+      </ol>
+    </div>
+
+    <!-- <div class="total-section col-lg-4">
             <div class="d-flex justify-content-center">
                 <div class="promo-section">
                     <h6 class="small">Apply a coupon code</h6>
@@ -367,5 +482,5 @@
                 </div>
             </div>
         </div> -->
-    </div>
+  </div>
 </div>
