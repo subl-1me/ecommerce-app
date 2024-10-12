@@ -2,11 +2,12 @@
 
 <div class="container mt-5">
   <div class="row checkout-section justify-content-center">
-    <div class="col-8">
+    <div class="col-6 p-3">
       <span>
         <a class="float-end" [routerLink]="['/products']">Back to shopping</a>
       </span>
-      <h1 class="title">Checkout</h1>
+      <h1 class="title" *ngIf="!isOrderComplete">Checkout</h1>
+      <h1 class="title" *ngIf="isOrderComplete">Select payment method</h1>
       <hr />
       <div class="no-signup" *ngIf="!customerID">
         <div class="alert alert-secondary text-center">
@@ -18,7 +19,7 @@
       </div>
       <ol *ngIf="customerID">
         <li class="section" *ngIf="!isOrderComplete">
-          Order Review
+          <!-- Order Review -->
           <div class="review-section mt-3">
             <div class="card">
               <div class="card-body bg-light">
@@ -34,8 +35,6 @@
                   </div>
                 </ng-container>
                 <ng-container *ngIf="cart.length > 0">
-                  <h5 class="text-center text-muted">Cart items</h5>
-                  <hr class="w-50 ms-auto me-auto" />
                   <table class="table">
                     <tbody>
                       <ng-container *ngFor="let item of cart">
@@ -45,19 +44,23 @@
                               <div class="col-4">
                                 <img
                                   src="{{ item.product?.coverImage }}"
-                                  class="product-image rounded me-5"
+                                  class="product-image rounded"
                                 />
                               </div>
                               <div class="col">
                                 <h6>{{ item.product?.title }}</h6>
-                                <div class="item-size text-muted">
+                                <h6 class="text-muted fst-italic mb-0">
+                                  Qty: 1
+                                </h6>
+                                <h6 class="text-muted fst-italic mb-0">
                                   Size: {{ item.size }}
-                                </div>
-                                <div class="item-color text-muted">
-                                  Color: black
-                                </div>
+                                </h6>
+                                <h6 class="text-muted fst-italic mb-0">
+                                  Color:
+                                </h6>
+                                <div class="circle"></div>
 
-                                <div class="item-size mt-3">
+                                <!-- <div class="item-size mt-3">
                                   <a
                                     href="{{
                                       productHrefUrl
@@ -83,20 +86,11 @@
                                       class="text-muted"
                                     ></fa-icon>
                                   </p>
-                                </div>
+                                </div> -->
                               </div>
                             </div>
                           </td>
                           <td>
-                            <div class="item-size text-muted">Unit price:</div>
-                            <h6>${{ item.product?.price }}</h6>
-                          </td>
-                          <td>
-                            <div class="item-size text-muted">Quantity:</div>
-                            <h6>{{ item.amount }}</h6>
-                          </td>
-                          <td>
-                            <div class="item-size text-muted">Subtotal:</div>
                             <h6>
                               ${{
                                 calculatePrice(item.product?.price, item.amount)
@@ -109,13 +103,10 @@
                   </table>
                 </ng-container>
               </div>
-              <div class="card-footer bg-light">
-                <div class="item-size float-end">Subtotal: ${{ subtotal }}</div>
-              </div>
             </div>
           </div>
         </li>
-
+        <!-- 
         <li class="billing-address mt-3" *ngIf="!isOrderComplete">
           Billing Address
           <div class="card mt-3">
@@ -189,12 +180,12 @@
               </div>
             </div>
           </div>
-        </li>
-        <h6 class="small text-danger" *ngIf="cart.length == 0">
+        </li> -->
+        <!-- <h6 class="small text-danger" *ngIf="cart.length == 0">
           Please, add some products to continue.
-        </h6>
+        </h6> -->
 
-        <li class="shipping mt-3" *ngIf="!isOrderComplete">
+        <!-- <li class="shipping mt-3" *ngIf="!isOrderComplete">
           <div class="shipping-section mb-3">Shipping Method</div>
           <div class="card">
             <div class="card-body bg-light">
@@ -223,24 +214,9 @@
               </ng-container>
             </div>
           </div>
-          <!-- <div class="shippings bg-light">
-                        <ng-container *ngFor="let method of shipping">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="shippingCost" value="{{method.price}}"
-                                 id="input" [(ngModel)]="shippingCost" (change)="addShippingCost(method.price, method.title)" required>
-                                <label class="form-check-label" for="input">
-                                    <h6>{{method.title}}</h6>
-                                </label>
-                                <h6 class="text-muted small">
-                                    {{method.time}}
-                                    <span class="float-end">${{method.price}}</span>
-                                </h6>
-                            </div>
-                        </ng-container>
-                    </div> -->
-        </li>
+        </li> -->
 
-        <li class="coupon-format" *ngIf="!isOrderComplete">
+        <!-- <li class="coupon-format" *ngIf="!isOrderComplete">
           <div class="section mb-3">Coupons</div>
 
           <div class="promo-section me-auto ms-auto text-center w-50">
@@ -320,12 +296,10 @@
               </div>
             </div>
           </div>
-        </li>
+        </li> -->
 
-        <li class="order-summary">
-          <div class="section mb-3">Order Summary</div>
-
-          <div class="content w-50 ms-auto me-auto">
+        <li class="order-summary section mt-2" *ngIf="!isOrderComplete">
+          <div class="content">
             <div class="card">
               <div class="card-body bg-light">
                 <div class="list-group">
@@ -342,13 +316,29 @@
                     </h6>
                   </div>
                   <div class="list-group-item bg-light">
-                    <h6>
+                    <h6
+                      data-bs-toggle="collapse"
+                      data-bs-target="#collapse-promo"
+                    >
                       Discount:
+                      <fa-icon [icon]="faChevronDown" class="ms-1"></fa-icon>
                       <span class="float-end" *ngIf="discount != 0"
                         >-%{{ discount }}</span
                       >
-                      <span class="float-end" *ngIf="discount == 0">-</span>
+                      <span class="float-end text-muted" *ngIf="discount == 0"
+                        >-</span
+                      >
                     </h6>
+                    <div class="collapse" id="collapse-promo">
+                      <input
+                        class="form-control"
+                        placeholder="Coupon/Promo code"
+                      />
+                      <h6 class="text-muted mt-2">
+                        Cupon applied: WINTER2022
+                        <fa-icon [icon]="faXmark" class="ms-1"></fa-icon>
+                      </h6>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -360,86 +350,81 @@
               </div>
             </div>
 
-            <button
+            <!-- <button
               class="btn btn-complete mt-2 w-100"
               (click)="completeOrder()"
               *ngIf="!isOrderComplete"
             >
-              Generate Order
-            </button>
-            <button
-              class="btn btn-complete mt-2 w-100"
-              disabled
-              *ngIf="isOrderComplete"
-            >
-              <fa-icon [icon]="faCheck" class="me-1"></fa-icon>
-              Complete
-            </button>
-            <div
-              class="small text-decoration-underline text-center"
-              *ngIf="isOrderComplete"
-              (click)="undoOrderComplete()"
-            >
-              Undo
-            </div>
+              Continue to pay
+            </button> -->
           </div>
-        </li>
-
-        <li class="payment" *ngIf="isOrderComplete">
-          <div class="section mb-3">Payment Method</div>
-
-          <button
-            class="btn btn-complete w-100 p-3"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-          >
-            Credit Card
-          </button>
-
-          <!-- Modal -->
-          <div
-            class="modal fade"
-            id="exampleModal"
-            tabindex="-1"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">
-                    Payment with credit card
-                  </h5>
-                  <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div class="modal-body">
-                  <app-stripe [sale]="sale"></app-stripe>
-                </div>
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="small mt-2 mb-2 text-center">Or</div>
-          <ngx-paypal
-            [config]="payPalConfig"
-            class="mt-2 w-100 paypal-button"
-          ></ngx-paypal>
         </li>
       </ol>
+    </div>
+
+    <div class="col-6 p-5 shadow">
+      <!-- <h1 class="title">Choose payment method</h1> -->
+      <!-- <hr /> -->
+
+      <div class="paypal-payment-section">
+        <ngx-paypal
+          [config]="payPalConfig"
+          class="mt-2 w-100 paypal-button"
+        ></ngx-paypal>
+      </div>
+      <h6 class="small text-muted mt-3 mb-3 text-center">Or pay with card</h6>
+
+      <h5>Shipping information</h5>
+      <form action="" [formGroup]="form">
+        <div class="row">
+          <div class="col-12 sect">
+            <input
+              id="email"
+              class="form-control input-sect"
+              placeholder="Email"
+            />
+          </div>
+          <div class="col-12 sect">
+            <input
+              id="address"
+              class="form-control input-sect"
+              placeholder="Address"
+            />
+          </div>
+          <div class="col-12 sect">
+            <input
+              id="zip"
+              class="form-control input-sect"
+              placeholder="ZIP code"
+            />
+          </div>
+          <div class="col-12 sect">
+            <input
+              id="country"
+              class="form-control input-sect"
+              placeholder="Country"
+            />
+          </div>
+          <div class="col-12 sect">
+            <input
+              id="city"
+              class="form-control input-sect"
+              placeholder="City"
+            />
+          </div>
+        </div>
+      </form>
+
+      <h5 class="mt-4 mb-2">Payment details</h5>
+      <app-stripe [sale]="sale"></app-stripe>
+
+      <!-- <button
+        class="btn btn-pay w-100 p-3"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+      >
+        Pay
+      </button> -->
     </div>
 
     <!-- <div class="total-section col-lg-4">

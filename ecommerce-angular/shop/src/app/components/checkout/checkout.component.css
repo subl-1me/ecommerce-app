@@ -15,8 +15,8 @@ hr {
 }
 
 .product-image {
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
 }
 
 .total-section {
@@ -29,6 +29,10 @@ hr {
 .shipping-section {
   font-size: 25px;
   font-weight: 500;
+}
+
+.section {
+  list-style-type: none;
 }
 
 tr {
@@ -59,11 +63,10 @@ tr {
   border-color: rgb(245, 244, 244);
 }
 
-.btn-complete {
+.btn-pay {
   color: white;
-  background-color: #7367f0 !important;
-
-  border-color: #7367f0 !important;
+  background-color: #000000 !important;
+  border-color: #000 !important;
 }
 
 .btn-add {
@@ -109,6 +112,21 @@ tr {
   width: 150px;
   height: 150px;
   object-fit: cover;
+}
+
+.payment-method-menu {
+  list-style-type: none;
+  list-style: none;
+}
+
+.payment-method-menu > li {
+  float: left;
+  margin-right: 1.5rem;
+  font-size: 2rem;
+}
+
+.payment-method-menu > li:hover {
+  cursor: pointer;
 }
 
 .item-size,
@@ -164,4 +182,34 @@ tr {
 
 .refresh-list:hover {
   cursor: pointer;
+}
+
+.circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: black;
+}
+
+.input-sect {
+  background-color: transparent;
+  border-top: 0;
+  border-right: 0;
+  border-left: 0;
+  border-radius: 0;
+  padding: 0.25;
+}
+
+.input-sect:focus {
+  border-color: inherit;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+#sect::before,
+::placeholder {
+  padding: 0;
+  font-size: 20px;
+  font-weight: 400;
+  color: #e3e2ec;
 }

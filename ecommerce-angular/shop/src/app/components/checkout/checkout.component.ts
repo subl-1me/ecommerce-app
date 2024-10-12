@@ -1,3 +1,4 @@
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 
 import { Cart } from '../../models/cart';
@@ -7,6 +8,7 @@ import { Sale } from 'src/app/models/sale';
 import { SaleService } from 'src/app/services/sale.service';
 
 import { SaleDetails } from 'src/app/models/saleDetail';
+import { ShippingInformation } from 'src/app/models/ShippingInformation';
 
 import { Direction } from 'src/app/models/direction';
 import { DirectionService } from 'src/app/services/direction.service';
@@ -23,13 +25,19 @@ import { IPayPalConfig, ICreateOrderRequest } from 'ngx-paypal';
 import { StripeService } from 'src/app/services/stripe.service';
 
 // Icons
-import { faTrash, faLink, faRefresh } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTrash,
+  faLink,
+  faRefresh,
+  faChevronDown,
+} from '@fortawesome/free-solid-svg-icons';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons';
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { Order } from 'src/app/models/order';
 
 @Component({
   selector: 'app-checkout',
@@ -46,9 +54,12 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons';
 export class CheckoutComponent implements OnInit {
   // Payments
   public payPalConfig?: IPayPalConfig;
+  public form: FormGroup = new FormGroup({});
 
   // Coupons
   public couponApplied: CouponApplied;
+
+  public shippingInformation: ShippingInformation;
 
   // Icons
 
@@ -61,6 +72,7 @@ export class CheckoutComponent implements OnInit {
   faCheck = faCheck;
   faLink = faLink;
   faRefresh = faRefresh;
+  faChevronDown = faChevronDown;
 
   public customerID: any;
 
@@ -74,6 +86,7 @@ export class CheckoutComponent implements OnInit {
 
   public sale: Sale;
   public saleDetails: Array<SaleDetails>;
+  public currentOrder: Order;
 
   public orderTotal: number;
   public subtotal: number;
@@ -97,7 +110,8 @@ export class CheckoutComponent implements OnInit {
     private _directionService: DirectionService,
     private _checkoutService: CheckoutService,
     private _saleService: SaleService,
-    private _stripeService: StripeService
+    private _stripeService: StripeService,
+    private fb: FormBuilder
   ) {
     this.customerID = localStorage.getItem('_id');
     this.cart = [];
@@ -115,6 +129,32 @@ export class CheckoutComponent implements OnInit {
       customer: this.customerID,
       transaction: '',
       payment_method: '',
+    };
+
+    this.currentOrder = {
+      _id: '',
+      amount: 0,
+      customerID: '',
+      status: 'wait',
+      createAt: '',
+      updatedAt: '',
+    };
+
+    this.form = this.fb.group({
+      address: [
+        '',
+        [Validators.required, Validators.min(1), Validators.max(100000)],
+      ],
+      email: [false, [Validators.required, Validators.requiredTrue]],
+      country: [false, [Validators.required, Validators.requiredTrue]],
+      city: [false, [Validators.required, Validators.requiredTrue]],
+    });
+
+    this.shippingInformation = {
+      address: '',
+      city: '',
+      country: '',
+      zip: '',
     };
 
     this.orderTotal = 0;
@@ -137,6 +177,7 @@ export class CheckoutComponent implements OnInit {
     //this.calculateOrderTotal();
     this.getDefaultDirection();
     this.getShippingMethods();
+    this.getActiveOrder();
   }
 
   generateOrder(): void {
@@ -387,8 +428,18 @@ export class CheckoutComponent implements OnInit {
     this.isCCSelected = true;
   }
 
+  async getActiveOrder(): Promise<any> {
+    this._stripeService
+      .getActiveOrder(this.customerID)
+      .subscribe((response) => {
+        if (response.currentCustomerOrder) {
+          this.currentOrder = response.currentCustomerOrder;
+        }
+      });
+  }
+
   completeOrder(): void {
-    this.generateOrder();
+    // this.generateOrder();
     this.isOrderComplete = true;
   }
 
