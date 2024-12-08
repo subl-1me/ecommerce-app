@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { GLOBAL } from './CONST';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -13,23 +14,33 @@ export class DirectionService {
   addDirection(direction: any): Observable<any> {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    return this._http.post(GLOBAL.url + 'direction', direction, {
-      headers: headers,
-    });
+    return this._http.post(
+      environment.API_URL || GLOBAL.localUrl + 'direction',
+      direction,
+      {
+        headers: headers,
+      }
+    );
   }
 
   getDirectionList(): Observable<any> {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    return this._http.get(GLOBAL.url + 'directions', { headers: headers });
+    return this._http.get(
+      environment.API_URL || GLOBAL.localUrl + 'directions',
+      { headers: headers }
+    );
   }
 
   deleteDirection(directionID: string): Observable<any> {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    return this._http.delete(GLOBAL.url + 'direction/' + directionID, {
-      headers: headers,
-    });
+    return this._http.delete(
+      environment.API_URL || GLOBAL.localUrl + 'direction/' + directionID,
+      {
+        headers: headers,
+      }
+    );
   }
 
   setDirectionAsDefault(
@@ -39,7 +50,8 @@ export class DirectionService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.put(
-      GLOBAL.url + 'direction/' + directionID + '/' + customerID,
+      environment.API_URL ||
+        GLOBAL.localUrl + 'direction/' + directionID + '/' + customerID,
       { headers: headers }
     );
   }
@@ -47,8 +59,11 @@ export class DirectionService {
   getDefaultDirection(customerID: string): Observable<any> {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    return this._http.get(GLOBAL.url + 'defaultDirection/' + customerID, {
-      headers: headers,
-    });
+    return this._http.get(
+      environment.API_URL || GLOBAL.localUrl + 'defaultDirection/' + customerID,
+      {
+        headers: headers,
+      }
+    );
   }
 }

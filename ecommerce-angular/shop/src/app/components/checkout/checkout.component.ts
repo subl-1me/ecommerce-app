@@ -19,6 +19,7 @@ import { CheckoutService } from 'src/app/services/checkout.service';
 import { CouponApplied } from 'src/app/models/couponApplied';
 
 import { GLOBAL } from 'src/app/services/CONST';
+import { environment } from 'src/environments/environment';
 
 // Payments
 import { IPayPalConfig, ICreateOrderRequest } from 'ngx-paypal';
@@ -119,7 +120,7 @@ export class CheckoutComponent implements OnInit {
     this.defaultDirection = {};
     this.shipping = [];
     this.shippingCost = 0;
-    this.productHrefUrl = GLOBAL.productHrefUrl;
+    this.productHrefUrl = environment.API_URL || GLOBAL.localUrl;
 
     this.isPaypalSelected = false;
     this.isCCSelected = false;
