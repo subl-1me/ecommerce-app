@@ -3,27 +3,29 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { constans } from './const';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MessagesService {
+  constructor(private _http: HttpClient) {}
 
-  constructor(
-    private _http: HttpClient
-  ) { }
-
-  public getMessages():Observable<any>{
-
+  public getMessages(): Observable<any> {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    return this._http.get(constans.url+'messages', {headers: headers});
+    return this._http.get(
+      (environment.API_URL || constans.defaultUrl) + 'messages',
+      { headers: headers }
+    );
   }
 
-  public closeMessage(id:string):Observable<any>{
+  public closeMessage(id: string): Observable<any> {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    return this._http.put(constans.url+'message/'+id, {headers: headers});
-
+    return this._http.put(
+      (environment.API_URL || constans.defaultUrl) + 'message/' + id,
+      { headers: headers }
+    );
   }
 }

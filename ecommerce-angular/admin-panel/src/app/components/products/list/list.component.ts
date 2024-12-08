@@ -10,6 +10,7 @@ import { faFileExcel } from '@fortawesome/free-solid-svg-icons';
 import { Product } from 'src/app/models/product';
 
 import { constans } from 'src/app/services/const';
+import { environment } from 'src/environments/environment';
 
 import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
@@ -30,7 +31,9 @@ export class ListComponent implements OnInit, DoCheck {
   public products = Array<Product>();
   public titleFilter: string;
   public responseMessage: string;
-  public productLinkHref = constans.productLinkHref;
+  public productLinkHref =
+    environment.API_URL.replace('/api', '') ||
+    constans.defaultUrl.replace('/api', '');
 
   public edit = '/panel/product/edit/';
 
