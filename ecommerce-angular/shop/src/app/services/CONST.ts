@@ -3,6 +3,6 @@
 // };
 
 export const GLOBAL = {
-  url: 'http://localhost:4201/api/',
-  productHrefUrl: 'http://localhost:4200/',
+  url: process.env || 'http://localhost:4201/api/',
+  productHrefUrl: process.env || 'http://localhost:4201/api/',
 };
