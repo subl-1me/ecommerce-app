@@ -25,7 +25,7 @@ export class StripeService {
     };
 
     return this._http.post(
-      environment.API_URL || GLOBAL.localUrl + 'payment_intent',
+      (environment.API_URL || GLOBAL.localUrl) + 'payment_intent',
       data,
       {
         headers: headers,
@@ -37,7 +37,7 @@ export class StripeService {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.get(
-      environment.API_URL || GLOBAL.localUrl + 'activeOrder/' + customerId,
+      (environment.API_URL || GLOBAL.localUrl) + 'activeOrder/' + customerId,
       {
         headers: headers,
       }
@@ -48,7 +48,7 @@ export class StripeService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.post(
-      environment.API_URL || GLOBAL.localUrl + 'order',
+      (environment.API_URL || GLOBAL.localUrl) + 'order',
       orderData,
       {
         headers: headers,
@@ -61,7 +61,7 @@ export class StripeService {
 
     return this._http
       .patch(
-        environment.API_URL || GLOBAL.localUrl + 'order/' + orderID,
+        (environment.API_URL || GLOBAL.localUrl) + 'order/' + orderID,
         { token: token },
         { headers: headers }
       )
@@ -72,7 +72,7 @@ export class StripeService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.patch(
-      environment.API_URL || GLOBAL.localUrl + 'order/confirm/' + orderId,
+      (environment.API_URL || GLOBAL.localUrl) + 'order/confirm/' + orderId,
       {
         headers: headers,
       }
@@ -82,6 +82,6 @@ export class StripeService {
   public getOrder(): Observable<any> {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    return this._http.get(environment.API_URL || GLOBAL.localUrl + 'order');
+    return this._http.get((environment.API_URL || GLOBAL.localUrl) + 'order');
   }
 }

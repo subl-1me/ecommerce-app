@@ -17,7 +17,7 @@ export class ReviewService {
     let headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.post(
-      environment.API_URL || GLOBAL.localUrl + 'review/' + productID,
+      (environment.API_URL || GLOBAL.localUrl) + 'review/' + productID,
       review,
       {
         headers: headers,
@@ -29,7 +29,7 @@ export class ReviewService {
     let headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.get(
-      environment.API_URL || GLOBAL.localUrl + 'reviews/' + productID,
+      (environment.API_URL || GLOBAL.localUrl) + 'reviews/' + productID,
       {
         headers: headers,
       }

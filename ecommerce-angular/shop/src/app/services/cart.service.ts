@@ -17,7 +17,7 @@ export class CartService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.post(
-      environment.API_URL || GLOBAL.localUrl + 'cart',
+      (environment.API_URL || GLOBAL.localUrl) + 'cart',
       cart,
       {
         headers: headers,
@@ -29,7 +29,7 @@ export class CartService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.get(
-      environment.API_URL || GLOBAL.localUrl + 'cart/' + customerID,
+      (environment.API_URL || GLOBAL.localUrl) + 'cart/' + customerID,
       { headers: headers }
     );
   }
@@ -38,7 +38,7 @@ export class CartService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.delete(
-      environment.API_URL || GLOBAL.localUrl + 'cart/' + registerID,
+      (environment.API_URL || GLOBAL.localUrl) + 'cart/' + registerID,
       { headers: headers }
     );
   }

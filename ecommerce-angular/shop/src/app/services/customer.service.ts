@@ -26,7 +26,7 @@ export class CustomerService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.post(
-      environment.API_URL || GLOBAL.localUrl + 'customer/login',
+      (environment.API_URL || GLOBAL.localUrl) + 'customer/login',
       customer,
       { headers: headers }
     );
@@ -36,7 +36,7 @@ export class CustomerService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.get(
-      environment.API_URL || GLOBAL.localUrl + 'customer/' + _id,
+      (environment.API_URL || GLOBAL.localUrl) + 'customer/' + _id,
       { headers: headers }
     );
   }
@@ -45,7 +45,7 @@ export class CustomerService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.put(
-      environment.API_URL || GLOBAL.localUrl + 'customer/' + _id,
+      (environment.API_URL || GLOBAL.localUrl) + 'customer/' + _id,
       customer,
       { headers: headers }
     );

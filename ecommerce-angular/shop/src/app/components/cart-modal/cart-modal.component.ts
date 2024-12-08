@@ -10,16 +10,23 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
+import { GLOBAL } from 'src/app/services/CONST';
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'app-cart-modal',
   templateUrl: './cart-modal.component.html',
   styleUrls: ['./cart-modal.component.css'],
-  providers: [ CartService ]
+  providers: [CartService],
 })
 export class CartModalComponent implements OnInit {
-
   // Socket
-  public socket = io('http://localhost:4201');
+  public socket = io(
+    `${
+      environment.API_URL.replace('/api/', '') ||
+      GLOBAL.localUrl.replace('/api/', '')
+    }`
+  );
 
   @Output() closeCartModal = new EventEmitter<boolean>();
 
@@ -32,9 +39,7 @@ export class CartModalComponent implements OnInit {
 
   public totalToPay: number = 0;
 
-  constructor(
-    private _cartService: CartService
-  ) { 
+  constructor(private _cartService: CartService) {
     this.cart = [];
     this.customerID = localStorage.getItem('_id');
   }
@@ -42,39 +47,41 @@ export class CartModalComponent implements OnInit {
   ngOnInit(): void {
     this.getCart();
     const self = this;
-    this.socket.on('deleteProductCart', function(data:any){
-      self.getCart();
-    }.bind(self));
+    this.socket.on(
+      'deleteProductCart',
+      function (data: any) {
+        self.getCart();
+      }.bind(self)
+    );
   }
 
-  getCart():void{
-    if(!this.customerID) return;
+  getCart(): void {
+    if (!this.customerID) return;
     this._cartService.getCart(this.customerID).subscribe((response) => {
-      if(!response.cart) return;
+      if (!response.cart) return;
 
       this.cart = response.cart;
-      for(let item of this.cart){
-        if(item.product?.price){
+      for (let item of this.cart) {
+        if (item.product?.price) {
           this.totalToPay += item.product?.price;
         }
       }
-    })
+    });
   }
 
-  deleteProductCart(_id:string):void{
+  deleteProductCart(_id: string): void {
     this._cartService.removeProductCart(_id).subscribe((response) => {
       console.log(response);
-      this.socket.emit('deleteProductCart', {data: this.customerID})
-    })
+      this.socket.emit('deleteProductCart', { data: this.customerID });
+    });
   }
 
-  closeModal():void{
+  closeModal(): void {
     var modal = document.getElementById('modal');
     modal?.classList.add('modalGoAway');
 
     setTimeout(() => {
       this.closeCartModal.emit(false);
-    }, 1000)
+    }, 1000);
   }
-
 }

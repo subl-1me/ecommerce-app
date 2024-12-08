@@ -15,7 +15,7 @@ export class DirectionService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.post(
-      environment.API_URL || GLOBAL.localUrl + 'direction',
+      (environment.API_URL || GLOBAL.localUrl) + 'direction',
       direction,
       {
         headers: headers,
@@ -27,7 +27,7 @@ export class DirectionService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.get(
-      environment.API_URL || GLOBAL.localUrl + 'directions',
+      (environment.API_URL || GLOBAL.localUrl) + 'directions',
       { headers: headers }
     );
   }
@@ -36,7 +36,7 @@ export class DirectionService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.delete(
-      environment.API_URL || GLOBAL.localUrl + 'direction/' + directionID,
+      (environment.API_URL || GLOBAL.localUrl) + 'direction/' + directionID,
       {
         headers: headers,
       }
@@ -60,7 +60,9 @@ export class DirectionService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.get(
-      environment.API_URL || GLOBAL.localUrl + 'defaultDirection/' + customerID,
+      (environment.API_URL || GLOBAL.localUrl) +
+        'defaultDirection/' +
+        customerID,
       {
         headers: headers,
       }

@@ -14,7 +14,7 @@ export class OrderService {
   public getOrders(): Observable<any> {
     let headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    return this._http.get(environment.API_URL || GLOBAL.localUrl + 'orders', {
+    return this._http.get((environment.API_URL || GLOBAL.localUrl) + 'orders', {
       headers: headers,
     });
   }

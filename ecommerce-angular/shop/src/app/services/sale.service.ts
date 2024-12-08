@@ -17,7 +17,7 @@ export class SaleService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.post(
-      environment.API_URL || GLOBAL.localUrl + 'sale',
+      (environment.API_URL || GLOBAL.localUrl) + 'sale',
       sale,
       { headers: headers }
     );
@@ -27,7 +27,7 @@ export class SaleService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.get(
-      environment.API_URL || GLOBAL.localUrl + 'mail/' + saleId,
+      (environment.API_URL || GLOBAL.localUrl) + 'mail/' + saleId,
       { headers: headers }
     );
   }
@@ -36,7 +36,7 @@ export class SaleService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.get(
-      environment.API_URL || GLOBAL.localUrl + 'sales/' + customerID,
+      (environment.API_URL || GLOBAL.localUrl) + 'sales/' + customerID,
       { headers: headers }
     );
   }
@@ -45,7 +45,7 @@ export class SaleService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.get(
-      environment.API_URL || GLOBAL.localUrl + 'sale/' + transaction,
+      (environment.API_URL || GLOBAL.localUrl) + 'sale/' + transaction,
       { headers: headers }
     );
   }

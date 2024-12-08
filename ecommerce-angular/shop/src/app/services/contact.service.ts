@@ -17,7 +17,7 @@ export class ContactService {
     let headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.post(
-      environment.API_URL || GLOBAL.localUrl + 'message',
+      (environment.API_URL || GLOBAL.localUrl) + 'message',
       contact,
       { headers: headers }
     );

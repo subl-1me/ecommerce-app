@@ -14,7 +14,7 @@ export class ConfigsService {
   public getShopConfigs(): Observable<any> {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    return this._http.get(environment.API_URL || GLOBAL.localUrl + 'config', {
+    return this._http.get((environment.API_URL || GLOBAL.localUrl) + 'config', {
       headers: headers,
     });
   }

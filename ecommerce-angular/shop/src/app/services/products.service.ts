@@ -15,7 +15,7 @@ export class ProductsService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.get(
-      environment.API_URL || GLOBAL.localUrl + 'products/' + filter,
+      (environment.API_URL || GLOBAL.localUrl) + 'products/' + filter,
       { headers: headers }
     );
   }
@@ -24,7 +24,7 @@ export class ProductsService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.get(
-      environment.API_URL || GLOBAL.localUrl + 'product/' + productID,
+      (environment.API_URL || GLOBAL.localUrl) + 'product/' + productID,
       { headers: headers }
     );
   }
@@ -33,7 +33,9 @@ export class ProductsService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.get(
-      environment.API_URL || GLOBAL.localUrl + 'productsByCategory/' + category,
+      (environment.API_URL || GLOBAL.localUrl) +
+        'productsByCategory/' +
+        category,
       { headers: headers }
     );
   }
@@ -42,7 +44,7 @@ export class ProductsService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.get(
-      environment.API_URL || GLOBAL.localUrl + 'latestsProducts',
+      (environment.API_URL || GLOBAL.localUrl) + 'latestsProducts',
       { headers: headers }
     );
   }
@@ -51,7 +53,7 @@ export class ProductsService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.get(
-      environment.API_URL || GLOBAL.localUrl + 'topSellers',
+      (environment.API_URL || GLOBAL.localUrl) + 'topSellers',
       { headers: headers }
     );
   }
