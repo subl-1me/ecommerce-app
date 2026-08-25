@@ -39,4 +39,5 @@ export class SideBarComponent implements OnInit {
     this._identityService.logout();
   }
 
+
 }

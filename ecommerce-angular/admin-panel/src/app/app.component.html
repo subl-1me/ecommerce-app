@@ -3,6 +3,7 @@
     
     <!-- SIDEBAR - 20% -->
     <div class="sidebar-wrapper" 
+    *ngIf="isAuthenticated()" 
          style="width: 20%; flex: 0 0 20%;">
         <app-side-bar></app-side-bar>
     </div>

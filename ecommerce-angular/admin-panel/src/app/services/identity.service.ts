@@ -31,6 +31,8 @@ export class IdentityService {
 
     if(!this.checkToken(token)) return false; // verify is token is valid
 
+    console.log(this.user);
+
     return allowRoles.includes(this.user.role);
   }
 

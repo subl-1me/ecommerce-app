@@ -19,7 +19,7 @@ export class AppComponent{
   }
 
   public isAuthenticated():boolean{
-    return this._identityService.isAuthenticated(this.token);
+    return this._identityService.isAuthenticated(['Admin']);
   }
 
 
