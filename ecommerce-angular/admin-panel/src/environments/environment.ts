@@ -3,8 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
-  API_URL: 'https://ecommerce-app-1-l8py.onrender.com/api/',
+  production: true,
+  API_URL: 'http://localhost:3000/api/',
 };
 
 /*

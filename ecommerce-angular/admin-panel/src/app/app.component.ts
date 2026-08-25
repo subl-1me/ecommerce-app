@@ -18,6 +18,10 @@ export class AppComponent{
     this.token = this._identityService.getToken();
   }
 
+  public isAuthenticated():boolean{
+    return this._identityService.isAuthenticated(this.token);
+  }
+
 
   title = 'admin-panel';
 }

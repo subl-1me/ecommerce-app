@@ -1,33 +1,70 @@
-<div class="panel-tools">
-
-    <!-- Top panel -->
-    <div class="row float-end">
-        <!--
-        <div class="card top-panel">
-            <div class="card-body bg-light shadow">
-                <span class="account" (click)="logout()">Logout</span>
+ <!--  SIDEBAR (20%) -->
+        <div class="sidebar bg-dark text-white d-flex flex-column" 
+             style="flex-shrink: 0;">
+            
+            <nav class="nav flex-column p-3 gap-1 flex-grow-1">
+                <h6 class="text-white-50 text-uppercase small fw-bold px-3 mb-3" style="letter-spacing: 0.5px;">
+                    Ecommerce Admin Panel
+                </h6>
+                
+                <a class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2" 
+                   [routerLink]="['']" 
+                   routerLinkActive="active-sidebar-link"
+                   style="cursor: pointer; transition: all 0.2s ease;">
+                    <fa-icon [icon]="faHouse" class="fs-5" style="width: 20px;"></fa-icon>
+                    <span>Dashboard</span>
+                </a>
+                
+                <a class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2" 
+                   [routerLink]="['/panel/customers']" 
+                   routerLinkActive="active-sidebar-link"
+                   style="cursor: pointer; transition: all 0.2s ease;">
+                    <fa-icon [icon]="faUserLarge" class="fs-5" style="width: 20px;"></fa-icon>
+                    <span>My Customers</span>
+                    <span class="badge bg-primary ms-auto rounded-pill">128</span>
+                </a>
+                
+                <a class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2" 
+                   [routerLink]="['/panel/products']" 
+                   routerLinkActive="active-sidebar-link"
+                   style="cursor: pointer; transition: all 0.2s ease;">
+                    <fa-icon [icon]="faTag" class="fs-5" style="width: 20px;"></fa-icon>
+                    <span>My Products</span>
+                </a>
+                
+                <a class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2" 
+                   [routerLink]="['/panel/coupons']" 
+                   routerLinkActive="active-sidebar-link"
+                   style="cursor: pointer; transition: all 0.2s ease;">
+                    <fa-icon [icon]="faGift" class="fs-5" style="width: 20px;"></fa-icon>
+                    <span>Coupons</span>
+                </a>
+                
+                <a class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2" 
+                   [routerLink]="['/panel/messages']" 
+                   routerLinkActive="active-sidebar-link"
+                   style="cursor: pointer; transition: all 0.2s ease;">
+                    <fa-icon [icon]="faMessage" class="fs-5" style="width: 20px;"></fa-icon>
+                    <span>Messages</span>
+                    <span class="badge bg-danger rounded-pill ms-auto">5</span>
+                </a>
+                
+                <hr class="border-secondary opacity-25 my-2">
+                
+                <a class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2" 
+                   [routerLink]="['/panel/configurations']" 
+                   routerLinkActive="active-sidebar-link"
+                   style="cursor: pointer; transition: all 0.2s ease;">
+                    <fa-icon [icon]="faGear" class="fs-5" style="width: 20px;"></fa-icon>
+                    <span>Environment Config</span>
+                </a>
+            </nav>
+            
+            <!-- Footer  -->
+            <div class="p-3 border-top border-secondary border-opacity-25 ">
+                <div class="bg-white bg-opacity-10 rounded-3 p-3 text-center">
+                    <small class="text-white-100 d-block">Logged as: </small>
+                    <small id="logout" class="d-block-inline text-decoration-underline">Log out </small>
+                </div>
             </div>
-        </div>-->
-        <span class="account position-absolute float-right" (click)="logout()">Logout</span>
-    </div>
-
-    <!-- right-hand panel -->
-    <div class="card right-panel">
-        <div class="card-header text-center bg-white">
-            <h1>Panel</h1>
         </div>
-        <div class="card-body shadow">
-            <div class="controllers">
-                <ul class="controller">
-                    <li [routerLink]="['']"><fa-icon [icon]="faHouse" class="me-2"></fa-icon>Home</li>
-                    <li [routerLink]="['/panel/customers']" routerLinkActive="active-link"><fa-icon [icon]="faUserLarge" class="me-2"></fa-icon>My Customers</li>
-                    <li [routerLink]="['/panel/products']" routerLinkActive="active-link"><fa-icon [icon]="faTag" class="me-2"></fa-icon>My Products</li>
-                    <li [routerLink]="['/panel/coupons']" routerLinkActive="active-link"><fa-icon [icon]="faGift" class="me-2"></fa-icon>Coupons</li>
-                    <li [routerLink]="['/panel/messages']" routerLinkActive="active-link"><fa-icon [icon]="faMessage" class="me-2"></fa-icon>Messages</li>
-                    <hr>
-                    <li [routerLink]="['/panel/configurations']" routerLinkActive="active-link"><fa-icon [icon]="faGear" class="me-2"></fa-icon>Enviroment Configuration</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>

@@ -1,12 +1,98 @@
-.content-card{
-    position: absolute;
-    margin-left: 20%;
-    width: 80%;
-    height: 100vh;
+/* Layout base */
+.app-layout {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    background: #f8fafc;
 }
 
-.content{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.sidebar-wrapper {
+    box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.sidebar-wrapper::-webkit-scrollbar {
+    width: 4px;
+}
+.sidebar-wrapper::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+}
+.sidebar-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+}
+.sidebar-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+/* Contenido principal */
+.content-wrapper {
+    background: #f1f4f9;
+    overflow-x: hidden;
+    transition: all 0.3s ease;
+}
+
+.content-card {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+}
+
+.content-card .card-body {
+    padding: 2rem 2.5rem;
+}
+
+.fade-in {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* RESPONSIVE - Mobile First */
+@media (max-width: 991.98px) {
+    .sidebar-wrapper {
+        width: 280px !important;
+        flex: 0 0 280px !important;
+        position: fixed;
+        left: -280px;
+        top: 0;
+        height: 100vh;
+        z-index: 1050;
+        box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .sidebar-wrapper.sidebar-open {
+        left: 0;
+    }
+    
+    .content-wrapper {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+    }
+    
+    .content-card .card-body {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .content-card .card-body {
+        padding: 1rem;
+    }
 }

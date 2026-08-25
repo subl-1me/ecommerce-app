@@ -1,22 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { JwtHelperService } from '@auth0/angular-jwt';
-
-
-// JWT Helper
-const jwtHelper = new JwtHelperService();
 
 @Injectable({
   providedIn: 'root',
 })
 export class IdentityService {
 
+  private jwtHelper:JwtHelperService = new JwtHelperService();
   private token: any;
   private user: any;
 
   constructor(
-    private _router: Router
+    private _router: Router,
   ) {
     this.token = localStorage.getItem('token');
     this.user = {};
@@ -40,15 +36,15 @@ export class IdentityService {
 
   checkToken(token: string): boolean{
     try{
-      var decodedUser = jwtHelper.decodeToken(token);
-
-    }catch(err){ // means invalid token
+      const decodedUser = this.jwtHelper.decodeToken(token);
+      if(decodedUser && decodedUser.sub){
+        this.user = decodedUser;
+      }
+    }catch(err){
       localStorage.removeItem('token');
-
+      localStorage.removeItem('_id');
       return false;
     }
-
-    this.user = decodedUser;
     return true;
   }
 

@@ -1,9 +1,141 @@
-<div class="jumbotron shadow">
-    <h1 class="display-4">Welcome!</h1>
-    <p class="lead">In this panel you can manage your business.</p>
-    <hr class="my-4">
-    <p>Start by viewing a list of your customers</p>
-    <p class="lead">
-        <a class="btn btn-success btn-lg shadow"><fa-icon [icon]="faUserLarge" class="me-2"></fa-icon>My Customers</a>
-    </p>
+<!-- ========== JUMBOTRON / DASHBOARD HEADER ========== -->
+<div class="container-fluid px-4 py-5">
+    <div class="jumbotron bg-gradient-primary-to-success rounded-4 shadow-lg p-4 p-md-5 position-relative overflow-hidden">
+        
+        <!-- Efecto decorativo de fondo -->
+        <div class="position-absolute top-0 end-0 w-25 h-100 opacity-10 d-none d-lg-block" 
+             style="background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%);">
+        </div>
+        <div class="position-absolute bottom-0 start-0 w-25 h-50 opacity-10 d-none d-md-block" 
+             style="background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, transparent 70%);">
+        </div>
+        
+        <!-- Contenido principal -->
+        <div class="row align-items-center position-relative">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <span class="badge bg-white text-success rounded-pill px-4 py-2 fw-semibold shadow-sm">
+                        <i class="bi bi-stars me-2"></i>Dashboard
+                    </span>
+                    <span class="badge bg-success bg-opacity-25 text-white rounded-pill px-3 py-1 fw-light">
+                        <i class="bi bi-clock me-1"></i>Updated just now
+                    </span>
+                </div>
+                
+                <h1 class="display-3 fw-bold text-white mb-2" style="letter-spacing: -0.03em;">
+                    Welcome back!
+                    <span class="d-block d-sm-inline" style="color: #ffd700;">👋</span>
+                </h1>
+                
+                <p class="lead text-white-75 fw-light fs-5 mb-3" style="max-width: 600px;">
+                    In this panel you can manage your business, track performance, and grow your customer base.
+                </p>
+                
+                <hr class="my-3 w-25 text-white-50 opacity-25">
+                
+                <div class="d-flex flex-wrap gap-3 mt-3">
+                    <p class="text-white-50 mb-0 fw-light d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <span>Start by viewing a list of your customers</span>
+                    </p>
+                </div>
+                
+                <div class="mt-4 d-flex flex-wrap gap-3">
+                    <a class="btn btn-light btn-lg rounded-pill px-5 py-3 shadow-lg fw-semibold hover-scale" 
+                       style="transition: all 0.3s ease; background: #ffffff; color: #0a1a2f; border: none; box-shadow: 0 8px 30px rgba(0,0,0,0.15);">
+                        <fa-icon [icon]="faUserLarge" class="me-2" style="color: #0a1a2f;"></fa-icon>
+                        My Customers
+                        <span class="badge bg-success text-white rounded-pill ms-2">+12</span>
+                    </a>
+                    
+                    <a class="btn btn-outline-light btn-lg rounded-pill px-4 py-3 fw-semibold hover-scale" 
+                       style="transition: all 0.3s ease; border-width: 2px;"
+                       [routerLink]="['/dashboard']">
+                        <i class="bi bi-speedometer2 me-2"></i>
+                        Overview
+                    </a>
+                    
+                    <a class="btn btn-outline-light btn-lg rounded-pill px-4 py-3 fw-semibold hover-scale" 
+                       style="transition: all 0.3s ease; border-width: 2px;"
+                       [routerLink]="['/reports']">
+                        <i class="bi bi-bar-chart-fill me-2"></i>
+                        Reports
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Íconos decorativos en el lado derecho -->
+            <div class="col-lg-4 d-none d-lg-block">
+                <div class="text-end">
+                    <div class="bg-white bg-opacity-10 rounded-4 p-4 backdrop-blur-sm" 
+                         style="backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.15);">
+                        <div class="d-flex justify-content-around">
+                            <div class="text-center">
+                                <div class="bg-white rounded-circle p-3 d-inline-flex align-items-center justify-content-center shadow" 
+                                     style="width: 60px; height: 60px;">
+                                    <i class="bi bi-people-fill fs-2" style="color: #0a1a2f;"></i>
+                                </div>
+                                <p class="text-white mt-2 mb-0 fw-light small">1,284</p>
+                                <p class="text-white-50 small mb-0">Customers</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="bg-white rounded-circle p-3 d-inline-flex align-items-center justify-content-center shadow" 
+                                     style="width: 60px; height: 60px;">
+                                    <i class="bi bi-currency-dollar fs-2" style="color: #0a1a2f;"></i>
+                                </div>
+                                <p class="text-white mt-2 mb-0 fw-light small">$48.2K</p>
+                                <p class="text-white-50 small mb-0">Revenue</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="bg-white rounded-circle p-3 d-inline-flex align-items-center justify-content-center shadow" 
+                                     style="width: 60px; height: 60px;">
+                                    <i class="bi bi-graph-up-arrow fs-2" style="color: #0a1a2f;"></i>
+                                </div>
+                                <p class="text-white mt-2 mb-0 fw-light small">+23%</p>
+                                <p class="text-white-50 small mb-0">Growth</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- ========== ESTILOS COMPLEMENTARIOS ========== -->
+<style>
+    /* Gradiente personalizado */
+    .bg-gradient-primary-to-success {
+        background: linear-gradient(135deg, #0a1a2f 0%, #1a5c4a 50%, #2d7d6f 100%);
+    }
+    
+    /* Efecto de escala en hover */
+    .hover-scale {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .hover-scale:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 20px 40px -12px rgba(0,0,0,0.3) !important;
+    }
+    
+    /* Efecto de desenfoque para el backdrop */
+    .backdrop-blur-sm {
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+    
+    /* Sombra de texto para mejor legibilidad */
+    .text-shadow {
+        text-shadow: 0 2px 20px rgba(0,0,0,0.15);
+    }
+    
+    /* Opacidad personalizada */
+    .opacity-10 {
+        opacity: 0.1;
+    }
+    
+    /* Transición suave para elementos interactivos */
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+</style>

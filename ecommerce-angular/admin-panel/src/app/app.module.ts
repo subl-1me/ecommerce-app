@@ -23,7 +23,6 @@ import { AddComponent } from './components/coupon/add/add.component';
 import { ConfigsComponent } from './components/configs/configs.component';
 
 // Some plugins
-import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
 import { NgxFileDropModule } from 'ngx-file-drop';
 import { GalleryComponent } from './components/products/gallery/gallery.component';
 import { MessagesComponent } from './components/messages/messages.component';
@@ -55,8 +54,6 @@ import { MessagesComponent } from './components/messages/messages.component';
     CommonModule,
     FormsModule,
     HttpClientModule,
-    FroalaEditorModule.forRoot(),
-    FroalaViewModule.forRoot(),
     FontAwesomeModule,
     NgxFileDropModule,
   ],
