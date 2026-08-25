@@ -39,5 +39,13 @@ export class SideBarComponent implements OnInit {
     this._identityService.logout();
   }
 
+  public getIdentityName():string|null{
+    const adminName = localStorage.getItem('name');
+    if(!adminName){
+      return null;
+    }
+
+    return adminName;
+  }
 
 }
