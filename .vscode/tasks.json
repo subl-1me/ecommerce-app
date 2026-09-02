@@ -1,0 +1,34 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+      "label": "Start Server",
+      "type": "shell",
+      "command": "pnpm run start",
+      "options": { "cwd": "${workspaceFolder}/api-rest-nodejs" },
+      "isBackground": true,
+      "presentation": { "group": "dev-servers", "reveal": "always" }
+    },
+    {
+      "label": "Start Shop Client",
+      "type": "shell",
+      "command": "pnpm run start",
+      "options": { "cwd": "${workspaceFolder}/ecommerce-angular/shop" },
+      "isBackground": true,
+      "presentation": { "group": "dev-servers", "reveal": "always" }
+    },
+	{
+      "label": "Start Admin Panel Client",
+      "type": "shell",
+      "command": "pnpm run start",
+      "options": { "cwd": "${workspaceFolder}/ecommerce-angular/admin-panel" },
+      "isBackground": true,
+      "presentation": { "group": "dev-servers", "reveal": "always" }
+    },
+    {
+      "label": "Start All",
+      "dependsOn": ["Start Server", "Start Shop Client", "Start Admin Panel Client"],
+      "group": { "kind": "build", "isDefault": true }
+    }
+	]
+}
