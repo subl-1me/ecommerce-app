@@ -3,7 +3,7 @@
 var Coupon = require('../models/coupon');
 
 const add = async function(req, res){
-    if(!req.user || req.user.role !== 'admin') return res.status(403).send({ message: 'You are not authorized.' });
+    if(!req.user || req.user.role !== 'Admin') return res.status(403).send({ message: 'You are not authorized.' });
 
     try {
         var params = req.body;
@@ -18,7 +18,7 @@ const add = async function(req, res){
 }
 
 const coupons = async function(req, res){
-    if(!req.user || req.user.role !== 'admin') return res.status(403).send({ message: 'You are not authorized.' });
+    if(!req.user || req.user.role !== 'Admin') return res.status(403).send({ message: 'You are not authorized.' });
 
     try {
 
@@ -36,7 +36,7 @@ const coupons = async function(req, res){
 }
 
 const remove = async function(req, res){
-    if(!req.user || req.user.role !== 'admin') return res.status(403).send({ message: 'You are not authorized.' });
+    if(!req.user || req.user.role !== 'Admin') return res.status(403).send({ message: 'You are not authorized.' });
     if(!req.params['id']) return res.status(200).send({ message: 'Coupon ID is required.' });
 
     var couponID = req.params['id'];

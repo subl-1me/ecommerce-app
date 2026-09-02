@@ -54,8 +54,6 @@ const adminLogin = async function (req, res) {
     // login
     let user = adminArray[0];
 
-    console.log(user);
-
     bcrypt.compare(data.password, user.password, async function (error, check) {
       if (error) {
         res.status(200).send({ message: "Something went wrong." });

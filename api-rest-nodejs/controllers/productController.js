@@ -25,7 +25,7 @@ const { UPLOADS_URL_TEST } = process.env;
 const upload = multer({ storage: storage }).single("image");
 
 const add = async function (req, res) {
-  if (!req.user || req.user.role !== "admin")
+  if (!req.user || req.user.role !== "Admin")
     return res.status(403).send({ message: "You are not authorized." });
 
   try {
@@ -59,7 +59,7 @@ const add = async function (req, res) {
 };
 
 const remove = async function (req, res) {
-  if (!req.user || req.user.role !== "admin")
+  if (!req.user || req.user.role !== "Admin")
     return res.status(403).send({ message: "You are not authorized." });
   if (!req.params["id"])
     return res.status(200).send({ message: "Product ID required." });
@@ -156,7 +156,7 @@ const productsByCategory = async function (req, res) {
 };
 
 const edit = async function (req, res) {
-  if (!req.user || req.user.role !== "admin")
+  if (!req.user || req.user.role !== "Admin")
     return res.status(403).send({ message: "You are not authorized." });
   if (!req.params["id"])
     return res.status(200).send({ message: "Product ID is required." });
@@ -192,7 +192,7 @@ const edit = async function (req, res) {
 };
 
 const uploadCoverImage = async function (req, res) {
-  if (!req.user || req.user.role !== "admin")
+  if (!req.user || req.user.role !== "Admin")
     return res.status(403).send({ message: "You are not authorized." });
 
   const storage = multer.diskStorage({
@@ -217,7 +217,7 @@ const uploadCoverImage = async function (req, res) {
 };
 
 const uploadGalleryImages = async function (req, res) {
-  if (!req.user || req.user.role !== "admin")
+  if (!req.user || req.user.role !== "Admin")
     return res.status(403).send({ message: "You are not authorized." });
   if (!req.params["id"])
     return res.status(200).send({ message: "Product ID is required." });
@@ -256,7 +256,7 @@ const uploadGalleryImages = async function (req, res) {
 };
 
 const setGalleryImages = async function (req, res) {
-  if (!req.user || req.user.role !== "admin")
+  if (!req.user || req.user.role !== "Admin")
     return res.status(403).send({ message: "You are not authorized." });
   if (!req.params["id"])
     return res.status(200).send({ message: "Product ID is required." });

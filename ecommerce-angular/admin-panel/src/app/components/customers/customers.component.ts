@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { Customer } from '../../models/customer';
 
 // icons
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 
 // Services
 import { CustomersService } from 'src/app/services/customers.service';
@@ -20,6 +20,7 @@ export class CustomersComponent implements OnInit {
 
   // icons
   faPlus = faPlus;
+  faRotateRight = faRotateRight;
 
   public customers = Array<Customer>();
   public filter: string;

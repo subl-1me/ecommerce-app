@@ -75,7 +75,7 @@ const login = async function(req, res){
 // get customers list
 const list = async function(req, res){
 
-    if(!req.user || req.user.role !== 'admin') return res.status(403).send({ message: 'You are not authorized.' });
+    if(!req.user || req.user.role !== 'Admin') return res.status(403).send({ message: 'You are not authorized.' });
 
     const filterBy = req.query.filterBy;
     var content = req.query.content; // content that user send to search
@@ -149,7 +149,7 @@ const listById = async function(req, res){
 
 // register manually a customer
 const create = async function(req, res){
-    if(!req.user || req.user.role !== 'admin') return res.status(403).send({ message: 'You are not authorized.' });
+    if(!req.user || req.user.role !== 'Admin') return res.status(403).send({ message: 'You are not authorized.' });
 
     // Generate random password for users registered manually
     var randomPassword = generator.generate();
@@ -198,7 +198,7 @@ const edit = async function(req, res){
 }
 
 const remove = async function(req, res){
-    if(!req.user || req.user.role !== 'admin') return res.status(403).send({ message: 'You are not authorized.' });
+    if(!req.user || req.user.role !== 'Admin') return res.status(403).send({ message: 'You are not authorized.' });
     if(!req.params['id']) return res.status(200).send({ message: 'An user ID is required.' });
 
     var id = req.params['id'];
