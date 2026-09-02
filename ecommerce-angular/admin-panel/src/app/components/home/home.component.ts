@@ -36,4 +36,13 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  public getIdentityName():string|null{
+    const name = localStorage.getItem('name');
+    if(!name){
+      return null;
+    }
+
+    return name;
+  }
+
 }

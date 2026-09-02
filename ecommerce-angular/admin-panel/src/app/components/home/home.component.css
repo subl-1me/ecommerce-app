@@ -17,6 +17,10 @@
     z-index: 2;
 }
 
+.bg-updated, .bg-dashboard{
+    background-color: #0d6efd;
+}
+
 .controller{
     list-style-type: none;
 }
@@ -26,8 +30,37 @@
 }
 
 .jumbotron{
-    background-color: rgb(248, 248, 248);
+    background: linear-gradient(180deg, #0a1a2f 0%, #162d4a 100%);
     padding: 5%;
     border-radius: 5%;
+
 }
 
+.bg-gradient-primary-to-success {
+    background: linear-gradient(135deg, #0a1a2f 0%, #1a5c4a 50%, #2d7d6f 100%);
+}
+
+.hover-scale {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hover-scale:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 40px -12px rgba(0,0,0,0.3) !important;
+}
+
+.backdrop-blur-sm {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.text-shadow {
+    text-shadow: 0 2px 20px rgba(0,0,0,0.15);
+}
+
+.opacity-10 {
+    opacity: 0.1;
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}

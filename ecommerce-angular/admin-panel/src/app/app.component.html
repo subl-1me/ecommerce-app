@@ -1,27 +1,21 @@
-<!-- ========== LAYOUT PRINCIPAL CON SIDEBAR 20% - CONTENIDO 80% ========== -->
 <div class="app-layout d-flex" style="min-height: 100vh;">
     
-    <!-- SIDEBAR - 20% -->
+    <!-- Sidebar 20% -->
     <div class="sidebar-wrapper" 
-    *ngIf="isAuthenticated()" 
+         *ngIf="isAuthenticated()" 
          style="width: 20%; flex: 0 0 20%;">
         <app-side-bar></app-side-bar>
     </div>
     
-    <!-- CONTENIDO PRINCIPAL - 80% -->
+    <!-- Contenido 80% -->
     <div class="content-wrapper" 
-         style="width: 80%; flex: 1 1 80%; background: #f8fafc; min-height: 100vh;">
+         style="width: 80%; flex: 1 1 80%; min-height: 100vh;">
         
-        <div class="card content-card shadow-sm border-0 rounded-0" 
+        <div class="card content-card shadow-sm border-0 rounded-0 d-flex flex-column" 
              style="min-height: 100vh; background: transparent; border: none;">
-            
-            <div class="content card-body p-4 p-md-5">
-                <div class="welcome-message">
-                    <!-- Animación de entrada para el contenido -->
-                    <div class="fade-in">
-                        <router-outlet></router-outlet>
-                    </div>
-                </div>
+
+            <div class="content card-body flex-grow-1 d-flex align-items-center justify-content-center">
+                <router-outlet></router-outlet>
             </div>
         </div>
     </div>
