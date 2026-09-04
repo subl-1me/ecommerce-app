@@ -1,163 +1,194 @@
-<!-- ========== COMPONENTE CUSTOMERS MEJORADO ========== -->
 <div class="customers-container">
-    
-    <!-- Encabezado -->
-    <div class="d-flex align-items-center justify-content-between mb-4">
-        <div class="text-white">
-            <h1 class="display-6 fw-bold mb-0">
-                My Customers
-            </h1>
-            <p class=" mt-1 mb-0">
-                {{ customers.length }} customers registered
-            </p>
+  <div
+    class="card customer-list-card shadow-sm border-0 rounded-4 overflow-hidden"
+  >
+    <div class="card-header bg-transparent border-0 p-4 text-center">
+      <div class="align-items-center justify-content-between mb-4">
+        <div>
+          <h1 class="customers-title display-6 fw-bold mb-0">My Customers</h1>
+          <p class="text-white mt-1 mb-0">
+            {{ customers.length }} customers registered
+          </p>
         </div>
-        <div class="d-flex gap-2">
-            <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" 
-                    [disabled]="customers.length == 0">
-                Refresh
+      </div>
+
+      <hr class="opacity-25" />
+
+      <div class="row g-3 align-items-center mb-4">
+        <div class="col-12 col-md-6 col-lg-7">
+          <div class="position-relative">
+            <input
+              type="text"
+              class="form-control form-control-lg rounded-pill ps-5"
+              placeholder="Buscar por correo..."
+              [(ngModel)]="filter"
+              [disabled]="customers.length === 0"
+              aria-label="Buscar clientes por correo electrónico"
+              style="
+                background: #fcfcfcb7;
+                border-color: rgba(255, 255, 255, 0.1);
+                color: #e5e7eb;
+              "
+            />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-5">
+          <div class="d-flex gap-2 flex-wrap">
+            <button
+              class="btn-add-customer rounded-pill px-4 py-2 flex-grow-1 flex-grow-md-0"
+              [routerLink]="['/panel/customers/register']"
+            >
+              Add Customer
             </button>
+            <button
+              class="btn btn-secondary rounded-pill px-4 py-2 flex-grow-1 flex-grow-md-0"
+              [disabled]="customers.length === 0"
+            >
+              Refresh
+            </button>
+          </div>
         </div>
-    </div>
-    
-    <hr class="opacity-25">
-    
-    <!-- Tarjeta principal -->
-    <div class="card customer-list-card shadow-sm border-0 rounded-4 overflow-hidden">
-        
-        <!-- Card Header con filtro y acciones -->
-        <div class="card-header bg-transparent border-0 p-4">
-            <div class="row g-3 align-items-center">
-                <!-- Filtro -->
-                <div class="col-md-7 col-lg-8">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="position-relative flex-grow-1">
-                            <input type="text" 
-                                   class="form-control rounded-pill ps-5" 
-                                   placeholder="Search by email..." 
-                                   aria-label="email" 
-                                   aria-describedby="basic-addon1"
-                                   [(ngModel)]="filter" 
-                                   [disabled]="customers.length == 0"
-                                   style="background: #f8fafc; border: 1px solid #e9ecef; padding: 10px 20px;">
-                        </div>
-                        <span class="badge bg-light text-muted rounded-pill px-3 py-2" 
-                              *ngIf="customers.length > 0">
-                            Filter active
-                        </span>
+      </div>
+
+      <div class="card-body customer-list-card">
+        <div
+          class="table-responsive"
+          style="max-height: 500px; overflow-y: auto"
+        >
+          <table class="table table-hover align-middle mb-0">
+            <thead
+              class="bg-transparent bg-table-thead"
+              style="position: sticky; top: 0; z-index: 10"
+            >
+              <tr>
+                <th scope="col" class="ps-4" style="width: 50px">#</th>
+                <th scope="col">Unique ID</th>
+                <th scope="col">Names</th>
+                <th scope="col">Surnames</th>
+                <th scope="col">Email</th>
+                <th scope="col" class="text-center" style="width: 100px">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="customers.length === 0">
+                <tr>
+                  <td colspan="6" class="text-center py-5">
+                    <div class="d-flex flex-column align-items-center">
+                      <h5 class="text-muted">No customers found</h5>
+                      <p class="text-muted small">
+                        Start by adding your first customer
+                      </p>
+                      <button
+                        class="btn btn-primary rounded-pill px-4 mt-2"
+                        [routerLink]="['/panel/customers/register']"
+                        style="
+                          background: linear-gradient(
+                            135deg,
+                            #0a1a2f 0%,
+                            #1a3552 100%
+                          );
+                          border: none;
+                        "
+                      >
+                        Add Customer
+                      </button>
                     </div>
-                </div>
-                
-                <!-- Botón Add Customer -->
-                <div class="col-md-5 col-lg-4 text-md-end">
-                    <button class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" 
-                            [routerLink]="['/panel/customers/register']"
-                            style="transition: all 0.3s ease; border: none;">
-                        Add a Customer
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Card Body - Tabla -->
-        <div class="card-body customer-list-card">
-            <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-transparent bg-table-thead" style="position: sticky; top: 0; z-index: 10;">
-                        <tr>
-                            <th scope="col" class="ps-4" style="width: 50px;">#</th>
-                            <th scope="col">Unique ID</th>
-                            <th scope="col">Names</th>
-                            <th scope="col">Surnames</th>
-                            <th scope="col">Email</th>
-                            <th scope="col" class="text-center" style="width: 100px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Estado vacío -->
-                        <ng-container *ngIf="customers.length === 0">
-                            <tr>
-                                <td colspan="6" class="text-center py-5">
-                                    <div class="d-flex flex-column align-items-center">
-                                        <h5 class="text-muted">No customers found</h5>
-                                        <p class="text-muted small">Start by adding your first customer</p>
-                                        <button class="btn btn-primary rounded-pill px-4 mt-2" 
-                                                [routerLink]="['/panel/customers/register']"
-                                                style="background: linear-gradient(135deg, #0a1a2f 0%, #1a3552 100%); border: none;">
-                                            Add Customer
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </ng-container>
-                        
-                        <!-- Lista de clientes -->
-                        <ng-container *ngFor="let customer of customers; let ind = index">
-                            <tr *ngIf="customer" 
-                                style="transition: all 0.2s ease;">
-                                <th scope="row" class="ps-4">{{ind+1}}</th>
-                                <td>
-                                    <code class="bg-light rounded px-2 py-1 small" 
-                                          style="font-size: 0.75rem;">
-                                        {{customer.sub || 'N/A'}}
-                                    </code>
-                                </td>
-                                <td class="fw-medium">{{customer.names || 'N/A'}}</td>
-                                <td>{{customer.surnames || 'N/A'}}</td>
-                                <td>
-                                    <a href="mailto:{{customer.email}}" class="text-decoration-none">
-                                        {{customer.email || 'N/A'}}
-                                    </a>
-                                </td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-1">
-                                        <!-- Botón Ver -->
-                                        <button class="btn btn-sm btn-outline-info rounded-circle" 
-                                                style="width: 32px; height: 32px; padding: 0;"
-                                                >
-                                        </button>
-                                        
-                                        <!-- Botón Editar -->
-                                        <button class="btn btn-sm btn-outline-warning rounded-circle" 
-                                                style="width: 32px; height: 32px; padding: 0;"
-                                                [routerLink]="['/panel/customers/edit/', customer.sub]">
-                                        </button>
-                                        
-                                        <!-- Botón Eliminar -->
-                                        <button class="btn btn-sm btn-outline-danger rounded-circle" 
-                                                style="width: 32px; height: 32px; padding: 0;">
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </ng-container>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <!-- Card Footer - Paginación/Estadísticas -->
-        <div class="card-footer border-0 p-3 px-4 text-white">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <small>
-                        Showing {{ customers.length }} customer{{ customers.length > 1 ? 's' : '' }}
-                        <span *ngIf="filter" class="ms-2">
-                            <span class="badge bg-secondary rounded-pill">
-                                Filtered: {{ filter }}
-                            </span>
-                        </span>
-                    </small>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <div class="btn-group btn-group-sm" role="group" aria-label="Pagination">
-                        <button type="button" class="btn btn-outline-secondary" disabled>
-                        </button>
-                        <button type="button" class="btn btn-primary">1</button>
-                        <button type="button" class="btn btn-outline-secondary">
-                        </button>
+                  </td>
+                </tr>
+              </ng-container>
+
+              <!-- List -->
+              <ng-container *ngFor="let customer of customers; let ind = index">
+                <tr *ngIf="customer" style="transition: all 0.2s ease">
+                  <th scope="row" class="ps-4">{{ ind + 1 }}</th>
+                  <td>
+                    <code
+                      class="bg-light rounded px-2 py-1 small"
+                      style="font-size: 0.75rem"
+                    >
+                      {{ customer.sub || "N/A" }}
+                    </code>
+                  </td>
+                  <td class="fw-medium">{{ customer.names || "N/A" }}</td>
+                  <td>{{ customer.surnames || "N/A" }}</td>
+                  <td>
+                    <a
+                      href="mailto:{{ customer.email }}"
+                      class="text-decoration-none"
+                    >
+                      {{ customer.email || "N/A" }}
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    <div class="d-flex justify-content-center gap-1">
+                      <!-- see details -->
+                      <button
+                        class="btn btn-sm btn-outline-info text-primary rounded-circle"
+                        style="width: 32px; height: 32px; padding: 0"
+                      >
+                        <fa-icon [icon]="faEye"></fa-icon>
+                      </button>
+
+                      <!-- Edit -->
+                      <button
+                        class="btn btn-sm btn-outline-warning text-warning rounded-circle"
+                        style="width: 32px; height: 32px; padding: 0"
+                        [routerLink]="['/panel/customers/edit/', customer.sub]"
+                      >
+                        <fa-icon [icon]="faPenToSquare"></fa-icon>
+                      </button>
+
+                      <!-- Delte -->
+                      <button
+                        class="btn btn-sm btn-outline-danger text-danger rounded-circle"
+                        style="width: 32px; height: 32px; padding: 0"
+                      >
+                        <fa-icon [icon]="faTrashAlt"></fa-icon>
+                      </button>
                     </div>
-                </div>
-            </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
         </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="card-footer border-0 p-3 px-4 text-white">
+        <div class="row">
+          <div class="col-md-6">
+            <small class="float-start">
+              Showing {{ customers.length }} customer{{
+                customers.length > 1 ? "s" : ""
+              }}
+              <span *ngIf="filter" class="ms-2">
+                <span class="badge bg-secondary rounded-pill">
+                  Filtered: {{ filter }}
+                </span>
+              </span>
+            </small>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <div
+              class="btn-group btn-group-sm"
+              role="group"
+              aria-label="Pagination"
+            >
+              <button type="button" class="btn btn-outline-secondary" disabled>
+                <fa-icon [icon]="faChevronLeft"></fa-icon>
+              </button>
+              <button type="button" class="btn btn-primary">1</button>
+              <button type="button" class="btn btn-outline-secondary">
+                <fa-icon [icon]="faChevronRight"></fa-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

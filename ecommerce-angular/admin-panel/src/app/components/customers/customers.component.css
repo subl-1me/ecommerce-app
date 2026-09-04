@@ -1,203 +1,230 @@
 .table-responsive::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  width: 6px;
+  height: 6px;
 }
 
 .table-responsive::-webkit-scrollbar-track {
-    background: #f1f4f9;
+  background: #f1f4f9;
 }
 
 .table-responsive::-webkit-scrollbar-thumb {
-    background: #c1c7cd;
-    border-radius: 10px;
+  background: #c1c7cd;
+  border-radius: 10px;
 }
 
 .table-responsive::-webkit-scrollbar-thumb:hover {
-    background: #a0a7ae;
+  background: #a0a7ae;
 }
 
+.customer-list-card {
+  background: linear-gradient(180deg, #0a1a2f 0%, #162d4a 100%);
+}
 
-.customer-list-card{
-    background: linear-gradient(180deg, #0a1a2f 0%, #162d4a 100%);
+.btn-add-customer {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+}
+
+.btn-add-customer:hover {
+  font-weight: 400;
+  transform: scale(5px, 5px);
+}
+
+.btn-update-list {
+  border-color: #bebebe;
+}
+
+.btn-update-list:hover {
+  font-weight: 400;
+  transform: scale(5px, 5px);
 }
 
 /* Estilos para la tabla */
 .table {
-    font-size: 0.9rem;
+  font-size: 0.9rem;
 }
 
 .table thead th {
-    font-weight: 600;
-    color: #495057;
-    border-bottom: 2px solid #e9ecef;
-    padding: 12px 8px;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #e9ecef;
+  padding: 12px 8px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .table tbody td {
-    padding: 12px 8px;
-    vertical-align: middle;
+  padding: 12px 8px;
+  vertical-align: middle;
 }
 
 .table tbody tr {
-    border-bottom: 1px solid #f1f4f9;
-    transition: all 0.2s ease;
+  border-bottom: 1px solid #f1f4f9;
+  transition: all 0.2s ease;
 }
 
 .table tbody tr:hover {
-    background-color: #f8fafc;
-    transform: translateX(2px);
+  background-color: #f8fafc;
+  transform: translateX(2px);
 }
 
 /* Estilos para los botones de acción */
 .btn-outline-info,
 .btn-outline-warning,
 .btn-outline-danger {
-    border-width: 1.5px;
-    transition: all 0.2s ease;
+  border-width: 1.5px;
+  transition: all 0.2s ease;
 }
 
 .btn-outline-info:hover {
-    background: #0dcaf0;
-    color: white;
-    transform: scale(1.1);
+  background: #0dcaf0;
+  color: white;
+  transform: scale(1.1);
+}
+
+.customers-title {
+  color: #0d6efd;
+}
+
+.btn .btn-refresh-bg {
+  background-color: #0d6efd;
 }
 
 .btn-outline-warning:hover {
-    background: #ffc107;
-    color: white;
-    transform: scale(1.1);
+  background: #ffc107;
+  color: white;
+  transform: scale(1.1);
 }
 
 .btn-outline-danger:hover {
-    background: #dc3545;
-    color: white;
-    transform: scale(1.1);
+  background: #dc3545;
+  color: white;
+  transform: scale(1.1);
 }
 
 /* Animación de entrada */
 .customers-container {
-    animation: fadeInUp 0.4s ease-out;
+  animation: fadeInUp 0.4s ease-out;
 }
 
 /* 1. Aplicar degradado al Card completo */
 .customer-list-card {
-    background: linear-gradient(180deg, #0a1a2f 0%, #162d4a 100%) !important;
-    color: #ffffff !important;
+  background: linear-gradient(180deg, #0a1a2f 0%, #162d4a 100%) !important;
+  color: #ffffff !important;
 }
 
 /* 2. Aplicar degradado a TODAS las celdas (th y td) */
 .customer-list-card .table,
 .customer-list-card .table th,
 .customer-list-card .table td {
-    background: linear-gradient(180deg, #0a1a2f 0%, #0d1b2c 100%) !important;
-    color: #ffffff !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
+  background: linear-gradient(180deg, #0a1a2f 0%, #0d1b2c 100%) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* 3. Fijar degradado en el header Sticky para que no se altere al hacer scroll */
 .customer-list-card .bg-table-thead th {
-    background: linear-gradient(180deg, #0a1a2f 0%, #0d1b2c 100%) !important;
-    color: #e2e8f0 !important;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+  background: linear-gradient(180deg, #0a1a2f 0%, #0d1b2c 100%) !important;
+  color: #e2e8f0 !important;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
 }
 
 /* 4. Efecto sutil al pasar el cursor sobre las filas */
 .customer-list-card .table-hover > tbody > tr:hover > * {
-    background: linear-gradient(180deg, #10243e 0%, #1c385c 100%) !important;
-    color: #ffffff !important;
+  background: linear-gradient(180deg, #10243e 0%, #193150 100%) !important;
+  color: #ffffff !important;
 }
 
 /* 5. Ajustes de texto interno para mantener contraste */
 .customer-list-card code {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    color: #38bdf8 !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #38bdf8 !important;
 }
 
 .customer-list-card table a {
-    color: #38bdf8 !important;
+  color: #38bdf8 !important;
 }
 
 .customer-list-card .text-muted {
-    color: #94a3b8 !important;
+  color: #94a3b8 !important;
 }
 
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Responsive */
 @media (max-width: 767.98px) {
-    .card-header .row {
-        flex-direction: column;
-    }
-    
-    .table {
-        font-size: 0.8rem;
-    }
-    
-    .table thead th {
-        font-size: 0.7rem;
-        padding: 8px 4px;
-    }
-    
-    .table tbody td {
-        padding: 8px 4px;
-    }
+  .card-header .row {
+    flex-direction: column;
+  }
+
+  .table {
+    font-size: 0.8rem;
+  }
+
+  .table thead th {
+    font-size: 0.7rem;
+    padding: 8px 4px;
+  }
+
+  .table tbody td {
+    padding: 8px 4px;
+  }
 }
 
-#manage-option{
-    font-weight: bold;
-    cursor: pointer;
-    border-bottom: 1px solid rgb(122, 122, 122);
+#manage-option {
+  font-weight: bold;
+  cursor: pointer;
+  border-bottom: 1px solid rgb(122, 122, 122);
 }
 
-#manage-option:hover{
-    transform: translateY(-4px);
+#manage-option:hover {
+  transform: translateY(-4px);
 }
 
-.form-field{
-    float: left;
-    text-align: center;
-    border: 0;
-    border-bottom: 2px solid #9b9b9b;
-    padding: 7px 0;
+.form-field {
+  float: left;
+  text-align: center;
+  border: 0;
+  border-bottom: 2px solid #9b9b9b;
+  padding: 7px 0;
 }
 
-.register-user{
-    border-radius: 5%;
-    background-color: #1e91ed !important;
+.register-user {
+  border-radius: 5%;
+  background-color: #1e91ed !important;
 }
 
-.register-user:hover{
-    cursor: pointer;
-    font-size: 18px;
-    transition: .2s ease;
+.register-user:hover {
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.2s ease;
 }
 
-.card{
-    animation: appear 1s forwards;
+.card {
+  animation: appear 1s forwards;
 }
 
 @keyframes appear {
-    0%{
-        opacity: 10%;
-    }
-    100%{
-        opacity: 100%;
-    }
+  0% {
+    opacity: 10%;
+  }
+  100% {
+    opacity: 100%;
+  }
 }
 
-.btn{
-    color: black;
-    background-color: white !important;
+.btn {
+  color: black;
+  background-color: white !important;
 }
