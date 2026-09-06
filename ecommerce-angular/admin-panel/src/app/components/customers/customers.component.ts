@@ -36,7 +36,7 @@ export class CustomersComponent implements OnInit {
   faChevronRight = faChevronRight;
 
   public customers = Array<Customer>();
-  public selectedCustomer: Customer | null;
+  public selectedCustomer: Customer;
   public filter: string;
   public searchMessage: string;
   public token: any;
@@ -51,6 +51,7 @@ export class CustomersComponent implements OnInit {
       names: '',
       surnames: '',
       sub: 0,
+      email: '',
     };
     this.customers = [];
     this.filter = '';
@@ -62,7 +63,7 @@ export class CustomersComponent implements OnInit {
     this.list();
   }
 
-  list(): void {
+  public list(): void {
     this._customersService.list(this.token).subscribe((res) => {
       if (res.status == 'success') {
         this.searchMessage = res.status;
@@ -72,7 +73,7 @@ export class CustomersComponent implements OnInit {
     });
   }
 
-  filterBy(type: string) {
+  public filterBy(type: string) {
     this._customersService
       .filterBy(type, this.filter, this.token)
       .subscribe((res) => {
@@ -80,8 +81,7 @@ export class CustomersComponent implements OnInit {
         this.customers = res.customers;
       });
   }
-
-  openDetailsModal(customer: Customer): void {
+  public openDetailsModal(customer: Customer): void {
     this.selectedCustomer = customer;
     const modalEl = document.getElementById('customerDetailModal');
     if (!modalEl) {
@@ -92,4 +92,28 @@ export class CustomersComponent implements OnInit {
       modal.show();
     }, 0);
   }
+
+  public showRemoveCustomerModal(customer: Customer): void {
+    this.selectedCustomer = customer;
+    const modalEl = document.getElementById('deleteCustomerModal');
+    if (!modalEl) {
+      return;
+    }
+
+    setTimeout(() => {
+      const modal = new bootstrap.Modal(modalEl);
+      modal.show();
+    }, 0);
+  }
+
+  public resetSelectedCustomer(): void {
+    this.selectedCustomer = {
+      names: '',
+      surnames: '',
+      sub: 0,
+      email: '',
+    };
+  }
+
+  public confirmDeleteSelectedCustomer(): void {}
 }

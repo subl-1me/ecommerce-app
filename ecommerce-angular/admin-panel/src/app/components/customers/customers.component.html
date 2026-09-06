@@ -138,6 +138,7 @@
                     <button
                       class="btn btn-sm btn-outline-danger text-danger rounded-circle"
                       style="width: 32px; height: 32px; padding: 0"
+                      (click)="showRemoveCustomerModal(customer)"
                     >
                       <fa-icon [icon]="faTrashAlt"></fa-icon>
                     </button>
@@ -185,7 +186,7 @@
   </div>
 </div>
 
-<!-- Details Modal (Placed outside table DOM structure) -->
+<!-- Details Modal -->
 <div
   *ngIf="selectedCustomer"
   class="modal fade"
@@ -394,6 +395,7 @@
             type="button"
             class="btn btn-outline-light rounded-pill px-4 flex-grow-1"
             data-bs-dismiss="modal"
+            (click)="resetSelectedCustomer()"
           >
             <i class="fas fa-times me-2"></i>Close
           </button>
@@ -405,6 +407,146 @@
             data-bs-dismiss="modal"
           >
             <i class="fas fa-pen-to-square me-2"></i>Edit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Remove customer confirmation -->
+<div
+  class="modal fade"
+  id="deleteCustomerModal"
+  tabindex="-1"
+  aria-labelledby="deleteCustomerModalLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  data-bs-keyboard="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div
+      class="modal-content bg-dark border-0 rounded-4 overflow-hidden shadow-lg"
+    >
+      <div class="modal-header border-0 px-4 py-3" style="background: #1a1a2e">
+        <div class="d-flex align-items-center gap-3">
+          <div
+            class="rounded-circle bg-danger bg-opacity-10 d-flex align-items-center justify-content-center"
+            style="width: 44px; height: 44px"
+          >
+            <i class="fas fa-trash-alt text-danger fs-5"></i>
+          </div>
+          <div>
+            <h5
+              class="modal-title text-white fw-semibold"
+              id="deleteCustomerModalLabel"
+            >
+              Delete Customer
+            </h5>
+            <p class="text-white-50 small mb-0 font-monospace">
+              This action cannot be undone
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="modal-body p-4" style="background: #0e0e16">
+        <div class="text-center">
+          <div
+            class="rounded-circle bg-danger bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-3"
+            style="
+              width: 80px;
+              height: 80px;
+              border: 2px solid rgba(239, 68, 68, 0.2);
+            "
+          >
+            <i class="fas fa-exclamation-triangle text-danger fs-1"></i>
+          </div>
+
+          <h4 class="text-white fw-medium mb-2">Are you sure?</h4>
+
+          <p class="text-white-50 mb-1">
+            You are about to delete the following customer:
+          </p>
+
+          <div
+            class="bg-white bg-opacity-5 rounded-3 p-3 mt-3 border border-white-10"
+            style="max-width: 400px; margin-left: auto; margin-right: auto"
+          >
+            <div class="d-flex align-items-center gap-3">
+              <div
+                class="rounded-circle bg-gradient-primary d-flex align-items-center justify-content-center flex-shrink-0"
+                style="
+                  width: 48px;
+                  height: 48px;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(99, 102, 241, 0.3),
+                    rgba(139, 92, 246, 0.3)
+                  );
+                  border: 1px solid rgba(255, 255, 255, 0.05);
+                "
+              >
+                <i class="fas fa-user text-white-50 fs-5"></i>
+              </div>
+              <div class="text-start">
+                <p class="text-white fw-medium mb-0">
+                  {{ selectedCustomer.names || "N/A" }}
+                  {{ selectedCustomer.surnames || "" }}
+                </p>
+                <p class="text-white-50 small mb-0">
+                  <i class="fas fa-envelope me-1" style="font-size: 0.6rem">{{
+                    selectedCustomer.email || "N/A"
+                  }}</i>
+                </p>
+                <p class="text-white-50 small mb-0">
+                  <i class="fas fa-id-card me-1" style="font-size: 0.6rem"
+                    >ID: {{ selectedCustomer.sub || "N/A" }}</i
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="bg-danger bg-opacity-10 rounded-3 p-3 mt-3 border border-danger border-opacity-20"
+          >
+            <p
+              class="text-danger small mb-0 d-flex align-items-center justify-content-center gap-2"
+            >
+              <i class="fas fa-circle-exclamation"></i>
+              <span
+                >This action is irreversible. All data will be permanently
+                removed.</span
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 px-4 py-3" style="background: #1a1a2e">
+        <div class="d-flex gap-2 w-100">
+          <button
+            type="button"
+            class="btn btn-outline-light rounded-pill px-4 flex-grow-1"
+            data-bs-dismiss="modal"
+            (click)="resetSelectedCustomer()"
+          >
+            <i class="fas fa-times me-2"></i>Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger rounded-pill px-4 flex-grow-1"
+            style="background: #ef4444; border: none"
+            (click)="confirmDeleteSelectedCustomer()"
+          >
+            <i class="fas fa-trash-alt me-2"></i>Delete Customer
           </button>
         </div>
       </div>
