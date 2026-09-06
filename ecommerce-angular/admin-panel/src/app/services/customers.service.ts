@@ -23,7 +23,7 @@ export class CustomersService {
 
     return this._http.get(
       (environment.API_URL || constans.defaultUrl) + 'customers',
-      { headers: headers }
+      { headers: headers },
     );
   }
 
@@ -34,8 +34,8 @@ export class CustomersService {
     });
 
     return this._http.get(
-      (environment.API_URL || constans.defaultUrl) + 'listById/' + id,
-      { headers: headers }
+      (environment.API_URL || constans.defaultUrl) + 'customer/' + id,
+      { headers: headers },
     );
   }
 
@@ -48,7 +48,7 @@ export class CustomersService {
 
     return this._http.get(
       (environment.API_URL || constans.defaultUrl) + 'list/?' + params,
-      { headers: headers }
+      { headers: headers },
     );
   }
 
@@ -61,7 +61,7 @@ export class CustomersService {
     return this._http.post(
       (environment.API_URL || constans.defaultUrl) + 'create',
       customer,
-      { headers: headers }
+      { headers: headers },
     );
   }
 
@@ -72,9 +72,9 @@ export class CustomersService {
     });
 
     return this._http.put(
-      (environment.API_URL || constans.defaultUrl) + 'edit/' + _id,
+      (environment.API_URL || constans.defaultUrl) + 'customer/' + _id,
       customer,
-      { headers: headers }
+      { headers: headers },
     );
   }
 
@@ -86,7 +86,7 @@ export class CustomersService {
 
     return this._http.delete(
       (environment.API_URL || constans.defaultUrl) + 'remove/' + _id,
-      { headers: headers }
+      { headers: headers },
     );
   }
 }

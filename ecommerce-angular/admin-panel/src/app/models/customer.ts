@@ -4,6 +4,10 @@ export interface Customer {
   surnames?: string;
   email?: string;
   dni?: number;
+  phone?: string;
   gender?: string;
+  notes?: string[];
   password?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
