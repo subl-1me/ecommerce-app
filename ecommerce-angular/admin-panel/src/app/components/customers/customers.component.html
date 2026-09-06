@@ -45,6 +45,7 @@
             <button
               class="btn btn-secondary rounded-pill px-4 py-2 flex-grow-1 flex-grow-md-0"
               [disabled]="customers.length === 0"
+              (click)="updateList()"
             >
               Refresh
             </button>

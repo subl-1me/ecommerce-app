@@ -68,9 +68,13 @@ export class CustomersComponent implements OnInit {
       if (res.status == 'success') {
         this.searchMessage = res.status;
         this.customers = res.customers;
-        console.log(res);
       }
     });
+  }
+
+  public updateList(): void {
+    this.list();
+    //TODO: add wait timer
   }
 
   public filterBy(type: string) {
