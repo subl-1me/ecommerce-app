@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import * as bootstrap from 'bootstrap';
 
 // Models
 import { Customer } from '../../models/customer';
@@ -35,6 +36,7 @@ export class CustomersComponent implements OnInit {
   faChevronRight = faChevronRight;
 
   public customers = Array<Customer>();
+  public selectedCustomer: Customer | null;
   public filter: string;
   public searchMessage: string;
   public token: any;
@@ -45,6 +47,11 @@ export class CustomersComponent implements OnInit {
     private _customersService: CustomersService,
     private _identityService: IdentityService,
   ) {
+    this.selectedCustomer = {
+      names: '',
+      surnames: '',
+      sub: 0,
+    };
     this.customers = [];
     this.filter = '';
     this.searchMessage = '';
@@ -72,5 +79,17 @@ export class CustomersComponent implements OnInit {
         if (res.status === 'error') this.searchMessage = res.status;
         this.customers = res.customers;
       });
+  }
+
+  openDetailsModal(customer: Customer): void {
+    this.selectedCustomer = customer;
+    const modalEl = document.getElementById('customerDetailModal');
+    if (!modalEl) {
+      return;
+    }
+    setTimeout(() => {
+      const modal = new bootstrap.Modal(modalEl);
+      modal.show();
+    }, 0);
   }
 }

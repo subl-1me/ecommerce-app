@@ -2,10 +2,11 @@
   <div
     class="card customer-list-card shadow-sm border-0 rounded-4 overflow-hidden"
   >
+    <!-- Header Controls -->
     <div class="card-header bg-transparent border-0 p-4 text-center">
       <div class="align-items-center justify-content-between mb-4">
         <div>
-          <h1 class="customers-title display-6 fw-bold mb-0">My Customers</h1>
+          <h1 class="display-6 fw-bold mb-0">My Customers</h1>
           <p class="text-white mt-1 mb-0">
             {{ customers.length }} customers registered
           </p>
@@ -51,6 +52,7 @@
         </div>
       </div>
 
+      <!-- Customer Table -->
       <div class="card-body customer-list-card">
         <div
           class="table-responsive"
@@ -73,91 +75,81 @@
               </tr>
             </thead>
             <tbody>
-              <ng-container *ngIf="customers.length === 0">
-                <tr>
-                  <td colspan="6" class="text-center py-5">
-                    <div class="d-flex flex-column align-items-center">
-                      <h5 class="text-muted">No customers found</h5>
-                      <p class="text-muted small">
-                        Start by adding your first customer
-                      </p>
-                      <button
-                        class="btn btn-primary rounded-pill px-4 mt-2"
-                        [routerLink]="['/panel/customers/register']"
-                        style="
-                          background: linear-gradient(
-                            135deg,
-                            #0a1a2f 0%,
-                            #1a3552 100%
-                          );
-                          border: none;
-                        "
-                      >
-                        Add Customer
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </ng-container>
-
-              <!-- List -->
-              <ng-container *ngFor="let customer of customers; let ind = index">
-                <tr *ngIf="customer" style="transition: all 0.2s ease">
-                  <th scope="row" class="ps-4">{{ ind + 1 }}</th>
-                  <td>
-                    <code
-                      class="bg-light rounded px-2 py-1 small"
-                      style="font-size: 0.75rem"
+              <!-- Empty State -->
+              <tr *ngIf="customers.length === 0">
+                <td colspan="6" class="text-center py-5">
+                  <div class="d-flex flex-column align-items-center">
+                    <h5 class="text-muted">No customers found</h5>
+                    <p class="text-muted small">
+                      Start by adding your first customer
+                    </p>
+                    <button
+                      class="btn btn-primary rounded-pill px-4 mt-2"
+                      [routerLink]="['/panel/customers/register']"
+                      style="
+                        background: linear-gradient(
+                          135deg,
+                          #0a1a2f 0%,
+                          #1a3552 100%
+                        );
+                        border: none;
+                      "
                     >
-                      {{ customer.sub || "N/A" }}
-                    </code>
-                  </td>
-                  <td class="fw-medium">{{ customer.names || "N/A" }}</td>
-                  <td>{{ customer.surnames || "N/A" }}</td>
-                  <td>
-                    <a
-                      href="mailto:{{ customer.email }}"
-                      class="text-decoration-none"
+                      Add Customer
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Customer List Rows -->
+              <tr
+                *ngFor="let customer of customers; let ind = index"
+                style="transition: all 0.2s ease"
+              >
+                <th scope="row" class="ps-4">{{ ind + 1 }}</th>
+                <td>
+                  <code
+                    class="bg-light rounded px-2 py-1 small"
+                    style="font-size: 0.75rem"
+                  >
+                    {{ customer.sub || "N/A" }}
+                  </code>
+                </td>
+                <td class="fw-medium">{{ customer.names || "N/A" }}</td>
+                <td>{{ customer.surnames || "N/A" }}</td>
+                <td>
+                  <a
+                    [href]="'mailto:' + customer.email"
+                    class="text-decoration-none"
+                  >
+                    {{ customer.email || "N/A" }}
+                  </a>
+                </td>
+                <td class="text-center">
+                  <div class="d-flex justify-content-center gap-1">
+                    <button
+                      class="btn btn-sm btn-outline-info text-primary rounded-circle"
+                      style="width: 32px; height: 32px; padding: 0"
+                      (click)="openDetailsModal(customer)"
                     >
-                      {{ customer.email || "N/A" }}
-                    </a>
-                  </td>
-                  <td class="text-center">
-                    <div class="d-flex justify-content-center gap-1">
-                      <!-- see details -->
-                      <button
-                        class="btn btn-sm btn-outline-info text-primary rounded-circle"
-                        style="width: 32px; height: 32px; padding: 0"
-                      >
-                        <fa-icon [icon]="faEye"></fa-icon>
-                      </button>
+                      <fa-icon [icon]="faEye"></fa-icon>
+                    </button>
 
-                      <!-- Edit -->
-                      <button
-                        class="btn btn-sm btn-outline-warning text-warning rounded-circle"
-                        style="width: 32px; height: 32px; padding: 0"
-                        [routerLink]="['/panel/customers/edit/', customer.sub]"
-                      >
-                        <fa-icon [icon]="faPenToSquare"></fa-icon>
-                      </button>
-
-                      <!-- Delte -->
-                      <button
-                        class="btn btn-sm btn-outline-danger text-danger rounded-circle"
-                        style="width: 32px; height: 32px; padding: 0"
-                      >
-                        <fa-icon [icon]="faTrashAlt"></fa-icon>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </ng-container>
+                    <button
+                      class="btn btn-sm btn-outline-danger text-danger rounded-circle"
+                      style="width: 32px; height: 32px; padding: 0"
+                    >
+                      <fa-icon [icon]="faTrashAlt"></fa-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- Footer -->
+      <!-- Pagination Footer -->
       <div class="card-footer border-0 p-3 px-4 text-white">
         <div class="row">
           <div class="col-md-6">
@@ -187,6 +179,233 @@
               </button>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Details Modal (Placed outside table DOM structure) -->
+<div
+  *ngIf="selectedCustomer"
+  class="modal fade"
+  id="customerDetailModal"
+  tabindex="-1"
+  aria-labelledby="customerDetailModalLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  data-bs-keyboard="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div
+      class="modal-content bg-dark border-0 rounded-4 overflow-hidden shadow-lg"
+    >
+      <div class="modal-header border-0 px-4 py-3" style="background: #1a1a2e">
+        <div class="d-flex align-items-center gap-3">
+          <div
+            class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center"
+            style="width: 44px; height: 44px"
+          >
+            <i class="fas fa-user text-primary fs-5"></i>
+          </div>
+          <div>
+            <h5
+              class="modal-title text-white fw-semibold"
+              id="customerDetailModalLabel"
+            >
+              Customer Details
+            </h5>
+            <p class="text-white-50 small mb-0 font-monospace">
+              ID: <span class="text-primary">{{ selectedCustomer.sub }}</span>
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="modal-body p-4" style="background: #0e0e16">
+        <div
+          class="d-flex align-items-center gap-4 mb-4 pb-3 border-bottom border-white-10"
+        >
+          <div
+            class="rounded-circle d-flex align-items-center justify-content-center"
+            style="
+              width: 64px;
+              height: 64px;
+              background: linear-gradient(
+                135deg,
+                rgba(99, 102, 241, 0.3),
+                rgba(139, 92, 246, 0.3)
+              );
+              border: 1px solid rgba(255, 255, 255, 0.05);
+            "
+          >
+            <i class="fas fa-user text-white-50 fs-2"></i>
+          </div>
+          <div>
+            <h4 class="text-white fw-medium mb-1">
+              {{ selectedCustomer.names }} {{ selectedCustomer.surnames }}
+            </h4>
+            <div class="d-flex align-items-center gap-2 text-white-50 small">
+              <i class="fas fa-envelope text-primary opacity-50"></i>
+              <span>{{ selectedCustomer.email }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border border-white-10"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                <i class="fas fa-id-card text-primary opacity-50"></i> Names
+              </p>
+              <p class="text-white-75 mb-0 fs-6">
+                {{ selectedCustomer.names }}
+              </p>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border border-white-10"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                <i class="fas fa-id-card text-primary opacity-50"></i> Surnames
+              </p>
+              <p class="text-white-75 mb-0 fs-6">
+                {{ selectedCustomer.surnames }}
+              </p>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border border-white-10"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                <i class="fas fa-envelope text-primary opacity-50"></i> Email
+              </p>
+              <p class="text-white-75 mb-0 fs-6">
+                <a
+                  [href]="'mailto:' + selectedCustomer.email"
+                  class="text-decoration-none text-white-75"
+                >
+                  {{ selectedCustomer.email }}
+                </a>
+              </p>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border border-white-10"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                <i class="fas fa-phone text-primary opacity-50"></i> Phone
+              </p>
+              <p class="text-white-75 mb-0 fs-6"></p>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border border-white-10"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                <i class="fas fa-calendar-plus text-primary opacity-50"></i>
+                Created date
+              </p>
+              <p class="text-white-75 mb-0 fs-6"></p>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border border-white-10"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                <i class="fas fa-circle-check text-primary opacity-50"></i>
+                Status
+              </p>
+              <p class="mb-0">
+                <span
+                  class="badge bg-success bg-opacity-20 text-success rounded-pill px-3 py-2"
+                >
+                  <i
+                    class="fas fa-circle text-success me-1"
+                    style="font-size: 0.4rem"
+                  ></i>
+                </span>
+              </p>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border border-white-10"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                <i class="fas fa-location-dot text-primary opacity-50"></i>
+                Address
+              </p>
+              <p class="text-white-75 mb-0 fs-6"></p>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border border-white-10"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                <i class="fas fa-pen text-primary opacity-50"></i> Notes
+              </p>
+              <p class="text-white-50 mb-0 fs-6 fst-italic"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 px-4 py-3" style="background: #1a1a2e">
+        <div class="d-flex gap-2 w-100">
+          <button
+            type="button"
+            class="btn btn-outline-light rounded-pill px-4 flex-grow-1"
+            data-bs-dismiss="modal"
+          >
+            <i class="fas fa-times me-2"></i>Close
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary rounded-pill px-4 flex-grow-1"
+            style="background: #6366f1; border: none"
+            [routerLink]="['/panel/customers/edit/', selectedCustomer.sub]"
+            data-bs-dismiss="modal"
+          >
+            <i class="fas fa-pen-to-square me-2"></i>Edit
+          </button>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from "@angular/forms";
-import { HttpClientModule } from "@angular/common/http";
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CommonModule } from '@angular/common';
@@ -26,7 +26,6 @@ import { ConfigsComponent } from './components/configs/configs.component';
 import { NgxFileDropModule } from 'ngx-file-drop';
 import { GalleryComponent } from './components/products/gallery/gallery.component';
 import { MessagesComponent } from './components/messages/messages.component';
-
 
 @NgModule({
   declarations: [
@@ -58,6 +57,6 @@ import { MessagesComponent } from './components/messages/messages.component';
     NgxFileDropModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

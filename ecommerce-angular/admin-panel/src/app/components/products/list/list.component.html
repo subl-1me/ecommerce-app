@@ -66,7 +66,7 @@
             <td>{{ product.sales }}</td>
             <td>{{ product.stock }}</td>
             <td>{{ product.rating }}</td>
-            <td>{{ product.updatedAt | date : "medium" }}</td>
+            <td>{{ product.updatedAt | date: "medium" }}</td>
             <app-options-button
               [id]="product._id"
               [path]="edit"
