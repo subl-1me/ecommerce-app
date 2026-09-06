@@ -58,6 +58,7 @@ export class RegisterComponent implements OnInit {
 
   resetForm(form: any) {
     this.newCustomer = {
+      sub: 0,
       names: '',
       surnames: '',
       email: '',

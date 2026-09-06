@@ -4,6 +4,11 @@ import * as bootstrap from 'bootstrap';
 // Models
 import { Customer } from '../../models/customer';
 
+interface Modal {
+  modal: any;
+  name: string;
+}
+
 // icons
 import {
   faPlus,
@@ -18,6 +23,7 @@ import {
 // Services
 import { CustomersService } from 'src/app/services/customers.service';
 import { IdentityService } from 'src/app/services/identity.service';
+import { ModalService } from 'src/app/services/modal.service';
 
 @Component({
   selector: 'app-customers',
@@ -46,6 +52,7 @@ export class CustomersComponent implements OnInit {
   constructor(
     private _customersService: CustomersService,
     private _identityService: IdentityService,
+    private _modalsService: ModalService,
   ) {
     this.selectedCustomer = {
       names: '',
@@ -85,6 +92,7 @@ export class CustomersComponent implements OnInit {
         this.customers = res.customers;
       });
   }
+
   public openDetailsModal(customer: Customer): void {
     this.selectedCustomer = customer;
     const modalEl = document.getElementById('customerDetailModal');
@@ -94,6 +102,10 @@ export class CustomersComponent implements OnInit {
     setTimeout(() => {
       const modal = new bootstrap.Modal(modalEl);
       modal.show();
+      this._modalsService.addModal({
+        elem: modal,
+        name: 'customerDetailModal',
+      });
     }, 0);
   }
 
@@ -107,7 +119,19 @@ export class CustomersComponent implements OnInit {
     setTimeout(() => {
       const modal = new bootstrap.Modal(modalEl);
       modal.show();
+      this._modalsService.addModal({
+        elem: modal,
+        name: 'deleteCustomerModal',
+      });
     }, 0);
+  }
+
+  public closeDetailsCustomerModal(): void {
+    this._modalsService.closeModal('customerDetailModal');
+  }
+
+  public closeRemoveCustomerModal(): void {
+    this._modalsService.closeModal('deleteCustomerModal');
   }
 
   public resetSelectedCustomer(): void {
@@ -119,5 +143,12 @@ export class CustomersComponent implements OnInit {
     };
   }
 
-  public confirmDeleteSelectedCustomer(): void {}
+  public confirmDeleteSelectedCustomer(): void {
+    this._customersService
+      .remove(this.token, this.selectedCustomer.sub.toString())
+      .subscribe((res) => {
+        console.log(res);
+        this.closeRemoveCustomerModal();
+      });
+  }
 }

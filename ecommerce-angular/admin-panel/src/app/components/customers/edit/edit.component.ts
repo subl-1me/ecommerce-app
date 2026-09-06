@@ -17,10 +17,9 @@ import { IdentityService } from 'src/app/services/identity.service';
   selector: 'app-edit',
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.css'],
-  providers: [ CustomersService, IdentityService ]
+  providers: [CustomersService, IdentityService],
 })
 export class EditComponent implements OnInit {
-
   // Icons
   faAngleLeft = faAngleLeft;
   faPlus = faPlus;
@@ -34,9 +33,9 @@ export class EditComponent implements OnInit {
   constructor(
     private _customerService: CustomersService,
     private _identityService: IdentityService,
-    private _router: ActivatedRoute
-  ) { 
-    this.customer = {};
+    private _router: ActivatedRoute,
+  ) {
+    this.customer = { sub: 0 };
     this.token = this._identityService.getToken();
     this.responseStatus = '';
   }
@@ -47,22 +46,25 @@ export class EditComponent implements OnInit {
     this.getCustomer();
   }
 
-  getCustomer():void{
-    this._customerService.listById(this.token, this.customerId).subscribe((response) => {
-      console.log(response);
-      this.customer = response.customer;
-    })
+  getCustomer(): void {
+    this._customerService
+      .listById(this.token, this.customerId)
+      .subscribe((response) => {
+        console.log(response);
+        this.customer = response.customer;
+      });
   }
 
-  edit(form:any):void{
-    this._customerService.edit(this.customer, this.token, this.customerId).subscribe((response) => {
-      if(response.status == 'success'){
-        this.getCustomer();
-        this.responseStatus = response.status;
-      }else{
-        this.responseStatus = response.status;
-      }
-    })
+  edit(form: any): void {
+    this._customerService
+      .edit(this.customer, this.token, this.customerId)
+      .subscribe((response) => {
+        if (response.status == 'success') {
+          this.getCustomer();
+          this.responseStatus = response.status;
+        } else {
+          this.responseStatus = response.status;
+        }
+      });
   }
-
 }

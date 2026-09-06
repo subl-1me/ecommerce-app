@@ -227,6 +227,7 @@
           class="btn-close btn-close-white"
           data-bs-dismiss="modal"
           aria-label="Close"
+          (click)="closeDetailsCustomerModal()"
         ></button>
       </div>
 
@@ -396,7 +397,7 @@
             type="button"
             class="btn btn-outline-light rounded-pill px-4 flex-grow-1"
             data-bs-dismiss="modal"
-            (click)="resetSelectedCustomer()"
+            (click)="closeDetailsCustomerModal()"
           >
             <i class="fas fa-times me-2"></i>Close
           </button>
@@ -441,6 +442,7 @@
             <h5
               class="modal-title text-white fw-semibold"
               id="deleteCustomerModalLabel"
+              (click)="confirmDeleteSelectedCustomer()"
             >
               Delete Customer
             </h5>
