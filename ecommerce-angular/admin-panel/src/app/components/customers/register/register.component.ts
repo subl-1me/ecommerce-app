@@ -16,10 +16,9 @@ import { Customer } from 'src/app/models/customer';
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
-  providers: [ IdentityService, CustomersService ]
+  providers: [IdentityService, CustomersService],
 })
 export class RegisterComponent implements OnInit {
-
   // Icons
   faAdd = faAdd;
   faAngleLeft = faAngleLeft;
@@ -27,12 +26,16 @@ export class RegisterComponent implements OnInit {
   public newCustomer = {} as Customer;
   public token: any;
   public responseMessage: string;
+  public formSubmitted: boolean;
+
+  today: Date = new Date();
 
   constructor(
     private _identityService: IdentityService,
     private _customerService: CustomersService,
-    private _router: Router
+    private _router: Router,
   ) {
+    this.formSubmitted = false;
     this.newCustomer.password = 'none';
     this.token = this._identityService.getToken();
     this.responseMessage = '';
@@ -42,16 +45,31 @@ export class RegisterComponent implements OnInit {
     console.log(this.newCustomer);
   }
 
-  register(form:any){
+  register(form: any) {
     console.log(this.newCustomer);
-    this._customerService.create(this.newCustomer, this.token).subscribe((res) => {
-      if(res.message == 'success'){
-        this._router.navigate(['/panel/customers/list']);
-      }else{
-        console.log(res);
-        this.responseMessage = 'error';
-      }
-    })
+    this._customerService
+      .create(this.newCustomer, this.token)
+      .subscribe((res) => {
+        if (res.message == 'success') {
+          this._router.navigate(['/panel/customers/list']);
+        } else {
+          console.log(res);
+          this.responseMessage = 'error';
+        }
+      });
   }
 
+  resetForm(form: any) {
+    if (confirm('Are you sure you want to clear all fields?')) {
+      this.newCustomer = {
+        names: '',
+        surnames: '',
+        email: '',
+        dni: 0,
+        gender: '',
+      };
+      form.reset();
+      form.controls['gender'].setValue('Choose...');
+    }
+  }
 }

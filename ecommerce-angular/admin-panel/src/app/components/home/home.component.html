@@ -1,88 +1,130 @@
 <!-- DASHBOARD HEADER -->
 <div class="container-fluid px-4 py-5">
-    <div class="jumbotron rounded-4 shadow-lg p-4 p-md-5 position-relative overflow-hidden">
-        
-        <div class="row align-items-center position-relative">
-            <div class="col-lg-8">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                    <span class="badge bg-dashboard rounded-pill px-4 py-2 fw-semibold shadow-sm">
-                        Dashboard
-                    </span>
-                    <span class="badge bg-opacity-25 bg-updated text-white rounded-pill px-3 py-1 fw-light">
-                        Updated just now
-                    </span>
-                </div>
-                
-                <h1 class="display-3 fw-bold text-white mb-2" style="letter-spacing: -0.03em;">
-                    Welcome back
-                    <span class="d-block d-sm-inline" style="color: #0d6efd;">{{getIdentityName()}}!</span>
-                </h1>
-                
-                <p class="lead text-white fw-light fs-5 mb-3" style="max-width: 600px;">
-                    In this panel you can manage your business, track performance, and grow your customer base.
-                </p>
-                
-                <hr class="my-3 w-25 text-white-50 opacity-25">
-                <div class="d-flex flex-wrap gap-3 mt-3">
-                    <p class="text-white mb-0 fw-light d-flex align-items-center">
-                        <i class="bi bi-check-circle-fill text-success"></i>
-                        <span>Start by viewing a list of your customers</span>
-                    </p>
-                </div>
-                
-                <div class="mt-4 d-flex flex-wrap gap-3">
-                    <a class="btn btn-light btn-lg rounded-pill px-5 py-3 shadow-lg fw-semibold hover-scale" 
-                       style="transition: all 0.3s ease; background: #ffffff; color: #0a1a2f; border: none; box-shadow: 0 8px 30px rgba(0,0,0,0.15);"
-                       [routerLink]="['panel/customers']"
-                       >
-                       
-                        <fa-icon [icon]="faUserLarge" class="me-2" style="color: #073881;"></fa-icon>
-                        Customers
-                        <span class="badge bg-updated text-white rounded-pill ms-2">+12</span>
-                    </a>
-                    
-                    <a class="btn btn-outline-light btn-lg rounded-pill px-4 py-3 fw-semibold hover-scale" 
-                       style="transition: all 0.3s ease; border-width: 2px;"
-                       [routerLink]="['/panel/configurations']">
-                        <i class="bi bi-bar-chart-fill me-2"></i>
-                        My Ecommerce Config
-                    </a>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 d-none d-lg-block">
-                <div class="text-end">
-                    <div class="bg-white bg-opacity-10 rounded-4 p-4 backdrop-blur-sm" 
-                         style="backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.15);">
-                        <div class="d-flex justify-content-around">
-                            <div class="text-center">
-                                <div class="bg-white rounded-circle p-3 d-inline-flex align-items-center justify-content-center shadow" 
-                                     style="width: 60px; height: 60px;">
-                                    <i class="bi bi-people-fill fs-2" style="color: #0a1a2f;"></i>
-                                </div>
-                                <p class="text-white mt-2 mb-0 fw-light small">1,284</p>
-                                <p class="text-white-50 small mb-0">Total Customers</p>
-                            </div>
-                            <div class="text-center">
-                                <div class="bg-white rounded-circle p-3 d-inline-flex align-items-center justify-content-center shadow" 
-                                     style="width: 60px; height: 60px;">
-                                    <i class="bi bi-currency-dollar fs-2" style="color: #0a1a2f;"></i>
-                                </div>
-                                <p class="text-white mt-2 mb-0 fw-light small">$48.2K</p>
-                                <p class="text-white-50 small mb-0">Revenue</p>
-                            </div>
-                            <div class="text-center">
-                                <div class="bg-white rounded-circle p-3 d-inline-flex align-items-center justify-content-center shadow" 
-                                     style="width: 60px; height: 60px;">
-                                    <i class="bi bi-graph-up-arrow fs-2" style="color: #0a1a2f;"></i>
-                                </div>
-                                <p class="text-white mt-2 mb-0 fw-light small">+23%</p>
-                                <p class="text-white-50 small mb-0">Growth</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <div
+    class="jumbotron rounded-4 shadow-lg p-4 p-md-5 position-relative overflow-hidden"
+  >
+    <div class="row align-items-center position-relative">
+      <div class="col-lg-8">
+        <div class="d-flex align-items-center gap-3 mb-2">
+          <span
+            class="badge bg-dashboard rounded-pill px-4 py-2 fw-semibold shadow-sm"
+          >
+            Dashboard
+          </span>
+          <span
+            class="badge bg-opacity-25 bg-updated text-white rounded-pill px-3 py-1 fw-light"
+          >
+            Updated just now
+          </span>
         </div>
+
+        <h1
+          class="display-3 fw-bold text-white mb-2"
+          style="letter-spacing: -0.03em"
+        >
+          Welcome back
+          <span class="d-block d-sm-inline" style="color: #0d6efd"
+            >{{ getIdentityName() }}!</span
+          >
+        </h1>
+
+        <p class="lead text-white fw-light fs-5 mb-3" style="max-width: 600px">
+          In this panel you can manage your business, track performance, and
+          grow your customer base.
+        </p>
+
+        <hr class="my-3 w-25 text-white-50 opacity-25" />
+        <div class="d-flex flex-wrap gap-3 mt-3">
+          <p class="text-white mb-0 fw-light d-flex align-items-center">
+            <i class="bi bi-check-circle-fill text-success"></i>
+            <span>Start by viewing a list of your customers</span>
+          </p>
+        </div>
+
+        <div class="mt-4 d-flex flex-wrap gap-3">
+          <a
+            class="btn btn-light btn-lg rounded-pill px-5 py-3 shadow-lg fw-semibold hover-scale"
+            style="
+              transition: all 0.3s ease;
+              background: #ffffff;
+              color: #0a1a2f;
+              border: none;
+              box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            "
+            [routerLink]="['panel/customers']"
+          >
+            <fa-icon
+              [icon]="faUserLarge"
+              class="me-2"
+              style="color: #073881"
+            ></fa-icon>
+            Customers
+            <span class="badge bg-updated text-white rounded-pill ms-2"
+              >+12</span
+            >
+          </a>
+
+          <a
+            class="btn btn-outline-light btn-lg rounded-pill px-4 py-3 fw-semibold hover-scale"
+            style="transition: all 0.3s ease; border-width: 2px"
+            [routerLink]="['/panel/configurations']"
+          >
+            <i class="bi bi-bar-chart-fill me-2"></i>
+            My Ecommerce Config
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 d-none d-lg-block">
+        <div class="text-end">
+          <div
+            class="bg-white bg-opacity-10 rounded-4 p-4 backdrop-blur-sm"
+            style="
+              backdrop-filter: blur(8px);
+              border: 1px solid rgba(255, 255, 255, 0.15);
+            "
+          >
+            <div class="d-flex justify-content-around">
+              <div class="text-center">
+                <div
+                  class="bg-white rounded-circle p-3 d-inline-flex align-items-center justify-content-center shadow"
+                  style="width: 60px; height: 60px"
+                >
+                  <i class="bi bi-people-fill fs-2" style="color: #0a1a2f"></i>
+                </div>
+                <p class="text-white mt-2 mb-0 fw-light small">1,284</p>
+                <p class="text-white-50 small mb-0">Total Customers</p>
+              </div>
+              <div class="text-center">
+                <div
+                  class="bg-white rounded-circle p-3 d-inline-flex align-items-center justify-content-center shadow"
+                  style="width: 60px; height: 60px"
+                >
+                  <i
+                    class="bi bi-currency-dollar fs-2"
+                    style="color: #0a1a2f"
+                  ></i>
+                </div>
+                <p class="text-white mt-2 mb-0 fw-light small">$48.2K</p>
+                <p class="text-white-50 small mb-0">Revenue</p>
+              </div>
+              <div class="text-center">
+                <div
+                  class="bg-white rounded-circle p-3 d-inline-flex align-items-center justify-content-center shadow"
+                  style="width: 60px; height: 60px"
+                >
+                  <i
+                    class="bi bi-graph-up-arrow fs-2"
+                    style="color: #0a1a2f"
+                  ></i>
+                </div>
+                <p class="text-white mt-2 mb-0 fw-light small">+23%</p>
+                <p class="text-white-50 small mb-0">Growth</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
