@@ -321,7 +321,9 @@
               >
                 <i class="fas fa-phone text-primary opacity-50"></i> Phone
               </p>
-              <p class="text-white-75 mb-0 fs-6"></p>
+              <p class="text-white-75 mb-0 fs-6">
+                {{ selectedCustomer.phone || "N/A" }}
+              </p>
             </div>
           </div>
 
@@ -335,7 +337,9 @@
                 <i class="fas fa-calendar-plus text-primary opacity-50"></i>
                 Created date
               </p>
-              <p class="text-white-75 mb-0 fs-6"></p>
+              <p class="text-white-75 mb-0 fs-6">
+                {{ selectedCustomer.createdAt | date }}
+              </p>
             </div>
           </div>
 
@@ -357,6 +361,7 @@
                     class="fas fa-circle text-success me-1"
                     style="font-size: 0.4rem"
                   ></i>
+                  ACTIVE
                 </span>
               </p>
             </div>
@@ -372,7 +377,7 @@
                 <i class="fas fa-location-dot text-primary opacity-50"></i>
                 Address
               </p>
-              <p class="text-white-75 mb-0 fs-6"></p>
+              <p class="text-white-50 mb-0 fs-6 italic">Not added yet</p>
             </div>
           </div>
 
@@ -385,7 +390,14 @@
               >
                 <i class="fas fa-pen text-primary opacity-50"></i> Notes
               </p>
-              <p class="text-white-50 mb-0 fs-6 fst-italic"></p>
+              <div class="list-group">
+                <div
+                  class="list-group-item bg-dark text-white border-0"
+                  *ngFor="let note of selectedCustomer.notes; let i = index"
+                >
+                  <small>* {{ note }}</small>
+                </div>
+              </div>
             </div>
           </div>
         </div>

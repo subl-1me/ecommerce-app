@@ -278,15 +278,15 @@
               >
               <div class="list-group">
                 <div
-                  class="list-group-item bg-dark text-white"
+                  class="list-group-item bg-dark"
                   id="note-item-{{ note.tempId }}"
                   *ngFor="let note of notes; let ind = index"
                 >
                   <div class="row">
-                    <div class="col-10">
+                    <div class="col-10 text-white">
                       <span>{{ note.text }}</span>
                     </div>
-                    <div class="col-2">
+                    <div class="col-2 text-white">
                       <fa-icon
                         [icon]="faTrashAlt"
                         class="float-end"

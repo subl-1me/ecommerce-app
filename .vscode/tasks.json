@@ -1,7 +1,7 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
+  "version": "2.0.0",
+  "tasks": [
+    {
       "label": "Start Server",
       "type": "shell",
       "command": "pnpm run start",
@@ -17,7 +17,7 @@
       "isBackground": true,
       "presentation": { "group": "dev-servers", "reveal": "always" }
     },
-	{
+    {
       "label": "Start Admin Panel Client",
       "type": "shell",
       "command": "pnpm run start",
@@ -27,8 +27,12 @@
     },
     {
       "label": "Start All",
-      "dependsOn": ["Start Server", "Start Shop Client", "Start Admin Panel Client"],
+      "dependsOn": [
+        "Start Server",
+        "Start Shop Client",
+        "Start Admin Panel Client"
+      ],
       "group": { "kind": "build", "isDefault": true }
     }
-	]
+  ]
 }
