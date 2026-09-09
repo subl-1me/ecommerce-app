@@ -44,7 +44,7 @@ export class GalleryComponent implements OnInit {
   constructor(
     private _productService: ProductService,
     private _identityService: IdentityService,
-    private _router: ActivatedRoute
+    private _router: ActivatedRoute,
   ) {
     this.isFileChoosen = false;
     this.uploadErrorMessage = '';
@@ -54,7 +54,15 @@ export class GalleryComponent implements OnInit {
     this.tempGalleryImages = [];
     this.reuploadErrorMessage = '';
     this.fileData = [];
-    this.product = {};
+    this.product = {
+      title: '',
+      category: '',
+      content: '',
+      coverImage: '',
+      description: '',
+      stock: 0,
+      price: 0,
+    };
   }
 
   ngOnInit(): void {

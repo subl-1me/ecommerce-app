@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const { UPLOADS_URL_TEST } = process.env;
+const { UPLOADS_URL_TEST, PORT } = process.env;
 
 const upload = multer({ storage: storage }).single("image");
 
@@ -210,8 +210,10 @@ const uploadCoverImage = async function (req, res) {
     if (err)
       return res.status(500).send({ message: "Error trying to upload image." });
 
+    const replacedURL = UPLOADS_URL_TEST.replace("{PORT}", PORT || 3000);
+    const coverImageURL = new URL(req.file.filename, replacedURL);
     return res.status(200).send({
-      path: UPLOADS_URL_TEST + req.file.filename,
+      path: coverImageURL,
     });
   });
 };
@@ -248,7 +250,7 @@ const uploadGalleryImages = async function (req, res) {
     var pathArray = [];
     req.files.forEach((file) => {
       pathArray.push(
-        UPLOADS_URL_TEST + "gallery-" + productID + "/" + file.filename
+        UPLOADS_URL_TEST + "gallery-" + productID + "/" + file.filename,
       );
     });
     return res.status(200).send({ multipleImages: pathArray });

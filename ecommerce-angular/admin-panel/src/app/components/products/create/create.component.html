@@ -1,158 +1,488 @@
-<div class="card shadow-lg">
-  <div class="card-header bg-dark">
-    <h1 class="text-white text-center" *ngIf="!isEdit">Create a product</h1>
-    <h1 class="text-white text-center" *ngIf="isEdit">Edit a product</h1>
-  </div>
-  <div class="card-body">
-    <div class="alert alert-warning">* Required fields</div>
-    <hr />
-    <!-- Create product form -->
-    <form #createForm="ngForm" (ngSubmit)="uploadCoverImage()">
-      <div class="row justify-content-center">
-        <h4>Principal Details</h4>
-        <div class="form-group col-md-4 mb-2">
-          <label for="title">* Title</label>
-          <input
-            type="text"
-            name="title"
-            [(ngModel)]="product.title"
-            class="form-control"
-            required
-          />
-        </div>
-        <div class="form-group col-md-2 mb-2">
-          <label for="title">* Stock</label>
-          <input
-            type="number"
-            name="stock"
-            [(ngModel)]="product.stock"
-            class="form-control"
-            required
-          />
-        </div>
-        <div class="form-group col-md-2 mt-auto mb-2">
-          <label for="price">* Price</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">$</span>
-            </div>
-            <input
-              type="text"
-              class="form-control"
-              name="price"
-              [(ngModel)]="product.price"
-              aria-label="Amount (to the nearest dollar)"
-            />
+<!-- ========== CREATE/EDIT PRODUCT - VERSIÓN MEJORADA ========== -->
+<div class="product-form-container">
+  <div
+    class="card product-form-card shadow-sm border-0 rounded-4 overflow-hidden"
+  >
+    <!-- Card Header -->
+    <div class="card-header bg-transparent border-0 p-4">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <div
+            class="bg-white bg-opacity-10 rounded-circle p-3 d-flex align-items-center justify-content-center"
+            style="
+              width: 60px;
+              height: 60px;
+              border: 2px solid rgba(255, 255, 255, 0.1);
+            "
+          >
+            <span class="text-white fs-2">📦</span>
+          </div>
+          <div>
+            <h1 class="text-white mb-0 fw-bold" *ngIf="!isEdit">
+              Create a Product
+            </h1>
+            <h1 class="text-white mb-0 fw-bold" *ngIf="isEdit">
+              Edit a Product
+            </h1>
+            <small class="text-white-50" *ngIf="!isEdit"
+              >Add a new product to your inventory</small
+            >
+            <small class="text-white-50" *ngIf="isEdit"
+              >Update product information</small
+            >
           </div>
         </div>
-        <div class="form-group col-md-5 mb-2">
-          <label for="exampleFormControlTextarea1">* Short Description</label>
-          <textarea
-            class="form-control"
-            id="exampleFormControlTextarea1"
-            rows="3"
-            name="description"
-            [(ngModel)]="product.description"
-          ></textarea>
-        </div>
-        <div class="form-group col-md-5 mb-2">
-          <label class="mr-sm-2 me-2" for="inlineFormCustomSelect"
-            >Category</label
+        <div *ngIf="isEdit">
+          <span
+            class="badge bg-primary bg-opacity-25 text-white rounded-pill px-3 py-2"
           >
-          <select
-            class="custom-select mr-sm-2"
-            id="inlineFormCustomSelect"
-            name="category"
-            [(ngModel)]="product.category"
-          >
-            <option selected disabled>Choose...</option>
-            <ng-container *ngFor="let category of actualConfig.categories">
-              <option class="p-2" value="{{ category.name }}">
-                {{ category.name }}
-              </option>
-            </ng-container>
-          </select>
+            ID: {{ product._id || "N/A" }}
+          </span>
         </div>
       </div>
-      <hr />
-      <div class="row justify-content-center">
-        <h4>Describe Your Product</h4>
-        <div class="form-group col-md-9 mb-2 mt-2">
+    </div>
 
+    <div class="card-body p-4">
+      <div
+        class="alert alert-warning border-0 rounded-3 d-flex align-items-start gap-3"
+        style="
+          background: rgba(255, 193, 7, 0.1);
+          border-left: 4px solid #ffc107;
+          color: #ffc107;
+        "
+      >
+        <span style="font-size: 1.2rem">⚠️</span>
+        <div>
+          <strong class="d-block">Required Fields</strong>
+          <p class="mb-0 small">
+            Fields marked with * are required to create a product
+          </p>
         </div>
       </div>
-      <hr />
-      <div class="row justify-content-center" *ngIf="!isEdit">
-        <h4>Upload a cover image</h4>
-        <div class="form-group col-md-9 mb-2 mt-2">
-          <img id="tempImage" class="w-25 me-2 rounded shadow" />
-          <input
-            type="file"
-            class="p-1"
-            (change)="fileChoosen($event)"
-            name="logo"
-            id="fileUpload"
-          />
-          <div *ngIf="fileChoosenError" class="mt-2 text-danger">
-            {{ fileChoosenError }}
+
+      <hr class="opacity-25" style="border-color: rgba(255, 255, 255, 0.1)" />
+
+      <form #createForm="ngForm" (ngSubmit)="uploadCoverImage()">
+        <h4 class="text-white mb-3">📋 Principal Details</h4>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="form-floating" style="color: white">
+              <input
+                type="text"
+                name="title"
+                [(ngModel)]="product.title"
+                class="form-control"
+                id="titleInput"
+                placeholder="Product name"
+                required
+                style="
+                  border-radius: 12px;
+                  border: 1px solid rgba(255, 255, 255, 0.15);
+                  background: rgba(255, 255, 255, 0.08);
+                  color: white;
+                  transition: all 0.3s ease;
+                "
+              />
+              <label for="titleInput" style="color: rgba(255, 255, 255, 0.6)">
+                * Title
+              </label>
+            </div>
+            <div
+              *ngIf="
+                createForm.submitted && createForm.controls['title']?.invalid
+              "
+              class="text-danger small mt-1"
+              style="color: #ff6b6b !important"
+            >
+              Title is required
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="form-floating" style="color: white">
+              <input
+                type="number"
+                name="stock"
+                [(ngModel)]="product.stock"
+                class="form-control"
+                id="stockInput"
+                placeholder="100"
+                required
+                min="0"
+                style="
+                  border-radius: 12px;
+                  border: 1px solid rgba(255, 255, 255, 0.15);
+                  background: rgba(255, 255, 255, 0.08);
+                  color: white;
+                  transition: all 0.3s ease;
+                "
+              />
+              <label for="stockInput" style="color: rgba(255, 255, 255, 0.6)">
+                * Stock
+              </label>
+            </div>
+            <div
+              *ngIf="
+                createForm.submitted && createForm.controls['stock']?.invalid
+              "
+              class="text-danger small mt-1"
+              style="color: #ff6b6b !important"
+            >
+              Valid stock is required
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="form-floating" style="color: white">
+              <input
+                type="text"
+                class="form-control"
+                name="price"
+                id="priceInput"
+                [(ngModel)]="product.price"
+                placeholder="99.99"
+                required
+                style="
+                  border-radius: 12px;
+                  border: 1px solid rgba(255, 255, 255, 0.15);
+                  background: rgba(255, 255, 255, 0.08);
+                  color: white;
+                  transition: all 0.3s ease;
+                "
+              />
+              <label for="priceInput" style="color: rgba(255, 255, 255, 0.6)">
+                * Price ($)
+              </label>
+            </div>
+            <div
+              *ngIf="
+                createForm.submitted && createForm.controls['price']?.invalid
+              "
+              class="text-danger small mt-1"
+              style="color: #ff6b6b !important"
+            >
+              Valid price is required
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-floating" style="color: white">
+              <select
+                class="form-select"
+                id="categorySelect"
+                name="category"
+                [(ngModel)]="product.category"
+                required
+                style="
+                  border-radius: 12px;
+                  border: 1px solid rgba(255, 255, 255, 0.15);
+                  background: rgba(255, 255, 255, 0.08);
+                  color: white;
+                  transition: all 0.3s ease;
+                "
+              >
+                <option selected disabled style="color: #0a1a2f">
+                  Choose a category...
+                </option>
+                <ng-container *ngFor="let category of actualConfig.categories">
+                  <option
+                    class="p-2"
+                    value="{{ category.name }}"
+                    style="color: #0a1a2f"
+                  >
+                    {{ category.name }}
+                  </option>
+                </ng-container>
+              </select>
+              <label
+                for="categorySelect"
+                style="color: rgba(255, 255, 255, 0.6)"
+              >
+                * Category
+              </label>
+            </div>
+            <div
+              *ngIf="
+                createForm.submitted && createForm.controls['category']?.invalid
+              "
+              class="text-danger small mt-1"
+              style="color: #ff6b6b !important"
+            >
+              Category is required
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="form-floating" style="color: white">
+              <textarea
+                class="form-control"
+                id="descriptionInput"
+                rows="3"
+                name="description"
+                [(ngModel)]="product.description"
+                placeholder="Brief description of the product..."
+                style="
+                  border-radius: 12px;
+                  border: 1px solid rgba(255, 255, 255, 0.15);
+                  background: rgba(255, 255, 255, 0.08);
+                  color: white;
+                  transition: all 0.3s ease;
+                  min-height: 100px;
+                  resize: vertical;
+                  padding-top: 2rem;
+                "
+              >
+              </textarea>
+              <label
+                for="descriptionInput"
+                style="color: rgba(255, 255, 255, 0.6)"
+              >
+                * Short Description
+              </label>
+            </div>
+            <div class="d-flex justify-content-between mt-1">
+              <small style="color: rgba(255, 255, 255, 0.3)">
+                Brief description of the product
+              </small>
+              <small style="color: rgba(255, 255, 255, 0.3)">
+                {{ product.description?.length || 0 }} characters
+              </small>
+            </div>
+            <div
+              *ngIf="
+                createForm.submitted &&
+                createForm.controls['description']?.invalid
+              "
+              class="text-danger small mt-1"
+              style="color: #ff6b6b !important"
+            >
+              Description is required
+            </div>
           </div>
         </div>
-        <span *ngIf="fileUploadError != ''" class="text-danger">{{
-          fileUploadError
-        }}</span>
-      </div>
-      <div class="row justify-content-center" *ngIf="isEdit">
-        <h4>Upload a cover image</h4>
-        <div class="form-group col-md-9 mb-2 mt-2">
-          <img
-            src="{{ product.coverImage }}"
-            id="tempImage"
-            class="w-25 me-2 rounded shadow"
-          />
-          <input
-            type="file"
-            class="p-1"
-            (change)="fileChoosen($event)"
-            name="logo"
-            id="fileUpload"
-          />
-          <div *ngIf="fileChoosenError" class="mt-2 text-danger">
-            {{ fileChoosenError }}
+
+        <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1)" />
+
+        <h4 class="text-white mb-3">📝 Full Description</h4>
+        <div class="row g-3">
+          <div class="col-md-12">
+            <div class="form-floating" style="color: white">
+              <textarea
+                class="form-control"
+                id="fullDescriptionInput"
+                rows="6"
+                name="content"
+                [(ngModel)]="product.content"
+                placeholder="Detailed description of the product..."
+                style="
+                  border-radius: 12px;
+                  border: 1px solid rgba(255, 255, 255, 0.15);
+                  background: rgba(255, 255, 255, 0.08);
+                  color: white;
+                  transition: all 0.3s ease;
+                  min-height: 180px;
+                  resize: vertical;
+                  padding-top: 2rem;
+                "
+              >
+              </textarea>
+              <label
+                for="fullDescriptionInput"
+                style="color: rgba(255, 255, 255, 0.6)"
+              >
+                Full Description (Optional)
+              </label>
+            </div>
+            <div class="d-flex justify-content-between mt-1">
+              <small style="color: rgba(255, 255, 255, 0.3)">
+                Detailed description with features, specifications, etc.
+              </small>
+              <small style="color: rgba(255, 255, 255, 0.3)">
+                {{ product.content?.length || 0 }} characters
+              </small>
+            </div>
           </div>
         </div>
-        <span *ngIf="fileUploadError != ''" class="text-danger">{{
-          fileUploadError
-        }}</span>
-      </div>
-      <hr />
-      <div class="summary" *ngIf="isEdit">
-        <h3>Summary</h3>
-        <span class="me-2">Total Sales: {{ product.sales }}</span>
-        <span class="me-2">|</span>
-        <span>Product Rating: {{ product.rating }}</span>
-      </div>
-      <div class="row justify-content-center mt-2">
-        <button class="btn btn-success w-25 me-2 shadow" *ngIf="!isEdit">
-          <fa-icon [icon]="faSave"></fa-icon>
-          Save
-        </button>
-        <button
-          class="btn btn-success w-25 me-2 shadow"
-          value="Save Changes"
+
+        <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1)" />
+
+        <h4 class="text-white mb-3">🖼️ Upload Cover Image</h4>
+        <div class="row g-3 align-items-center">
+          <div class="col-md-12">
+            <div
+              class="d-flex flex-wrap align-items-center gap-3 p-3 rounded-3"
+              style="
+                border: 2px dashed rgba(255, 255, 255, 0.1);
+                background: rgba(255, 255, 255, 0.02);
+              "
+            >
+              <div class="position-relative">
+                <img
+                  id="tempImage"
+                  class="rounded shadow-sm"
+                  style="
+                    width: 120px;
+                    height: 120px;
+                    object-fit: cover;
+                    border: 2px solid rgba(255, 255, 255, 0.1);
+                  "
+                />
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0"
+                  style="
+                    transform: translate(50%, -50%);
+                    width: 24px;
+                    height: 24px;
+                    padding: 0;
+                    font-size: 0.6rem;
+                  "
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div
+                *ngIf="!product.coverImage"
+                class="d-flex align-items-center justify-content-center"
+                style="
+                  width: 120px;
+                  height: 120px;
+                  background: rgba(255, 255, 255, 0.05);
+                  border-radius: 12px;
+                  border: 1px solid rgba(255, 255, 255, 0.05);
+                "
+              >
+                <span class="text-white-50" style="font-size: 2rem">🖼️</span>
+              </div>
+
+              <div class="flex-grow-1">
+                <div class="mb-2">
+                  <label
+                    for="fileUpload"
+                    class="btn btn-outline-light rounded-pill px-4"
+                    style="
+                      border-color: rgba(255, 255, 255, 0.3);
+                      cursor: pointer;
+                      transition: all 0.3s ease;
+                    "
+                  >
+                    Choose Image
+                  </label>
+                  <input
+                    type="file"
+                    class="d-none"
+                    id="fileUpload"
+                    (change)="fileChoosen($event)"
+                    name="logo"
+                    accept="image/*"
+                  />
+                  <small class="text-white-50 ms-2"
+                    >PNG, JPG, JPEG (max 5MB)</small
+                  >
+                </div>
+                <div *ngIf="fileChoosenError" class="text-danger small">
+                  ⚠️ {{ fileChoosenError }}
+                </div>
+                <div *ngIf="fileUploadError != ''" class="text-danger small">
+                  ⚠️ {{ fileUploadError }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1)" />
+
+        <div
           *ngIf="isEdit"
-          [disabled]="fileChoosenError"
+          class="summary p-3 rounded-3"
+          style="
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+          "
         >
-          <fa-icon [icon]="faSave"></fa-icon>
-          Save Changes
-        </button>
-        <button
-          class="btn btn-secondary w-25 shadow"
-          [routerLink]="['/panel/products']"
-        >
-          <fa-icon [icon]="faAngleLeft"></fa-icon>
-          Back
-        </button>
-      </div>
-    </form>
+          <h3 class="text-white mb-3">📊 Summary</h3>
+          <div class="d-flex flex-wrap gap-4">
+            <div>
+              <small class="text-white-50 d-block">Total Sales</small>
+              <span class="text-white fw-bold fs-5">{{
+                product.sales || 0
+              }}</span>
+            </div>
+            <div>
+              <small class="text-white-50 d-block">Product Rating</small>
+              <span class="text-white fw-bold fs-5">
+                ⭐ {{ product.rating || "N/A" }}
+              </span>
+            </div>
+            <div>
+              <small class="text-white-50 d-block">Stock</small>
+              <span class="text-white fw-bold fs-5">{{
+                product.stock || 0
+              }}</span>
+            </div>
+            <div>
+              <small class="text-white-50 d-block">Category</small>
+              <span class="text-white fw-bold fs-5">{{
+                product.category || "N/A"
+              }}</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1)" />
+
+        <div class="d-flex flex-wrap gap-3 justify-content-center">
+          <button
+            type="submit"
+            class="btn btn-success rounded-pill px-5 py-2 shadow-sm"
+            [disabled]="fileChoosenError"
+            style="
+              background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+              border: none;
+              transition: all 0.3s ease;
+              min-width: 160px;
+            "
+          >
+            💾
+            <span *ngIf="!isEdit">Save</span>
+            <span *ngIf="isEdit">Save Changes</span>
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-outline-light rounded-pill px-5 py-2"
+            [routerLink]="['/panel/products']"
+            style="
+              border-color: rgba(255, 255, 255, 0.3);
+              transition: all 0.3s ease;
+              min-width: 160px;
+              color: white;
+            "
+          >
+            ◀ Back
+          </button>
+
+          <button
+            type="reset"
+            class="btn btn-outline-danger rounded-pill px-4 py-2"
+            style="
+              border-color: rgba(255, 255, 255, 0.2);
+              color: #ff6b6b;
+              transition: all 0.3s ease;
+            "
+          >
+            ⟳ Reset
+          </button>
+        </div>
+
+        <div class="text-center mt-4">
+          <small style="color: rgba(255, 255, 255, 0.4)">
+            <span class="text-danger">*</span> Required fields
+          </small>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

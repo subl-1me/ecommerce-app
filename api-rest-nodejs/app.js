@@ -6,7 +6,7 @@ const app = express();
 const bodyparser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
-
+const path = require("path");
 
 const routes = require("./routes/customer");
 const admRoutes = require("./routes/admin");
@@ -27,7 +27,7 @@ const corsOptions = {
   origin: "*",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   allowedHeaders: ["Content-Type", "Authorization"],
-};  
+};
 app.use(cors(corsOptions));
 
 // x-www-form-urlencoded
@@ -37,7 +37,10 @@ app.use(bodyparser.json({ limit: "5000mb" }));
 
 // Directory
 app.use(express.static(__dirname + "/uploads/configs"));
-app.use(express.static(__dirname + "/uploads/products/"));
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads", "products")),
+);
 
 // Routes
 app.use("/api", routes);
@@ -63,7 +66,6 @@ const socket = require("socket.io")(server, {
 const port = process.env.PORT || 4201;
 const MONGO_URI = process.env.MONGO_URI || "";
 
-
 socket.on("connection", function (socket) {
   socket.on("deleteProductCart", function (data) {
     socket.emit("cart", data);
@@ -71,9 +73,8 @@ socket.on("connection", function (socket) {
   });
 });
 
-
-async function startServer(){
-try {
+async function startServer() {
+  try {
     await mongoose.connect(MONGO_URI);
     console.log("Connected successfully to MongoDB.");
 
@@ -82,7 +83,7 @@ try {
     });
   } catch (error) {
     console.error("Error trying to connect to MongoDB:", error);
-    process.exit(1); 
+    process.exit(1);
   }
 }
 

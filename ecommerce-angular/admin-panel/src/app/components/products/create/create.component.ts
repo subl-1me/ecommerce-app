@@ -36,6 +36,7 @@ export class CreateComponent implements OnInit, DoCheck {
   public editorContent: string;
   public token: any;
 
+  public isPreviewActive: boolean;
   public isEdit: boolean;
 
   public file = {
@@ -48,9 +49,17 @@ export class CreateComponent implements OnInit, DoCheck {
     private _productService: ProductService,
     private _identityService: IdentityService,
     private _configService: ConfigService,
-    private _router: Router
+    private _router: Router,
   ) {
-    this.product = {};
+    this.product = {
+      title: '',
+      category: '',
+      content: '',
+      coverImage: '',
+      description: '',
+      stock: 0,
+      price: 0,
+    };
     this.editorContent = '';
     this.token = this._identityService.getToken();
     this.actualConfig = {
@@ -63,7 +72,9 @@ export class CreateComponent implements OnInit, DoCheck {
     this.fileChoosenError = '';
     this.fileUploadError = '';
     this.coverImagePath = '';
+
     this.isEdit = false;
+    this.isPreviewActive = false;
   }
 
   ngOnInit(): void {
@@ -85,8 +96,6 @@ export class CreateComponent implements OnInit, DoCheck {
       return;
     }
 
-    console.log(this.product);
-    this.product.content = this.editorContent;
     this._productService.create(this.token, this.product).subscribe((res) => {
       this._router.navigate(['/panel/products']);
     });
@@ -107,6 +116,7 @@ export class CreateComponent implements OnInit, DoCheck {
     fileReader.onload = function () {
       imgElement.src = <string>this.result;
     };
+    this.isPreviewActive = true;
   }
 
   public uploadCoverImage(): void {
