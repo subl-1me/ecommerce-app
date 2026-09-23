@@ -58,7 +58,7 @@ export class GalleryComponent implements OnInit {
       title: '',
       category: '',
       content: '',
-      coverImage: '',
+      gallery: [],
       description: '',
       stock: 0,
       price: 0,

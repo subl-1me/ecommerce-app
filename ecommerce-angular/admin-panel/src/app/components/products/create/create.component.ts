@@ -1,4 +1,4 @@
-import { Component, DoCheck } from '@angular/core';
+import { Component, DoCheck, OnInit } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
 import { constans } from 'src/app/services/const';
 
@@ -22,7 +22,7 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./create.component.css'],
   providers: [ProductService, IdentityService, ConfigService],
 })
-export class CreateComponent implements DoCheck {
+export class CreateComponent implements DoCheck, OnInit {
   // Icons
   faAngleLeft = faAngleLeft;
   faSave = faSave;
@@ -95,6 +95,10 @@ export class CreateComponent implements DoCheck {
   }
 
   ngDoCheck(): void {}
+
+  ngOnInit(): void {
+    this.getCategories();
+  }
 
   public getCategories(): void {
     this._configService.getConfig(this.token).subscribe((response) => {
