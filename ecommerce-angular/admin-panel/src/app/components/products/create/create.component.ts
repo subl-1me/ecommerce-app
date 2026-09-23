@@ -1,5 +1,6 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, DoCheck } from '@angular/core';
+import { SafeUrl } from '@angular/platform-browser';
+import { constans } from 'src/app/services/const';
 
 // Models
 import { Product } from 'src/app/models/product';
@@ -13,6 +14,7 @@ import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 // Services
 import { ProductService } from 'src/app/services/product.service';
 import { IdentityService } from 'src/app/services/identity.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-creatse',
@@ -20,7 +22,7 @@ import { IdentityService } from 'src/app/services/identity.service';
   styleUrls: ['./create.component.css'],
   providers: [ProductService, IdentityService, ConfigService],
 })
-export class CreateComponent implements OnInit, DoCheck {
+export class CreateComponent implements DoCheck {
   // Icons
   faAngleLeft = faAngleLeft;
   faSave = faSave;
@@ -36,8 +38,17 @@ export class CreateComponent implements OnInit, DoCheck {
   public editorContent: string;
   public token: any;
 
+  public previews: SafeUrl[];
+  public selectedFiles: File[];
+
   public isPreviewActive: boolean;
   public isEdit: boolean;
+  public tempImageUrl: string;
+  public selectedStatus: string;
+  public productStatusAxus: string;
+
+  // CONST
+  public productStatusList: string[];
 
   public file = {
     name: '',
@@ -49,17 +60,23 @@ export class CreateComponent implements OnInit, DoCheck {
     private _productService: ProductService,
     private _identityService: IdentityService,
     private _configService: ConfigService,
-    private _router: Router,
   ) {
+    this.productStatusList = constans.productStatusList;
+    this.tempImageUrl = '';
+    this.previews = [];
+    this.productStatusAxus = 'Draft'; // default;
+    this.selectedFiles = [];
     this.product = {
       title: '',
       category: '',
       content: '',
-      coverImage: '',
+      gallery: [],
+      status: 'Draft',
       description: '',
       stock: 0,
       price: 0,
     };
+    this.selectedStatus = '';
     this.editorContent = '';
     this.token = this._identityService.getToken();
     this.actualConfig = {
@@ -67,7 +84,7 @@ export class CreateComponent implements OnInit, DoCheck {
       serie: '',
       correlation: '',
       logo: '',
-      categories: [{ name: 'Shirt' }, { name: 'Hats' }],
+      categories: [],
     };
     this.fileChoosenError = '';
     this.fileUploadError = '';
@@ -77,27 +94,43 @@ export class CreateComponent implements OnInit, DoCheck {
     this.isPreviewActive = false;
   }
 
-  ngOnInit(): void {
-    this.getCategories();
-  }
-
   ngDoCheck(): void {}
 
   public getCategories(): void {
     this._configService.getConfig(this.token).subscribe((response) => {
       this.actualConfig = response.actualConfig[0];
-      console.log(this.actualConfig);
     });
   }
 
-  create() {
-    if (this.fileChoosenError || !this.tempCoverImage) {
+  public async startCreation() {
+    if (!this.tempCoverImage) {
       this.fileUploadError = 'Your product requires a cover image.';
       return;
     }
 
+    this.product.status = this.selectedStatus || this.productStatusAxus;
+    const formData = new FormData();
+    formData.append('image', this.tempCoverImage);
+    const uploader = await firstValueFrom(
+      this._productService.uploadSingleImage(formData, this.token),
+    );
+
+    if (!uploader.success) {
+      alert(`There was an error trying to upload cover image.`);
+      return;
+    }
+
+    this.product.gallery.push({
+      tempId: uploader.image.tempId,
+      public_id: uploader.image.public_id,
+      path: uploader.image.path,
+    });
     this._productService.create(this.token, this.product).subscribe((res) => {
-      this._router.navigate(['/panel/products']);
+      if (res.status !== 'success') {
+        alert(res);
+        return;
+      }
+      alert('Product added successfully.');
     });
   }
 
@@ -116,26 +149,35 @@ export class CreateComponent implements OnInit, DoCheck {
     fileReader.onload = function () {
       imgElement.src = <string>this.result;
     };
-    this.isPreviewActive = true;
   }
 
-  public uploadCoverImage(): void {
-    let formData = new FormData();
-    formData.append('image', this.tempCoverImage);
-
-    this._productService
-      .uploadCoverImage(this.token, formData)
-      .subscribe((response) => {
-        if (!response.path) {
-          console.log('Error uploading image.');
-          return;
-        }
-
-        // Create product if image is uploaded
-        this.product.coverImage = response.path;
-        this.create();
-      });
+  public discardSelectedPhoto(): void {
+    this.tempCoverImage = null;
+    this.restoreDefaultCover();
   }
+
+  private restoreDefaultCover(): void {
+    var imgElement = document.getElementById('tempImage') as HTMLImageElement;
+    if (!imgElement) return;
+
+    imgElement.src = constans.defaultProductCoverImage.path;
+  }
+
+  public toggleStatus(status: string): void {
+    this.productStatusAxus = status;
+    this.selectedStatus = status;
+  }
+
+  // private clearPreviews(): void {
+  //   this.previews.forEach((prev) => URL.revokeObjectURL(prev));
+  //   this.previews = [];
+  // }
+
+  // public removeImage(index: number): void {
+  //   URL.revokeObjectURL(this.previews[index]);
+  //   this.selectedFiles.splice(index, 1);
+  //   this.previews.splice(index, 1);
+  // }
 
   public isImage(fileMime: string): boolean {
     var mimeTypes = [

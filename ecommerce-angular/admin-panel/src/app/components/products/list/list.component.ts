@@ -1,7 +1,9 @@
 import { Component, OnInit, DoCheck } from '@angular/core';
+import * as bootstrap from 'bootstrap';
 
 import { ProductService } from 'src/app/services/product.service';
 import { IdentityService } from 'src/app/services/identity.service';
+import { ModalService } from 'src/app/services/modal.service';
 
 // Icons
 import { faAdd, faLink } from '@fortawesome/free-solid-svg-icons';
@@ -19,7 +21,7 @@ import * as fs from 'file-saver';
   selector: 'app-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.css'],
-  providers: [ProductService, IdentityService],
+  providers: [ProductService, IdentityService, ModalService],
 })
 export class ListComponent implements OnInit, DoCheck {
   // Icons
@@ -27,10 +29,13 @@ export class ListComponent implements OnInit, DoCheck {
   faFileExcel = faFileExcel;
   faLink = faLink;
 
+  public selectedProduct: Product | null;
+
   public token: any;
   public products = Array<Product>();
   public titleFilter: string;
   public responseMessage: string;
+  public defaultProductCoverImage = constans.defaultProductCoverImage.path;
   public productLinkHref =
     environment.API_URL.replace('/api', '') ||
     constans.defaultUrl.replace('/api', '');
@@ -45,9 +50,11 @@ export class ListComponent implements OnInit, DoCheck {
 
   constructor(
     private _productService: ProductService,
-    private _identityService: IdentityService
+    private _identityService: IdentityService,
+    private _modalService: ModalService,
   ) {
     this.token = this._identityService.getToken();
+    this.selectedProduct = null;
     this.products = [];
     this.titleFilter = '';
     this.responseMessage = '';
@@ -80,6 +87,22 @@ export class ListComponent implements OnInit, DoCheck {
           this.responseMessage = res.message;
         }
       });
+  }
+
+  public openDetailsModal(product: Product): void {
+    this.selectedProduct = product;
+    const modalEl = document.getElementById('productDetailModal');
+    if (!modalEl) {
+      return;
+    }
+    setTimeout(() => {
+      const modal = new bootstrap.Modal(modalEl);
+      modal.show();
+      this._modalService.addModal({
+        elem: modal,
+        name: 'productDetailModal',
+      });
+    }, 0);
   }
 
   public exportAsExcel() {

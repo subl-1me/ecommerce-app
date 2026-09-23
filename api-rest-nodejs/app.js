@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
 
-const routes = require("./routes/customer");
+const customerRoutes = require("./routes/customer");
 const admRoutes = require("./routes/admin");
 const productRoutes = require("./routes/product");
 const productInventoryRoutes = require("./routes/productInventory");
@@ -22,6 +22,11 @@ const stripeRoutes = require("./routes/stripe");
 const orderRoutes = require("./routes/order");
 const promotionRoutes = require("./routes/promotion");
 const contactRoutes = require("./routes/contact");
+const uploadRoutes = require("./routes/uploads");
+
+const {
+  createInitialEcommerceConfig,
+} = require("./config/defaultConfigurations");
 
 const corsOptions = {
   origin: "*",
@@ -43,7 +48,7 @@ app.use(
 );
 
 // Routes
-app.use("/api", routes);
+app.use("/api", customerRoutes);
 app.use("/api", admRoutes);
 app.use("/api", productRoutes);
 app.use("/api", productInventoryRoutes);
@@ -57,6 +62,7 @@ app.use("/api", stripeRoutes);
 app.use("/api", orderRoutes);
 app.use("/api", promotionRoutes);
 app.use("/api", contactRoutes);
+app.use("/api", uploadRoutes);
 
 const server = require("http").createServer(app);
 const socket = require("socket.io")(server, {
@@ -78,8 +84,11 @@ async function startServer() {
     await mongoose.connect(MONGO_URI);
     console.log("Connected successfully to MongoDB.");
 
-    server.listen(port, () => {
+    server.listen(port, async () => {
       console.log(`Server running on port: ${port}`);
+
+      // create default configuration
+      await createInitialEcommerceConfig();
     });
   } catch (error) {
     console.error("Error trying to connect to MongoDB:", error);

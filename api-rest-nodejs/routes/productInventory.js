@@ -1,13 +1,17 @@
-'use strict'
+"use strict";
 
-var express = require('express');
-var productInventoryController = require('../controllers/productInventoryController');
+const express = require("express");
+const productInventoryController = require("../controllers/productInventoryController");
 
-var routes = express.Router();
-var auth = require('../middlewares/authenticate');
+const routes = express.Router();
+const auth = require("../middlewares/authenticate");
 
-routes.get('/inventories/:id', auth.auth, productInventoryController.inventories);
-routes.post('/inventory', auth.auth, productInventoryController.add);
-routes.delete('/inventory/:id', auth.auth, productInventoryController.remove);
+routes.get(
+  "/inventories/:id",
+  auth.auth,
+  productInventoryController.inventories,
+);
+routes.post("/inventory", auth.auth, productInventoryController.add);
+routes.delete("/inventory/:id", auth.auth, productInventoryController.remove);
 
 module.exports = routes;

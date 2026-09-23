@@ -3,8 +3,7 @@ export interface Product {
   title: string;
   description: string;
   content: string;
-  coverImage: string;
-  gallery?: Gallery[];
+  gallery: Image[];
   price: number;
   stock: number;
   category: string;
@@ -14,7 +13,8 @@ export interface Product {
   updatedAt?: string;
 }
 
-interface Gallery {
-  _id?: string;
-  path?: string;
+interface Image {
+  tempId: string;
+  public_id: string | null;
+  path: string;
 }

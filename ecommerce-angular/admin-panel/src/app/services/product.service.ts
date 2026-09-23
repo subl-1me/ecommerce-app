@@ -25,7 +25,7 @@ export class ProductService {
       product,
       {
         headers: headers,
-      }
+      },
     );
   }
 
@@ -40,7 +40,7 @@ export class ProductService {
       product,
       {
         headers: headers,
-      }
+      },
     );
   }
 
@@ -52,7 +52,7 @@ export class ProductService {
 
     return this._http.get(
       (environment.API_URL || constans.defaultUrl) + 'products',
-      { headers: headers }
+      { headers: headers },
     );
   }
 
@@ -66,7 +66,7 @@ export class ProductService {
       (environment.API_URL || constans.defaultUrl) + 'products/' + title,
       {
         headers: headers,
-      }
+      },
     );
   }
 
@@ -80,7 +80,7 @@ export class ProductService {
       (environment.API_URL || constans.defaultUrl) + 'removeProduct/' + id,
       {
         headers: headers,
-      }
+      },
     );
   }
 
@@ -92,26 +92,50 @@ export class ProductService {
 
     return this._http.get(
       (environment.API_URL || constans.defaultUrl) + 'product/' + id,
-      { headers: headers }
+      { headers: headers },
     );
   }
 
-  uploadCoverImage(token: string, coverImage: any): Observable<any> {
-    var headers = new HttpHeaders({ Authorization: token });
+  uploadSingleImage(formData: FormData, token: string): Observable<any> {
+    const headers = new HttpHeaders().append('Authorization', token);
 
     return this._http.post(
-      (environment.API_URL || constans.defaultUrl) + 'product/coverImage',
-      coverImage,
+      `${environment.API_URL || constans.defaultUrl}${constans.endpointsAux.uploadSingleImage}`,
+      formData,
       {
         headers: headers,
-      }
+      },
+    );
+  }
+
+  removeMultipleImages(images: any, token: string): Observable<any> {
+    const headers = new HttpHeaders()
+      .append('Content-Type', 'application/json')
+      .append('Authorization', token);
+    return this._http.post(
+      `${environment.API_URL || constans.defaultUrl}${constans.endpointsAux.removeMultipleImages}`,
+      images,
+      {
+        headers: headers,
+      },
+    );
+  }
+
+  uploadMultipleImage(formData: FormData, token: string): Observable<any> {
+    const headers = new HttpHeaders().append('Authorization', token);
+    return this._http.post(
+      `${environment.API_URL || constans.defaultUrl}${constans.endpointsAux.uploadMultipleImage}`,
+      formData,
+      {
+        headers: headers,
+      },
     );
   }
 
   uploadGalleryImage(
     token: string,
     galleryImage: any,
-    productID: string
+    productID: string,
   ): Observable<any> {
     var headers = new HttpHeaders({ Authorization: token });
 
@@ -120,14 +144,14 @@ export class ProductService {
         'product/gallery/' +
         productID,
       galleryImage,
-      { headers: headers }
+      { headers: headers },
     );
   }
 
   setGalleryImages(
     token: string,
     pathArray: any[],
-    productID: string
+    productID: string,
   ): Observable<any> {
     var headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -139,7 +163,7 @@ export class ProductService {
         'product/gallery/' +
         productID,
       pathArray,
-      { headers: headers }
+      { headers: headers },
     );
   }
 }

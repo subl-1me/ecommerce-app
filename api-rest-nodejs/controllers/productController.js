@@ -164,6 +164,8 @@ const edit = async function (req, res) {
   var id = req.params["id"];
   var params = req.body;
 
+  console.log(params);
+
   try {
     var productName = req.body.title.toLowerCase();
     var slug = productName.replace(/\s/g, "-");
@@ -175,8 +177,9 @@ const edit = async function (req, res) {
       content: params.description,
       coverImage: params.coverImage,
       stock: params.stock,
+      gallery: params.gallery,
+      status: params.status,
       price: params.price,
-      category: params.category,
       category: params.category,
       updatedAt: Date.now(),
     });

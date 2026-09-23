@@ -115,7 +115,7 @@
               >
                 <td>
                   <img
-                    [src]="product.coverImage"
+                    [src]="product.gallery[0].path || defaultProductCoverImage"
                     class="rounded-circle"
                     style="
                       width: 50px;
@@ -192,8 +192,23 @@
                         border-width: 1.5px;
                         transition: all 0.2s ease;
                       "
+                      (click)="openDetailsModal(product)"
                     >
                       👁
+                    </button>
+
+                    <button
+                      class="btn btn-sm btn-outline-info text-info rounded-circle"
+                      style="
+                        width: 32px;
+                        height: 32px;
+                        padding: 0;
+                        border-width: 1.5px;
+                        transition: all 0.2s ease;
+                      "
+                      [routerLink]="['/panel/product/inventory/', product._id]"
+                    >
+                      📋
                     </button>
 
                     <button
@@ -205,7 +220,7 @@
                         border-width: 1.5px;
                         transition: all 0.2s ease;
                       "
-                      [routerLink]="['/panel/products/edit/', product._id]"
+                      [routerLink]="['/panel/product/edit/', product._id]"
                     >
                       ✏️
                     </button>
@@ -259,6 +274,357 @@
               </button>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Product Details Modal -->
+<div
+  class="modal fade"
+  id="productDetailModal"
+  tabindex="-1"
+  aria-labelledby="productDetailModalLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  data-bs-keyboard="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div
+      class="modal-content bg-dark border-0 rounded-4 overflow-hidden shadow-lg"
+      *ngIf="selectedProduct"
+    >
+      <!-- Modal Header -->
+      <div class="modal-header border-0 px-4 py-3" style="background: #1a1a2e">
+        <div class="d-flex align-items-center gap-3">
+          <div
+            class="rounded-circle d-flex align-items-center justify-content-center"
+            style="
+              width: 44px;
+              height: 44px;
+              background: linear-gradient(
+                135deg,
+                rgba(99, 102, 241, 0.3),
+                rgba(139, 92, 246, 0.3)
+              );
+              border: 1px solid rgba(255, 255, 255, 0.05);
+            "
+          >
+            <span class="text-primary fs-5">📦</span>
+          </div>
+          <div>
+            <h5
+              class="modal-title text-white fw-semibold"
+              id="productDetailModalLabel"
+            >
+              Product Details
+            </h5>
+            <p class="text-white-50 small mb-0 font-monospace">
+              ID:
+              <span class="text-primary">{{ selectedProduct._id }}</span>
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body p-4" style="background: #0e0e16">
+        <!-- Product Header with Image -->
+        <div
+          class="d-flex flex-wrap align-items-center gap-4 mb-4 pb-3 border-bottom"
+          style="border-color: rgba(255, 255, 255, 0.05)"
+        >
+          <!-- Product Image -->
+          <div
+            class="rounded-3 overflow-hidden d-flex align-items-center justify-content-center"
+            style="
+              width: 100px;
+              height: 100px;
+              background: rgba(255, 255, 255, 0.03);
+              border: 1px solid rgba(255, 255, 255, 0.05);
+              flex-shrink: 0;
+            "
+          >
+            <img
+              [src]="
+                selectedProduct.gallery[0].path || defaultProductCoverImage
+              "
+              class="w-100 h-100"
+              style="object-fit: cover"
+              alt="{{ selectedProduct.title }}"
+            />
+          </div>
+
+          <!-- Product Info -->
+          <div class="flex-grow-1">
+            <h4 class="text-white fw-medium mb-1">
+              {{ selectedProduct.title }}
+            </h4>
+            <div
+              class="d-flex flex-wrap align-items-center gap-3 text-white-50 small"
+            >
+              <span>
+                <span class="text-primary opacity-50">🏷️</span>
+                {{ selectedProduct.category }}
+              </span>
+              <span>
+                <span class="text-primary opacity-50">💰</span>
+                ${{ selectedProduct.price }}
+              </span>
+              <span>
+                <span class="badge rounded-pill px-3 py-1">
+                  {{ selectedProduct.status || "Draft" }}
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="row g-3">
+          <!-- Title -->
+          <div class="col-12 col-md-6">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border"
+              style="border-color: rgba(255, 255, 255, 0.05)"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                Title
+              </p>
+              <p class="text-white-75 mb-0 fs-6">
+                {{ selectedProduct.title }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Category -->
+          <div class="col-12 col-md-6">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border"
+              style="border-color: rgba(255, 255, 255, 0.05)"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                Category
+              </p>
+              <p class="text-white-75 mb-0 fs-6">
+                {{ selectedProduct.category }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Price -->
+          <div class="col-12 col-md-4">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border"
+              style="border-color: rgba(255, 255, 255, 0.05)"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                Price
+              </p>
+              <p class="text-white-75 mb-0 fs-6 fw-bold">
+                ${{ selectedProduct.price }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Stock -->
+          <div class="col-12 col-md-4">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border"
+              style="border-color: rgba(255, 255, 255, 0.05)"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                Stock
+              </p>
+              <p class="mb-0">
+                <span class="fw-bold fs-6">
+                  {{ selectedProduct.stock }}
+                </span>
+                <span class="text-white-50 small ms-1">units</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Rating -->
+          <div class="col-12 col-md-4">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border"
+              style="border-color: rgba(255, 255, 255, 0.05)"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                Rating
+              </p>
+              <p class="text-white-75 mb-0 fs-6">
+                ⭐ {{ selectedProduct.rating || "N/A" }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Sales -->
+          <div class="col-12 col-md-4">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border"
+              style="border-color: rgba(255, 255, 255, 0.05)"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                Sales
+              </p>
+              <p class="text-white-75 mb-0 fs-6">
+                {{ selectedProduct.sales || 0 }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Status -->
+          <div class="col-12 col-md-4">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border"
+              style="border-color: rgba(255, 255, 255, 0.05)"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                Status
+              </p>
+              <p class="mb-0">
+                <span class="badge rounded-pill px-3 py-2">
+                  {{ selectedProduct.status || "Draft" }}
+                </span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Last Update -->
+          <div class="col-12 col-md-4">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border"
+              style="border-color: rgba(255, 255, 255, 0.05)"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                Last Update
+              </p>
+              <p class="text-white-75 mb-0 fs-6">
+                {{ selectedProduct.updatedAt | date: "dd/MM/yyyy HH:mm" }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Short Description -->
+          <div class="col-12">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border"
+              style="border-color: rgba(255, 255, 255, 0.05)"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                Short Description
+              </p>
+              <p class="text-white-75 mb-0 fs-6">
+                {{ selectedProduct.description || "No description provided" }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Full Description -->
+          <div class="col-12">
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border"
+              style="border-color: rgba(255, 255, 255, 0.05)"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-1 d-flex align-items-center gap-2"
+              >
+                Full Description
+              </p>
+              <p
+                class="text-white-75 mb-0 fs-6"
+                style="white-space: pre-wrap; line-height: 1.6"
+              >
+                {{ selectedProduct.content || "No content provided" }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Gallery -->
+          <div
+            class="col-12"
+            *ngIf="
+              selectedProduct.gallery && selectedProduct.gallery.length > 0
+            "
+          >
+            <div
+              class="bg-white bg-opacity-5 rounded-3 p-3 border"
+              style="border-color: rgba(255, 255, 255, 0.05)"
+            >
+              <p
+                class="text-white-50 small text-uppercase fw-semibold mb-2 d-flex align-items-center gap-2"
+              >
+                Gallery
+              </p>
+              <div class="d-flex flex-wrap gap-2">
+                <div
+                  *ngFor="let image of selectedProduct.gallery"
+                  class="rounded-3 overflow-hidden"
+                  style="
+                    width: 80px;
+                    height: 80px;
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                  "
+                >
+                  <img
+                    [src]="image.path"
+                    class="w-100 h-100"
+                    style="object-fit: cover"
+                    alt="Gallery image"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer border-0 px-4 py-3" style="background: #1a1a2e">
+        <div class="d-flex gap-2 w-100">
+          <button
+            type="button"
+            class="btn btn-outline-light rounded-pill px-4 flex-grow-1"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary rounded-pill px-4 flex-grow-1"
+            style="background: #6366f1; border: none; transition: all 0.3s ease"
+            [routerLink]="[edit, selectedProduct._id]"
+            data-bs-dismiss="modal"
+          >
+            Edit
+          </button>
         </div>
       </div>
     </div>
