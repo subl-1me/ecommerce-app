@@ -1,40 +1,242 @@
-
-<div class="container">
-    <h2>Coupons</h2>
-    <div class="row">
-        <div class="col">
-            <div class="card shadow w-100">
-                <div class="card-body">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">Code</th>
-                                <th scope="col">Type</th>
-                                <th scope="col">Value</th>
-                                <th scope="col">Limit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <ng-container *ngFor="let coupon of coupons; let ind = index">
-                                <tr>
-                                    <th>{{coupon.code}}</th>
-                                    <th>{{coupon.type}}</th>
-                                    <th>{{coupon.value}}</th>
-                                    <th>{{coupon.limit}}</th>
-                                    <th><fa-icon [icon]="faTrash" class="trashIcon" (click)="remove(coupon._id)"></fa-icon></th>
-                                </tr>
-                            </ng-container>
-                        </tbody>
-                    </table>
-                    <div *ngIf="responseMessage != ''" class="alert alert-warning text-center">{{responseMessage}}</div>
-                </div>
-            </div>
+<div class="coupons-container">
+  <div class="card coupons-card shadow-sm border-0 rounded-4 overflow-hidden">
+    <!-- Header -->
+    <div class="card-header bg-transparent border-0 p-4">
+      <div
+        class="d-flex align-items-center justify-content-between flex-wrap gap-3"
+      >
+        <div class="d-flex align-items-center gap-3">
+          <div
+            class="bg-white bg-opacity-10 rounded-circle p-3 d-flex align-items-center justify-content-center"
+            style="
+              width: 60px;
+              height: 60px;
+              border: 2px solid rgba(255, 255, 255, 0.1);
+            "
+          >
+            <span class="text-white fs-2">C</span>
+          </div>
+          <div>
+            <h1 class="text-white mb-0 fw-bold">Coupons</h1>
+            <small class="text-white-50"
+              >Manage discount codes and promotions</small
+            >
+          </div>
         </div>
-        <div class="col">
-            <app-add (addSuccess)="addSuccess($event)"></app-add>
+        <div class="d-flex align-items-center gap-2">
+          <span
+            class="badge bg-primary bg-opacity-25 text-white rounded-pill px-3 py-2"
+          >
+            {{ coupons.length }}
+            {{ coupons.length === 1 ? "register" : "registers" }}
+          </span>
         </div>
+      </div>
     </div>
+
+    <div class="card-body p-4">
+      <!-- Notice -->
+      <div
+        *ngIf="responseMessage != ''"
+        class="alert alert-warning border-0 rounded-3 d-flex align-items-start gap-3 mb-4"
+        style="
+          background: rgba(255, 193, 7, 0.1);
+          border-left: 4px solid #ffc107;
+          color: #ffc107;
+        "
+      >
+        <span style="font-size: 1.2rem">!</span>
+        <div>
+          <strong class="d-block">Notice</strong>
+          <p class="mb-0 small">{{ responseMessage }}</p>
+        </div>
+      </div>
+
+      <!-- Add Coupon Section -->
+      <div
+        class="add-coupon-section p-4 rounded-3 mb-4"
+        style="
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+        "
+      >
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h4 class="text-white mb-0">Coupon</h4>
+          <span
+            class="badge bg-success bg-opacity-25 text-success rounded-pill px-3 py-2"
+          >
+            New
+          </span>
+        </div>
+        <app-add (addSuccess)="addSuccess($event)"></app-add>
+      </div>
+
+      <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1)" />
+
+      <!-- Coupon List Section -->
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h4 class="text-white mb-0">Coupon List</h4>
+        <span class="text-white-50 small">
+          Showing {{ coupons.length }}
+          {{ coupons.length === 1 ? "result" : "results" }}
+        </span>
+      </div>
+
+      <div class="table-responsive" style="max-height: 500px; overflow-y: auto">
+        <table class="table table-hover align-middle mb-0">
+          <thead
+            class="bg-transparent"
+            style="position: sticky; top: 0; z-index: 10"
+          >
+            <tr>
+              <th
+                scope="col"
+                class="ps-3"
+                style="
+                  width: 50px;
+                  color: #9ca3af;
+                  font-size: 0.7rem;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                "
+              >
+                #
+              </th>
+              <th
+                scope="col"
+                style="
+                  color: #9ca3af;
+                  font-size: 0.7rem;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                "
+              >
+                Code
+              </th>
+              <th
+                scope="col"
+                style="
+                  color: #9ca3af;
+                  font-size: 0.7rem;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                "
+              >
+                Type
+              </th>
+              <th
+                scope="col"
+                style="
+                  color: #9ca3af;
+                  font-size: 0.7rem;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                "
+              >
+                Value
+              </th>
+              <th
+                scope="col"
+                style="
+                  color: #9ca3af;
+                  font-size: 0.7rem;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                "
+              >
+                Limit
+              </th>
+              <th
+                scope="col"
+                class="text-center"
+                style="
+                  width: 80px;
+                  color: #9ca3af;
+                  font-size: 0.7rem;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                "
+              >
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="coupons.length === 0">
+              <td colspan="6" class="text-center py-5">
+                <div class="d-flex flex-column align-items-center">
+                  <h5 class="text-white-50">No coupons available</h5>
+                  <p class="text-white-50 small mb-0">
+                    Start by adding your first coupon above
+                  </p>
+                </div>
+              </td>
+            </tr>
+
+            <ng-container *ngFor="let coupon of coupons; let ind = index">
+              <tr style="transition: all 0.2s ease">
+                <td class="ps-3 text-white-75">{{ ind + 1 }}</td>
+                <td class="text-white-75 fw-medium">
+                  <code
+                    class="bg-black bg-opacity-5 rounded px-2 py-1 small"
+                    style="font-size: 0.75rem; color: #e5e7eb"
+                  >
+                    {{ coupon.code }}
+                  </code>
+                </td>
+                <td class="text-white-75">
+                  <span
+                    class="badge rounded-pill px-3 py-1"
+                    style="
+                      background: rgba(13, 110, 253, 0.2);
+                      color: #0d6efd;
+                      font-weight: 500;
+                    "
+                  >
+                    {{ coupon.type }}
+                  </span>
+                </td>
+                <td class="text-white-75 fw-semibold">{{ coupon.value }}</td>
+                <td class="text-white-75">{{ coupon.limit }}</td>
+                <td class="text-center">
+                  <button
+                    class="btn btn-sm btn-outline-danger rounded-circle"
+                    style="
+                      width: 32px;
+                      height: 32px;
+                      padding: 0;
+                      border-width: 1.5px;
+                      transition: all 0.2s ease;
+                    "
+                    (click)="remove(coupon._id)"
+                    title="Delete coupon"
+                  >
+                    ×
+                  </button>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+
+      <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1)" />
+
+      <div class="d-flex flex-wrap gap-3 justify-content-start">
+        <button
+          type="button"
+          class="btn btn-outline-light rounded-pill px-5 py-2"
+          [routerLink]="['/panel/products']"
+          style="
+            border-color: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            min-width: 160px;
+            color: white;
+          "
+        >
+          Back
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
-
-
-

@@ -1,8 +1,130 @@
-.trashIcon{
-    cursor: pointer;
+.trashIcon {
+  cursor: pointer;
 }
 
-.trashIcon:hover{
-    opacity: 80%;
-    transition: .3s ease;
+.trashIcon:hover {
+  opacity: 80%;
+  transition: 0.3s ease;
+}
+
+.coupons-container {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.coupons-card {
+  background: linear-gradient(180deg, #0a1a2f 0%, #162d4a 100%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.coupons-card .card-header h1,
+.coupons-card .card-body h4 {
+  letter-spacing: -0.02em;
+}
+
+.table {
+  color: #e5e7eb;
+}
+
+.table,
+.table th,
+.table td {
+  background: linear-gradient(180deg, #0a1a2f 0%, #0d1b2c 100%) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.table thead th {
+  color: #9ca3af;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 12px 8px;
+  background: #0a1a2f;
+}
+
+.table tbody td {
+  padding: 12px 8px;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.text-white-75 {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.btn-outline-danger:hover {
+  background: #dc3545;
+  color: white;
+  transform: scale(1.1);
+}
+
+.btn-outline-light:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.table-responsive::-webkit-scrollbar {
+  width: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 991.98px) {
+  .coupons-card .card-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .table {
+    font-size: 0.8rem;
+  }
+
+  .table thead th {
+    font-size: 0.65rem;
+    padding: 8px 4px;
+  }
+
+  .table tbody td {
+    padding: 8px 4px;
+  }
+
+  .d-flex.flex-wrap.gap-3 {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
 }

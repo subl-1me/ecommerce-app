@@ -1,22 +1,22 @@
-.typeInput{
-    animation: appear .5s forwards;
+.typeInput {
+  animation: appear 0.5s forwards;
 }
 
-.card{
-    animation: appear .5s forwards;
+.card {
+  animation: appear 0.5s forwards;
 }
 
-.angleIcon{
-    transform: translateY(-30px);
-    margin-right: 5%;
-    float: right;
+.angleIcon {
+  transform: translateY(-30px);
+  margin-right: 5%;
+  float: right;
 }
 
-@keyframes appear{
-    0%{
-        opacity: 10%;
-    }
-    100%{
-        opacity: 100%;
-    }
+@keyframes appear {
+  0% {
+    opacity: 10%;
+  }
+  100% {
+    opacity: 100%;
+  }
 }
