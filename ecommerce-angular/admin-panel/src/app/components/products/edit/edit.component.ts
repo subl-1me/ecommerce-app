@@ -190,9 +190,8 @@ export class EditProductComponent implements OnInit {
         return;
       }
       const uploads = uploader.uploads;
-      this.setCoverToZeroIndex();
-
       this.product.gallery = [...this.product.gallery, ...uploads];
+      this.setCoverToZeroIndex();
     }
 
     // remove images

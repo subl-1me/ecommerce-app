@@ -1,37 +1,188 @@
-.section{
-    font-weight: 100;
+.section {
+  font-weight: 100;
 }
 
-.register{
-    animation: appear .3s forwards;
+.valid {
+  color: #28a745;
+  animation: appearAndGo 1.5s forwards;
 }
 
-.valid{
-    color: #28a745;
-    animation: appearAndGo 1.5s forwards;
+.inventory-container {
+  animation: fadeInUp 0.4s ease-out;
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos de la tabla */
+.table {
+  color: #e5e7eb;
+}
+
+.table thead th {
+  color: #9ca3af;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 12px 8px;
+}
+
+.table tbody td {
+  padding: 12px 8px;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.inventory-card {
+  background: linear-gradient(180deg, #0a1a2f 0%, #162d4a 100%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.inventory-card .card-header h1,
+.inventory-card .card-body h4 {
+  letter-spacing: -0.02em;
+}
+
+.table-responsive::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.table,
+.table th,
+.table td {
+  background: linear-gradient(180deg, #0a1a2f 0%, #0d1b2c 100%) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.text-white-75 {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.form-floating > .form-control:focus {
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+.form-floating > .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-success:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4) !important;
+}
+
+.btn-outline-light:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-outline-danger:hover {
+  background: #dc3545;
+  color: white;
+  transform: scale(1.1);
+}
+
+.table-responsive::-webkit-scrollbar {
+  width: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 767.98px) {
+  .inventory-card .card-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .table {
+    font-size: 0.8rem;
+  }
+
+  .table thead th {
+    font-size: 0.65rem;
+    padding: 8px 4px;
+  }
+
+  .table tbody td {
+    padding: 8px 4px;
+  }
+
+  .d-flex.flex-wrap.gap-3 {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
 
 @keyframes appear {
-    0%{
-        opacity: 10%;
-    }
-    50%{
-        opacity: 50%;
-    }
-    100%{
-        opacity: 100%;
-    }
+  0% {
+    opacity: 10%;
+  }
+  50% {
+    opacity: 50%;
+  }
+  100% {
+    opacity: 100%;
+  }
 }
 
 @keyframes appearAndGo {
-    0%{
-        opacity: 10%;
-    }
-    50%{
-        opacity: 100%;
-    }
-    100%{
-        opacity: 0%;
-    }
+  0% {
+    opacity: 10%;
+  }
+  50% {
+    opacity: 100%;
+  }
+  100% {
+    opacity: 0%;
+  }
 }
