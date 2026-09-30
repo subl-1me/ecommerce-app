@@ -32,7 +32,12 @@ Esta es una aplicación de demostración (_Demo_) full-stack para una tienda de 
 
 ### Capturas de pantalla
 
-![Home](./ecommerce-angular/shop/src/assets/ss/home.png)
+![home](./ecommerce-angular/shop/src/assets/ss/home.png)
+![home2](./ecommerce-angular/shop/src/assets/ss/home-2.png)
+![login](./ecommerce-angular/shop/src/assets/ss/login.png)
+![register](./ecommerce-angular/shop/src/assets/ss/register.png)
+![productl](./ecommerce-angular/shop/src/assets/ss/product-list.png)
+![profile](./ecommerce-angular/shop/src/assets/ss/profile.png)
 
 #### 2. Panel de Administración (Admin Panel)
 
