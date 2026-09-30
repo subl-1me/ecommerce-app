@@ -18,6 +18,12 @@ const uploadSingle = async function (req, res) {
       folder: process.env.CLOUDINARY_FOLDER_NAME,
       public_id: req.file.originalname.split(".")[0],
       overwrite: true,
+      tags: req.body.tags
+        ? req.body.tags
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean)
+        : ["default"],
     });
 
     res.json({
@@ -85,8 +91,25 @@ const removeMultipleImg = async function (req, res) {
   }
 };
 
+const removeSingleByPublicId = async function (req, res) {
+  try {
+    const public_id = req.body.public_id;
+    if (!public_id) {
+      return res
+        .status(400)
+        .json({ success: false, error: "Image identifier is required." });
+    }
+
+    const response = await deleteByPublicId(public_id);
+    res.status(200).json({ success: true, result: response });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 module.exports = {
   uploadSingle,
   uploadMultiple,
   removeMultipleImg,
+  removeSingleByPublicId,
 };

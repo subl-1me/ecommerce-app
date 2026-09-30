@@ -20,7 +20,7 @@ export class ConfigService {
 
     return this._http.get(
       (environment.API_URL || constans.defaultUrl) + 'config',
-      { headers: headersAuth }
+      { headers: headersAuth },
     );
   }
 
@@ -35,14 +35,14 @@ export class ConfigService {
         'config/category/' +
         configID,
       category,
-      { headers: headersAuth }
+      { headers: headersAuth },
     );
   }
 
   deleteCategory(
     token: string,
     configID: string,
-    categoryName: string
+    categoryName: string,
   ): Observable<any> {
     var headersAuth = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -55,19 +55,20 @@ export class ConfigService {
         configID +
         '/' +
         categoryName,
-      { headers: headersAuth }
+      { headers: headersAuth },
     );
   }
 
-  uploadLogo(token: string, configID: string, logo: any): Observable<any> {
+  uploadLogo(token: string, logo: FormData): Observable<any> {
     var headersAuth = new HttpHeaders({ Authorization: token });
 
-    return this._http.put(
-      (environment.API_URL || constans.defaultUrl) + 'config/logo/' + configID,
+    return this._http.post(
+      (environment.API_URL || constans.defaultUrl) +
+        constans.endpointsAux.uploadSingleImage,
       logo,
       {
         headers: headersAuth,
-      }
+      },
     );
   }
 
@@ -82,7 +83,7 @@ export class ConfigService {
       newConfig,
       {
         headers: headersAuth,
-      }
+      },
     );
   }
 }

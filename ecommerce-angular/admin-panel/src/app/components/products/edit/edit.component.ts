@@ -94,7 +94,10 @@ export class EditProductComponent implements OnInit {
       shopName: '',
       serie: '',
       correlation: '',
-      logo: '',
+      logo: {
+        path: '',
+        public_id: '',
+      },
       categories: [],
     };
     this.fileChoosenError = '';

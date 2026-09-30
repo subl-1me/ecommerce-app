@@ -36,4 +36,15 @@ const deleteByPublicId = (publicId) => {
   });
 };
 
-module.exports = { uploadFromBuffer, deleteByPublicId };
+const getByTag = (tag) => {
+  return new Promise((resolve, reject) => {
+    const response = cloudinary.api.resources_by_tag(tag, (err, result) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(result);
+    });
+  });
+};
+
+module.exports = { uploadFromBuffer, deleteByPublicId, getByTag };

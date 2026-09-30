@@ -1,31 +1,15 @@
 "use strict";
 
 const Config = require("../models/config");
+const { constans } = require("../const");
+const { getByTag } = require("../services/cloudinary.service");
 
-const path = require("path");
-const multer = require("multer");
-const fs = require("fs");
-const _cleanFolder = require("../services/cleanFolder");
 const {
   createInitialEcommerceConfig,
 } = require("../config/defaultConfigurations");
-const URL = "http://localhost:4201/";
-
-const directoryPath = path.join(__dirname, "../uploads/configs/");
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "./uploads/configs");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-const upload = multer({ storage: storage }).single("image");
 
 const update = async function (req, res) {
-  if (!req.user || req.user.role !== "admin")
+  if (!req.user || req.user.role !== "Admin")
     return res.status(403).send({ message: "You are not authorized." });
   if (!req.params["id"])
     return res.status(200).send({ message: "Config ID is required" });
@@ -41,34 +25,18 @@ const update = async function (req, res) {
       serie: params.serie,
       correlation: params.correlation,
     });
-    return res.status(200).send({ message: "Config updated successfully." });
+    return res
+      .status(200)
+      .send({ success: true, message: "Config updated successfully." });
   } catch (err) {
-    return res.status(200).send({ message: "Error updating config." });
+    return res
+      .status(500)
+      .send({ success: false, message: "Error updating config." });
   }
-};
-
-const uploadLogo = async function (req, res, next) {
-  if (!req.user || req.user.role !== "admin")
-    return res.status(403).send({ message: "You are not authorized." });
-  if (!req.params["id"])
-    return res.status(200).send({ message: "Config ID is required" });
-
-  try {
-    _cleanFolder.clean(directoryPath);
-  } catch (err) {
-    return res.status(500).send({ message: "Error trying to upload image." });
-  }
-
-  // Upload new logo & return path
-  upload(req, res, (err) => {
-    if (err) return res.status(200).send({ message: "Error saving image." });
-
-    return res.status(200).send({ path: URL + req.file.filename });
-  });
 };
 
 const addCategory = async function (req, res) {
-  if (!req.user || req.user.role !== "admin")
+  if (!req.user || req.user.role !== "Admin")
     return res.status(403).send({ message: "You are not authorized." });
   if (!req.params["id"])
     return res.status(200).send({ message: "Config ID is required" });
@@ -82,7 +50,6 @@ const addCategory = async function (req, res) {
       { $push: { categories: category } },
     );
 
-    console.log(updatedConfig);
     return res.status(200).send({ message: "Category Added." });
   } catch (err) {
     return res.status(500).send({ message: "Server Error." });
@@ -90,7 +57,7 @@ const addCategory = async function (req, res) {
 };
 
 const removeCategory = async function (req, res) {
-  if (!req.user || req.user.role !== "admin")
+  if (!req.user || req.user.role !== "Admin")
     return res.status(403).send({ message: "You are not authorized." });
   if (!req.params["id"])
     return res.status(200).send({ message: "Config ID is required" });
@@ -106,7 +73,6 @@ const removeCategory = async function (req, res) {
       { $pull: { categories: categoryName } },
     );
 
-    console.log(updatedConfig);
     return res.status(200).send({ message: "Category deleted." });
   } catch (err) {
     return res.status(200).send({ message: "Server Error" });
@@ -135,5 +101,4 @@ module.exports = {
   update,
   addCategory,
   removeCategory,
-  uploadLogo,
 };

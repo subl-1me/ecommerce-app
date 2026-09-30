@@ -16,7 +16,6 @@ routes.delete(
   auth.auth,
   configController.removeCategory,
 );
-routes.put("/config/logo/:id", auth.auth, configController.uploadLogo);
 
 routes.get("/createConfig", configController.createInitialConfig);
 

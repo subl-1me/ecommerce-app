@@ -1,12 +1,17 @@
-export interface Config{
-    _id?: any,
-    categories: Array<Category>,
-    shopName?: string,
-    serie?: string,
-    correlation?: string,
-    logo?: string
+export interface Config {
+  _id?: any;
+  categories: Array<Category>;
+  shopName?: string;
+  serie?: string;
+  correlation?: string;
+  logo: Image;
 }
 
-interface Category{
-    name?: string
+interface Image {
+  public_id: string;
+  path: string;
+}
+
+interface Category {
+  name: string;
 }

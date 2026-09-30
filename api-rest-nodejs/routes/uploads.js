@@ -16,5 +16,6 @@ routes.post(
   uploadController.uploadMultiple,
 );
 routes.post("/remove-multiple-img", uploadController.removeMultipleImg);
+routes.post("/remove-single-upload", uploadController.removeSingleByPublicId);
 
 module.exports = routes;

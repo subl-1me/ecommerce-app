@@ -83,7 +83,10 @@ export class CreateComponent implements DoCheck, OnInit {
       shopName: '',
       serie: '',
       correlation: '',
-      logo: '',
+      logo: {
+        path: '',
+        public_id: '',
+      },
       categories: [],
     };
     this.fileChoosenError = '';
