@@ -30,6 +30,10 @@ Esta es una aplicación de demostración (_Demo_) full-stack para una tienda de 
 - **Reseñas y Calificaciones:** Lectura de valoraciones en productos y opción de dejar reseñas únicamente tras haber completado una compra del producto.
 - **Soporte y Preguntas Frecuentes:** Sección de FAQ y formulario de contacto directo con soporte.
 
+### Capturas de pantalla
+
+![Home](./assets/ss/home.png)
+
 #### 2. Panel de Administración (Admin Panel)
 
 - **Dashboard:** Resumen métrico sencillo con estadísticas clave de ventas y rendimiento.
