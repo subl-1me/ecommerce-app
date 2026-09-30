@@ -55,15 +55,15 @@ Esta es una aplicación de demostración (_Demo_) full-stack para una tienda de 
 1. **Clonar el repositorio:**
 
    ```bash
-   git clone https://github.com/tu-usuario/tu-repositorio.git
-   cd tu-repositorio
+   git clone https://github.com/subl-1me/ecommerce-app.git
+   cd ecommerce-app
    ```
 
 2. **Instalar dependencias:**
 
    ```bash
    # En la carpeta de la app o subcarpetas según tu estructura
-   npm install
+   pnpm install
    ```
 
 3. **Variables de Entorno:**
