@@ -1,5 +1,5 @@
 import { Component, OnInit, DoCheck } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ConfigsService } from '../../../services/configs.service';
 
@@ -48,7 +48,8 @@ export class ListComponent implements OnInit, DoCheck {
   constructor(
     private _ConfigsService: ConfigsService,
     private _productsService: ProductsService,
-    private _router: ActivatedRoute
+    private _router: ActivatedRoute,
+    private _routerr: Router,
   ) {
     this.customerID = this._router.snapshot.queryParams['_id'];
 
@@ -219,11 +220,6 @@ export class ListComponent implements OnInit, DoCheck {
   }
 
   addToCart(productID: any): void {
-    if (!this.customerID) {
-      this.addToCartMesssage = 'Please, log in to add products.';
-      return;
-    }
-
-    this.addToCartMesssage = '';
+    this._routerr.navigate([`products/detail/${productID}`]);
   }
 }

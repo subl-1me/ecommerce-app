@@ -1,174 +1,202 @@
 <app-breadcrumb></app-breadcrumb>
-<div class="container">
-  <div class="row">
-    <div class="col-3 p-3">
-      <h1 class="mb-5">Filters:</h1>
-      <h6>Categories</h6>
-      <input
-        type="text"
-        placeholder="Search category"
-        class="search-category form-control shadow-sm p-2"
-        name="filterCategory"
-        [(ngModel)]="filterCategory"
-        (keyup)="getProductsByFilter()"
-      />
-      <h6 class="small mt-1 text-danger" *ngIf="noItemsFoundMessage !== ''">
-        No products found with that search.
-      </h6>
-      <div class="categories mt-3">
-        <ul class="list-group">
-          <ng-container *ngFor="let category of categories">
-            <li class="list-group-item">
-              <div class="form-check">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  id="{{ category }}"
-                  (click)="getProductsByCategory(category, $event)"
-                />
-                <label class="form-check-label" for="{{ category }}"
-                  >{{ category }}
-                </label>
-              </div>
-            </li>
-          </ng-container>
-        </ul>
-      </div>
-      <hr />
-      <h6>Price</h6>
-      <form #priceForm="ngForm" (ngSubmit)="onSubmit()">
-        <div class="row">
-          <div class="col-sm-4">
-            <label for="names" class="text-muted mb-2 mt-2">Min</label>
-            <input
-              type="number"
-              class="form-control"
-              id="names"
-              name="min"
-              [(ngModel)]="min"
-            />
+
+<div class="products-container">
+  <div class="container py-4">
+    <div class="row g-4">
+      <!-- Sidebar Filters -->
+      <aside class="col-12 col-lg-3">
+        <div class="filters-sidebar">
+          <div class="filter-header">
+            <h5 class="mb-0">Filters</h5>
+            <span class="filter-count">{{ products.length }} items</span>
           </div>
-          <div class="col-sm-4">
-            <label for="names" class="text-muted mb-2 mt-2">Max</label>
-            <input
-              type="number"
-              class="form-control"
-              id="names"
-              name="max"
-              [(ngModel)]="max"
-            />
-          </div>
-        </div>
-        <button class="btn btn-success mt-2" [disabled]="products.length == 0">
-          Search
-        </button>
-      </form>
-    </div>
-    <div class="col p-3">
-      <div class="menu mb-5">
-        <ul class="nav">
-          <li class="nav-item">
-            <div class="form-group row">
-              <label for="inputSort" class="col-sm-4 col-form-label"
-                >Sort by</label
-              >
-              <div class="col-sm me-4">
-                <select
-                  class="form-select"
-                  aria-label="Default select example"
-                  name="sortByOption"
-                  [(ngModel)]="sortByOption"
+
+          <!-- Categories -->
+          <div class="filter-card">
+            <h6 class="filter-title">Categories</h6>
+
+            <div class="search-wrapper">
+              <input
+                type="text"
+                placeholder="Search category"
+                class="form-control search-input"
+                name="filterCategory"
+                [(ngModel)]="filterCategory"
+                (keyup)="getProductsByFilter()"
+              />
+              <span class="search-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
                 >
-                  <option selected value="default" (click)="sortBy()">
-                    Default
-                  </option>
-                  <option value="popularity" (click)="sortBy()">
-                    Popularity
-                  </option>
-                  <option value="lowestPrice" (click)="sortBy()">
-                    Lowest Price
-                  </option>
-                  <option value="highestPrice" (click)="sortBy()">
-                    Highest Price
-                  </option>
-                </select>
-              </div>
+                  <path
+                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+                  />
+                </svg>
+              </span>
             </div>
-          </li>
-          <li class="nav-item">
-            <div class="form-group row">
-              <label for="inputShow" class="col-sm-3 col-form-label"
-                >Show</label
-              >
-              <div class="col-sm-4">
-                <input
-                  type="number"
-                  class="form-control"
-                  id="inputShow"
-                  name="productsAmount"
-                  [(ngModel)]="productsAmount"
-                  (change)="showAmount()"
-                />
-                <div *ngIf="totalProductsMessage" class="small text-danger">
-                  {{ totalProductsMessage }}
+
+            <div *ngIf="noItemsFoundMessage !== ''" class="filter-empty-msg">
+              No products found with that search
+            </div>
+
+            <ul class="category-list mt-3">
+              <ng-container *ngFor="let category of categories">
+                <li class="category-item">
+                  <label class="category-label" [for]="category">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      [id]="category"
+                      (click)="getProductsByCategory(category, $event)"
+                    />
+                    <span class="category-name">{{ category }}</span>
+                  </label>
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+
+          <!-- Price -->
+          <div class="filter-card">
+            <h6 class="filter-title">Price Range</h6>
+            <form #priceForm="ngForm" (ngSubmit)="onSubmit()">
+              <div class="row g-2">
+                <div class="col-6">
+                  <label for="minPrice" class="price-label">Min</label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="minPrice"
+                      name="min"
+                      [(ngModel)]="min"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+                <div class="col-6">
+                  <label for="maxPrice" class="price-label">Max</label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="maxPrice"
+                      name="max"
+                      [(ngModel)]="max"
+                      placeholder="999"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <div class="products">
-        <!-- <div class="row ">
-                    <div class="product col-md-3 ms-5 mb-3 mt-3 text-center" *ngFor="let product of products" [routerLink]="['/products/detail', product._id]">
-                            <fa-icon [icon]="faStar" class="rating-icon"></fa-icon>
-                            <img src="{{product.coverImage}}" class="productImage">
-                            <div class="product-info mt-2">
-                                <p class="mb-0">{{product.title}}</p>
-                                <p class="product-price">${{product.price}}</p>
-                            </div>
-                    </div>
-                    <div class="no-products row" *ngIf="products.length == 0"></div>
-                </div> -->
-        <div class="row">
-          <div class="empty-list text-center" *ngIf="products.length === 0">
+              <button
+                type="submit"
+                class="btn btn-filter w-100 mt-3"
+                [disabled]="products.length == 0"
+              >
+                Apply Filter
+              </button>
+            </form>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Products Section -->
+      <main class="col-12 col-lg-9">
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="toolbar-item">
+            <label class="toolbar-label">Sort by</label>
+            <select
+              class="form-select form-select-sm toolbar-select"
+              aria-label="Sort products"
+              name="sortByOption"
+              [(ngModel)]="sortByOption"
+              (change)="sortBy()"
+            >
+              <option value="default">Default</option>
+              <option value="popularity">Popularity</option>
+              <option value="lowestPrice">Lowest Price</option>
+              <option value="highestPrice">Highest Price</option>
+            </select>
+          </div>
+
+          <div class="toolbar-item">
+            <label class="toolbar-label">Show</label>
+            <input
+              type="number"
+              class="form-control form-control-sm toolbar-input"
+              id="inputShow"
+              name="productsAmount"
+              [(ngModel)]="productsAmount"
+              (change)="showAmount()"
+              min="1"
+            />
+          </div>
+
+          <div *ngIf="totalProductsMessage" class="toolbar-message">
+            {{ totalProductsMessage }}
+          </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid">
+          <!-- Empty State -->
+          <div class="empty-state" *ngIf="products.length === 0">
             <img
               src="../../../../assets/no-data-illustration.png"
-              class="w-50 no-data-illustration"
+              class="empty-illustration"
+              alt="No data"
             />
-            <h5>No products available. New sales coming soon!</h5>
+            <h5 class="empty-title">No products available</h5>
+            <p class="empty-subtitle">New sales coming soon</p>
           </div>
 
-          <div
-            class="product col-md-3 ms-5 mb-3 mt-3"
-            *ngFor="let product of products"
-          >
-            <div class="card">
-              <img
-                src="{{ product.coverImage }}"
-                class="productImage"
-                [routerLink]="['/products/detail', product._id]"
-              />
-              <div class="card-body">
-                <div class="product-info mt-2">
-                  <p class="mb-0">{{ product.title }}</p>
-                  <p class="product-price">${{ product.price }}</p>
+          <!-- Product Cards -->
+          <div class="row g-3">
+            <div
+              class="col-12 col-sm-6 col-lg-4"
+              *ngFor="let product of products"
+            >
+              <div class="product-card">
+                <div
+                  class="product-image-wrapper"
+                  [routerLink]="['/products/detail', product._id]"
+                >
+                  <img
+                    [src]="product.gallery[0].path"
+                    class="product-image"
+                    alt="{{ product.title }}"
+                  />
+                  <span class="product-overlay">View Details</span>
                 </div>
 
-                <button
-                  class="btn btn-add-cart"
-                  (click)="addToCart(product._id)"
-                >
-                  <fa-icon [icon]="faCartShopping" class="me-1"></fa-icon>
-                  Add to Cart
-                </button>
-                <div class="small text-danger" *ngIf="addToCartMesssage !== ''">
-                  {{ addToCartMesssage }}
+                <div class="product-body">
+                  <h6 class="product-title">{{ product.title }}</h6>
+                  <p class="product-price">${{ product.price }}</p>
+
+                  <button
+                    class="btn btn-add-cart"
+                    (click)="addToCart(product._id)"
+                  >
+                    <fa-icon [icon]="faCartShopping" class="me-1"></fa-icon>
+                    Add to Cart
+                  </button>
+
+                  <div class="cart-message" *ngIf="addToCartMesssage !== ''">
+                    {{ addToCartMesssage }}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   </div>
 </div>
