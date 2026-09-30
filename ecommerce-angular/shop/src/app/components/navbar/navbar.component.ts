@@ -14,18 +14,17 @@ import { Product } from 'src/app/models/product';
 import { CustomerService } from 'src/app/services/customer.service';
 import { ConfigsService } from 'src/app/services/configs.service';
 import { ProductsService } from 'src/app/services/products.service';
-
+import { Config } from 'src/app/models/config';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
-  providers: [ CustomerService, ConfigsService, ProductsService ]
+  providers: [CustomerService, ConfigsService, ProductsService],
 })
 export class NavbarComponent implements OnInit {
-
   @Output() openCartModal = new EventEmitter<boolean>();
-
+  public config: Config;
 
   public customer: Customer;
   public _idStorage: any;
@@ -35,7 +34,6 @@ export class NavbarComponent implements OnInit {
 
   public productsFav: any;
   public loadedProducts: Array<Product>;
-
 
   // icons
   faHeart = faHeart;
@@ -48,18 +46,30 @@ export class NavbarComponent implements OnInit {
   constructor(
     private _customerService: CustomerService,
     private _configsService: ConfigsService,
-    private _productsService: ProductsService
+    private _productsService: ProductsService,
   ) {
+    this.config = {
+      _id: '',
+      categories: [],
+      shopName: '',
+      logo: {
+        public_id: '',
+        path: '',
+      },
+    };
     this.customer = {
       names: '',
       surnames: '',
-    }
-    this._idStorage = localStorage.getItem('_id') != undefined ? localStorage.getItem('_id') : null;
+    };
+    this._idStorage =
+      localStorage.getItem('_id') != undefined
+        ? localStorage.getItem('_id')
+        : null;
     this.productsFav = JSON.parse(localStorage.getItem('productsFav') || '[]');
     this.loadedProducts = [];
 
     this.showFavsMenu = false;
-   }
+  }
 
   ngOnInit(): void {
     this.getCustomer();
@@ -67,19 +77,21 @@ export class NavbarComponent implements OnInit {
     this.getProductsFav();
   }
 
-  getCustomer():void{
-    this._customerService.getCustomerById(this._idStorage).subscribe((response) => {
-      if(!response.customer) return;
+  getCustomer(): void {
+    this._customerService
+      .getCustomerById(this._idStorage)
+      .subscribe((response) => {
+        if (!response.customer) return;
 
-      this.customer = {
-        names: response.customer.names,
-        surnames: response.customer.surnames
-      }
-    })
+        this.customer = {
+          names: response.customer.names,
+          surnames: response.customer.surnames,
+        };
+      });
   }
 
-  logOut():void{
-    if(!this._idStorage){
+  logOut(): void {
+    if (!this._idStorage) {
       console.log('Not logged.');
       return;
     }
@@ -89,50 +101,52 @@ export class NavbarComponent implements OnInit {
     location.reload();
   }
 
-  getCategories():void{
+  getCategories(): void {
     this._configsService.getShopConfigs().subscribe((response) => {
-      if(!response.actualConfig) return;
+      if (!response.actualConfig) return;
 
-      console.log(response);
+      this.config = response.actualConfig[0];
       this.categories = response.actualConfig[0].categories;
-    })
+    });
   }
 
-  enableFavsMenu():void{
-    if(this.showFavsMenu){
+  enableFavsMenu(): void {
+    if (this.showFavsMenu) {
       this.showFavsMenu = false;
       return;
     }
     this.showFavsMenu = true;
   }
 
-  disableFavsMenu():void{
+  disableFavsMenu(): void {
     this.showFavsMenu = false;
   }
 
-  isOnMenu(event:any):void{
-    if(event.target.className !== 'card-body' || event.target.className !== 'text-muted'){
+  isOnMenu(event: any): void {
+    if (
+      event.target.className !== 'card-body' ||
+      event.target.className !== 'text-muted'
+    ) {
       this.showFavsMenu = false;
       return;
     }
   }
 
-  getProductsFav():void{
-
-    for(let i = 0; i < this.productsFav.length; i++){
-      this._productsService.getProductById(this.productsFav[i]).subscribe((response) => {
-        if(response.product){
-          this.loadedProducts.push(response.product);
-        }
-      })
+  getProductsFav(): void {
+    for (let i = 0; i < this.productsFav.length; i++) {
+      this._productsService
+        .getProductById(this.productsFav[i])
+        .subscribe((response) => {
+          if (response.product) {
+            this.loadedProducts.push(response.product);
+          }
+        });
     }
   }
 
-  updatedBreadcrumb():void{
-    
-  }
+  updatedBreadcrumb(): void {}
 
-  openCart():void{
+  openCart(): void {
     this.openCartModal.emit(true);
   }
 }
