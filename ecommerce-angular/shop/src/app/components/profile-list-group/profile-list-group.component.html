@@ -1,41 +1,183 @@
-<ul class="list-group shadow rounded">
-    <li class="list-group-item p-4">
-        <h5 class="custName mb-1">{{customer.names}}</h5>
-        <h6 class="text-muted">{{customer.email}}</h6>
-        <ng-container *ngIf="!customer.names || !customer.email">
-            <div class="text-center">
-                <span class="me-2">Loading...</span>
-                <div class="spinner-border text-center" role="status">
-                </div>
-            </div>
-        </ng-container>
-    </li>
-    <li class="list-group-item p-3" [routerLink]="['/profile/', _idStorage]">
-        <fa-icon [icon]="faUser" class="me-1"></fa-icon>
-        My Profile
-    </li>
-    <li class="list-group-item p-3" [routerLink]="['/directions']">
-        <fa-icon [icon]="faMap" class="me-1" ></fa-icon>
-        My Directions
-    </li>
-    <li class="list-group-item p-3">
-        <fa-icon [icon]="faHeart" class="me-1"></fa-icon>
-        Wishlist
-    </li>
-    <li class="list-group-item p-3" [routerLink]="['/my-orders']">
-        <fa-icon [icon]="faHeart" class="me-1"></fa-icon>
-        My Orders
-    </li>
-    <li class="list-group-item p-3">
-        <fa-icon [icon]="faEye" class="me-1"></fa-icon>
-        Recently Viewed
-    </li>
-    <li class="list-group-item p-3">
-        <fa-icon [icon]="faStar" class="me-1"></fa-icon>
-        My Reviews
-    </li>
-    <li class="list-group-item p-3" [routerLink]="['/settings']">
-        <fa-icon [icon]="faGear" class="me-1"></fa-icon>
-        Advanced Settings
-    </li>
-</ul>
+<aside class="profile-sidebar">
+  <!-- Card de usuario -->
+  <div class="user-card">
+    <div class="avatar-wrapper">
+      <div class="avatar-circle">
+        <span
+          >{{ customer.names?.charAt(0) || "U"
+          }}{{ customer.surnames?.charAt(0) || "" }}</span
+        >
+      </div>
+    </div>
+
+    <div class="user-info" *ngIf="customer.names && customer.email">
+      <h5 class="user-name">{{ customer.names }} {{ customer.surnames }}</h5>
+      <p class="user-email">{{ customer.email }}</p>
+    </div>
+
+    <div class="user-loading" *ngIf="!customer.names || !customer.email">
+      <div class="loading-line"></div>
+      <div class="loading-line short"></div>
+    </div>
+  </div>
+
+  <!-- Menú de navegación -->
+  <nav class="sidebar-menu">
+    <ul class="menu-list">
+      <li class="menu-item">
+        <a
+          class="menu-link"
+          [routerLink]="['/profile/', _idStorage]"
+          routerLinkActive="active-link"
+        >
+          <span class="menu-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"
+              />
+            </svg>
+          </span>
+          <span class="menu-text">My Profile</span>
+        </a>
+      </li>
+
+      <li class="menu-item">
+        <a
+          class="menu-link"
+          [routerLink]="['/directions']"
+          routerLinkActive="active-link"
+        >
+          <span class="menu-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"
+              />
+            </svg>
+          </span>
+          <span class="menu-text">My Directions</span>
+        </a>
+      </li>
+
+      <li class="menu-item">
+        <a class="menu-link" href="#" routerLinkActive="active-link">
+          <span class="menu-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.837-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"
+              />
+            </svg>
+          </span>
+          <span class="menu-text">Wishlist</span>
+        </a>
+      </li>
+
+      <li class="menu-item">
+        <a
+          class="menu-link"
+          [routerLink]="['/my-orders']"
+          routerLinkActive="active-link"
+        >
+          <span class="menu-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+              />
+            </svg>
+          </span>
+          <span class="menu-text">My Orders</span>
+        </a>
+      </li>
+
+      <li class="menu-item">
+        <a class="menu-link" href="#" routerLinkActive="active-link">
+          <span class="menu-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"
+              />
+              <path
+                d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"
+              />
+            </svg>
+          </span>
+          <span class="menu-text">Recently Viewed</span>
+        </a>
+      </li>
+
+      <li class="menu-item">
+        <a class="menu-link" href="#" routerLinkActive="active-link">
+          <span class="menu-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"
+              />
+            </svg>
+          </span>
+          <span class="menu-text">My Reviews</span>
+        </a>
+      </li>
+
+      <li class="menu-item">
+        <a
+          class="menu-link"
+          [routerLink]="['/settings']"
+          routerLinkActive="active-link"
+        >
+          <span class="menu-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"
+              />
+              <path
+                d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"
+              />
+            </svg>
+          </span>
+          <span class="menu-text">Advanced Settings</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</aside>

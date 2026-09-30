@@ -1,18 +1,236 @@
-.review{
-    object-fit: cover;
-    max-width: 300px;
-    max-height: 300px;
+.review-container {
+  animation: fadeInUp 0.4s ease-out;
 }
 
-.btn-submit{
-    color:white;
-    background-color: #7367F0 !important;
-    font-weight: 600;
-    /*background-color: #0396FF !important;*/
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.btn-submit:hover{
-    transform: translateY(-5px);
-    background-color: #574aee !important;
-    transition: .1s ease-in-out;
+.review-card {
+  background: white;
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Illustration side */
+.illustration-side {
+  text-align: center;
+  padding: 1rem;
+}
+
+.illustration-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.illustration-wrapper::before {
+  content: "";
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: rgba(41, 187, 106, 0.08);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.review-illustration {
+  max-width: 220px;
+  max-height: 220px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 12px 28px rgba(41, 187, 106, 0.15));
+}
+
+.illustration-title {
+  color: #123822;
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.illustration-subtitle {
+  color: #6b7280;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Form side */
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.78rem;
+  color: #123822;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.55rem;
+}
+
+/* Rating wrapper */
+.rating-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0.85rem 1rem;
+  background: #f8f9fa;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.rating-wrapper:focus-within {
+  background: white;
+  border-color: #29bb6a;
+  box-shadow: 0 0 0 3px rgba(41, 187, 106, 0.12);
+}
+
+.rating-value {
+  margin-left: auto;
+  color: #123822;
+  font-weight: 800;
+  font-size: 0.9rem;
+  background: rgba(41, 187, 106, 0.12);
+  color: #29bb6a;
+  padding: 4px 12px;
+  border-radius: 50px;
+}
+
+/* Textarea */
+.form-control-custom {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #f8f9fa;
+  padding: 0.85rem 1rem;
+  font-size: 0.92rem;
+  color: #123822;
+  transition: all 0.3s ease;
+  min-height: 120px;
+  resize: vertical;
+}
+
+.form-control-custom::placeholder {
+  color: #9ca3af;
+}
+
+.form-control-custom:focus {
+  background: white;
+  border-color: #29bb6a;
+  box-shadow: 0 0 0 3px rgba(41, 187, 106, 0.12);
+  outline: none;
+}
+
+.form-control-custom.ng-invalid.ng-touched {
+  border-color: #dc3545;
+}
+
+/* Submit button */
+.btn-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background: linear-gradient(135deg, #29bb6a 0%, #1f9a55 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0.9rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(41, 187, 106, 0.35);
+  color: white;
+}
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+  .review-card {
+    padding: 2rem;
+  }
+
+  .review-illustration {
+    max-width: 180px;
+    max-height: 180px;
+  }
+
+  .illustration-wrapper::before {
+    width: 160px;
+    height: 160px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .review-card {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+
+  .review-illustration {
+    max-width: 140px;
+    max-height: 140px;
+  }
+
+  .illustration-wrapper::before {
+    width: 130px;
+    height: 130px;
+  }
+
+  .illustration-title {
+    font-size: 1.1rem;
+  }
+
+  .illustration-subtitle {
+    font-size: 0.82rem;
+  }
+
+  .rating-wrapper {
+    padding: 0.7rem 0.85rem;
+  }
+
+  .btn-submit {
+    padding: 0.8rem;
+    font-size: 0.88rem;
+  }
 }

@@ -64,7 +64,7 @@ export class DetailComponent implements OnInit, DoCheck {
     private _reviewService: ReviewService,
     private _cartService: CartService,
     private _router: ActivatedRoute,
-    private _route: Router
+    private _route: Router,
   ) {
     this.product = {
       _id: '',
@@ -82,7 +82,7 @@ export class DetailComponent implements OnInit, DoCheck {
 
     this.customerID = localStorage.getItem('_id');
 
-    this.cart = { _id: '' };
+    this.cart = { _id: ''  };
 
     this.productID = this._router.snapshot.paramMap.get('id');
     this.getProduct();
@@ -139,7 +139,7 @@ export class DetailComponent implements OnInit, DoCheck {
 
   removeFromFavorite(): void {
     this.productsFav = this.productsFav.filter(
-      (element: string) => element !== this.productID
+      (element: string) => element !== this.productID,
     );
 
     localStorage.setItem('productsFav', JSON.stringify(this.productsFav));
@@ -263,7 +263,7 @@ export class DetailComponent implements OnInit, DoCheck {
       function () {},
       function (err) {
         console.log('Not copied!');
-      }
+      },
     );
   }
 }

@@ -1,28 +1,337 @@
-.btn-register{
-    width: 100%;
-    padding: 3%;
-    font-weight: 600;
-    background-color: #7367F0 !important;
-    color: white;
+.register-container {
+  background: #f8f9fa;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 3rem 0;
+  animation: fadeInUp 0.5s ease-out;
 }
 
-.btn-register:hover{
-    background-color: #5143e9 !important;
-    transition: .3s ease-in-out;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-input{
-    width: 100%;
-    padding: 3%;
+/* Steps */
+.steps-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.list-group-item{
-    border: solid 1px #eeeeee;
-    padding: 0;
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: all 0.35s ease;
 }
 
-.illustration{
-    object-fit: contain;
-    width: 300px;
-    height: 300px;
+.step-item:hover {
+  transform: translateX(6px);
+  box-shadow: 0 12px 30px rgba(41, 187, 106, 0.12);
+  border-color: rgba(41, 187, 106, 0.25);
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #29bb6a 0%, #1f9a55 100%);
+  color: white;
+  font-weight: 800;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px rgba(41, 187, 106, 0.3);
+}
+
+.step-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.step-title {
+  color: #123822;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.2rem;
+}
+
+.step-text {
+  color: #6b7280;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.step-illustration {
+  width: 76px;
+  height: 76px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-illustration img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.4s ease;
+}
+
+.step-item:hover .step-illustration img {
+  transform: scale(1.08);
+}
+
+/* Card */
+.register-card {
+  background: white;
+  border-radius: 24px;
+  padding: 2.5rem 2.25rem;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Header */
+.register-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.brand-mark {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #29bb6a 0%, #1f9a55 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+  font-size: 1.5rem;
+  margin: 0 auto 1.25rem;
+  box-shadow: 0 8px 22px rgba(41, 187, 106, 0.35);
+}
+
+.register-title {
+  color: #123822;
+  font-weight: 800;
+  font-size: 1.6rem;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.35rem;
+}
+
+.register-subtitle {
+  color: #6b7280;
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+/* Form */
+.register-form {
+  margin-top: 0.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.78rem;
+  color: #123822;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.45rem;
+}
+
+.form-control-custom {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #f8f9fa;
+  padding: 0.7rem 1rem;
+  font-size: 0.92rem;
+  color: #123822;
+  transition: all 0.3s ease;
+  height: 44px;
+}
+
+.form-control-custom::placeholder {
+  color: #9ca3af;
+}
+
+.form-control-custom:focus {
+  background: white;
+  border-color: #29bb6a;
+  box-shadow: 0 0 0 3px rgba(41, 187, 106, 0.12);
+  outline: none;
+}
+
+.form-control-custom.ng-invalid.ng-touched {
+  border-color: #dc3545;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.78rem;
+  font-weight: 500;
+  margin-top: 0.35rem;
+}
+
+/* Match message */
+.match-message {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 0.4rem;
+}
+
+.match-message.success {
+  color: #28a745;
+}
+
+.match-message.error {
+  color: #dc3545;
+}
+
+/* Button register */
+.btn-register {
+  width: 100%;
+  background: linear-gradient(135deg, #29bb6a 0%, #1f9a55 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0.85rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+  margin-top: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.btn-register:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(41, 187, 106, 0.35);
+  color: white;
+}
+
+.btn-register:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Divider */
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 1.5rem 0 1.25rem;
+}
+
+.divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.divider-text {
+  position: relative;
+  background: white;
+  padding: 0 1rem;
+  color: #9ca3af;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+/* Login link */
+.btn-login-link {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: white;
+  color: #29bb6a;
+  border: 2px solid #29bb6a;
+  border-radius: 12px;
+  padding: 0.75rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-login-link:hover {
+  background: #29bb6a;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(41, 187, 106, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+  .register-container {
+    padding: 2rem 0;
+  }
+
+  .step-illustration {
+    width: 60px;
+    height: 60px;
+  }
+
+  .step-number {
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+  }
+
+  .register-card {
+    padding: 2rem 1.75rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .register-container {
+    padding: 1.5rem 0;
+  }
+
+  .step-item {
+    padding: 1rem;
+    gap: 0.9rem;
+  }
+
+  .step-illustration {
+    display: none;
+  }
+
+  .register-card {
+    padding: 1.75rem 1.25rem;
+    border-radius: 20px;
+  }
+
+  .register-title {
+    font-size: 1.35rem;
+  }
 }

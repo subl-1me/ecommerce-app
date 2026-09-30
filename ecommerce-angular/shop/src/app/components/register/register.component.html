@@ -1,92 +1,224 @@
-<div class="container">
-    <div class="row align-items-center justify-content-center">
-        <div class="col-6 illustrations">
-            <div class="list-group ">
-                <div class="list-group-item">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h4 class="text-center">Select your product</h4>
-                        </div>
-                        <div class="col">
-                            <img src="../../../assets/search-illustration.png" class="w-100 illustration">
-                        </div>
-                    </div>
-                </div>
-                <div class="list-group-item shadow-sm">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <img src="../../../assets/order-illustrations.jpg" class="w-100 illustration">
-                        </div>
-                        <div class="col">
-                            <h4 class="text-center">Order it</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="list-group-item shadow">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h4 class="text-center">Recieve your product!</h4>
-                        </div>
-                        <div class="col">
-                            <img src="../../../assets/shopping-illustration.png" class="w-100 illustration">
-                        </div>
-                    </div>
-                </div>
+<div class="register-container">
+  <div class="container">
+    <div class="row align-items-center justify-content-center g-5">
+      <!-- Ilustración de pasos -->
+      <div class="col-12 col-lg-6 order-2 order-lg-1">
+        <div class="steps-wrapper">
+          <div class="step-item">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h5 class="step-title">Select your product</h5>
+              <p class="step-text">
+                Browse our catalog and pick what fits your style
+              </p>
             </div>
-        </div>
-        <div class="col-4">
-            <div class="title mb-3 text-center">
-                <h2 >Create an account</h2>
-                <h6 class="small text-muted">We have some discounts!</h6>
+            <div class="step-illustration">
+              <img
+                src="../../../assets/search-illustration.png"
+                alt="Search illustration"
+              />
             </div>
-            <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
-                <div class="form-group mb-3">
-                    <label for="names" class="small">Names</label>
-                    <div class="col-sm-8 w-100">
-                        <input type="text" name="names" class="form-control"
-                         #names="ngModel" [(ngModel)]="customer.names" required
-                         placeholder="John">
-                    </div>
-                    <div class="small text-danger" *ngIf="names.touched && names.invalid">Please, provide a valid names.</div>
-                </div>
-                <div class="form-group mb-3">
-                    <label for="surnames" class="small ">Surnames</label>
-                    <div class="col-sm-8 w-100">
-                        <input type="text" name="surnames" class="form-control" #surnames="ngModel"
-                         [(ngModel)]="customer.surnames" required
-                         placeholder="Titor">
-                    </div>
-                    <div class="small text-danger" *ngIf="surnames.touched && surnames.invalid">Please, provide a valid surnames.</div>
-                </div>
-                <div class="form-group mb-3">
-                    <label for="email" class="small ">Email</label>
-                    <div class="col-sm-8 w-100">
-                        <input type="text" name="email" class="form-control" #email="ngModel" [(ngModel)]="customer.email" placeholder="example@example.com" required>
-                    </div>
-                    <div class="small text-danger" *ngIf="email.touched && email.invalid">Please, provide a valid email.</div>
-                </div>
-                <div class="form-group mb-3">
-                    <label for="password" class="small ">Password</label>
-                    <div class="col-sm-8 w-100">
-                        <input type="password" name="password" class="form-control" #password="ngModel" [(ngModel)]="customer.password" (change)="isPasswordOk()" required>
-                    </div>
-                </div>
-                <div class="form-group mb-3">
-                    <label for="confirmPasswordTemp" class="mb-2 small">Confirm Password</label>
-                    <div class="col-sm-8 w-100">
-                        <input type="password" name="password" class="form-control" [(ngModel)]="confirmPasswordTemp" (change)="isPasswordOk()" required>
-                        <div class="small text-success" *ngIf="onSubmitMessage === 'success'">Password match!</div>
-                        <div class="small text-danger" *ngIf="onSubmitMessage === 'error'">Password does not match.</div>
-                    </div>
-                </div>
+          </div>
 
-                <div class="no-acoount small text-muted text-center mb-3">
-                    <a [routerLink]="['/login']"class="text-muted">I have an account</a>
-                </div>
-                <button type="submit" value="Register" class="btn btn-register" [disabled]="registerForm.invalid">Get involved!</button>
-            </form>
+          <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h5 class="step-title">Order it</h5>
+              <p class="step-text">Checkout securely in just a few clicks</p>
+            </div>
+            <div class="step-illustration">
+              <img
+                src="../../../assets/order-illustrations.jpg"
+                alt="Order illustration"
+              />
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h5 class="step-title">Receive your product</h5>
+              <p class="step-text">Fast delivery straight to your door</p>
+            </div>
+            <div class="step-illustration">
+              <img
+                src="../../../assets/shopping-illustration.png"
+                alt="Shopping illustration"
+              />
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Formulario -->
+      <div class="col-12 col-lg-5 order-1 order-lg-2">
+        <div class="register-card">
+          <div class="register-header">
+            <div class="brand-mark">
+              <span>E</span>
+            </div>
+            <h2 class="register-title">Create an account</h2>
+            <p class="register-subtitle">
+              Sign up and unlock exclusive discounts
+            </p>
+          </div>
+
+          <form
+            #registerForm="ngForm"
+            (ngSubmit)="onSubmit(registerForm)"
+            class="register-form"
+          >
+            <div class="row g-3">
+              <div class="col-12 col-sm-6">
+                <div class="form-group">
+                  <label for="names" class="form-label">Names</label>
+                  <input
+                    type="text"
+                    id="names"
+                    name="names"
+                    class="form-control form-control-custom"
+                    #names="ngModel"
+                    [(ngModel)]="customer.names"
+                    required
+                    placeholder="John"
+                  />
+                  <div
+                    class="error-message"
+                    *ngIf="names.touched && names.invalid"
+                  >
+                    Please provide a valid name
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-6">
+                <div class="form-group">
+                  <label for="surnames" class="form-label">Surnames</label>
+                  <input
+                    type="text"
+                    id="surnames"
+                    name="surnames"
+                    class="form-control form-control-custom"
+                    #surnames="ngModel"
+                    [(ngModel)]="customer.surnames"
+                    required
+                    placeholder="Titor"
+                  />
+                  <div
+                    class="error-message"
+                    *ngIf="surnames.touched && surnames.invalid"
+                  >
+                    Please provide valid surnames
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email" class="form-label">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control form-control-custom"
+                #email="ngModel"
+                [(ngModel)]="customer.email"
+                placeholder="example@example.com"
+                required
+              />
+              <div class="error-message" *ngIf="email.touched && email.invalid">
+                Please provide a valid email
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-control form-control-custom"
+                #password="ngModel"
+                [(ngModel)]="customer.password"
+                (change)="isPasswordOk()"
+                placeholder="Enter a password"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPasswordTemp" class="form-label"
+                >Confirm Password</label
+              >
+              <input
+                type="password"
+                id="confirmPasswordTemp"
+                name="confirmPasswordTemp"
+                class="form-control form-control-custom"
+                [(ngModel)]="confirmPasswordTemp"
+                (change)="isPasswordOk()"
+                placeholder="Repeat your password"
+                required
+              />
+
+              <div
+                class="match-message success"
+                *ngIf="onSubmitMessage === 'success'"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"
+                  />
+                </svg>
+                Passwords match
+              </div>
+
+              <div
+                class="match-message error"
+                *ngIf="onSubmitMessage === 'error'"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                  />
+                  <path
+                    d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"
+                  />
+                </svg>
+                Passwords do not match
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-register"
+              [disabled]="registerForm.invalid"
+            >
+              Create Account
+            </button>
+
+            <div class="divider">
+              <span class="divider-text">Already have an account?</span>
+            </div>
+
+            <a class="btn btn-login-link" [routerLink]="['/login']">
+              Log In Instead
+            </a>
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
-
-

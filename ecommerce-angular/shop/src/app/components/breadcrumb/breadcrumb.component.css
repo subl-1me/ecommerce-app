@@ -1,14 +1,121 @@
-.breadcrumb{
-    width: 100%;
-    background-color: rgb(224, 224, 224) !important;
+.breadcrumb-wrapper {
+  background: #f8f9fa;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 0.85rem 0;
 }
 
-.breadcrumb-2{
-    margin-left: 250px;
+.breadcrumb-nav {
+  display: flex;
+  align-items: center;
 }
 
-li, a {
-    font-weight: 800;
-    color: black !important;
-    text-decoration: none;
+.breadcrumb-list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Home link */
+.breadcrumb-home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #4a5568;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: none;
+  padding: 0.35rem 0.7rem;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+}
+
+.breadcrumb-home-link:hover {
+  background: rgba(41, 187, 106, 0.1);
+  color: #29bb6a;
+}
+
+.breadcrumb-home-link svg {
+  transition: transform 0.25s ease;
+}
+
+.breadcrumb-home-link:hover svg {
+  transform: scale(1.1);
+}
+
+/* Regular link */
+.breadcrumb-link {
+  display: inline-block;
+  color: #4a5568;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  padding: 0.35rem 0.7rem;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+  text-transform: capitalize;
+}
+
+.breadcrumb-link:hover {
+  background: rgba(41, 187, 106, 0.1);
+  color: #29bb6a;
+}
+
+/* Current page */
+.breadcrumb-current {
+  display: inline-block;
+  color: #123822;
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 8px;
+  background: rgba(41, 187, 106, 0.12);
+  text-transform: capitalize;
+}
+
+/* Separator */
+.breadcrumb-separator {
+  display: inline-flex;
+  align-items: center;
+  color: #cbd5e0;
+  padding: 0 2px;
+  user-select: none;
+}
+
+.breadcrumb-separator svg {
+  opacity: 0.6;
+}
+
+/* Active state */
+.breadcrumb-item.active {
+  pointer-events: none;
+}
+
+/* Responsive */
+@media (max-width: 575.98px) {
+  .breadcrumb-wrapper {
+    padding: 0.65rem 0;
+  }
+
+  .breadcrumb-home-link,
+  .breadcrumb-link,
+  .breadcrumb-current {
+    font-size: 0.78rem;
+    padding: 0.3rem 0.55rem;
+  }
+
+  .breadcrumb-list {
+    gap: 2px;
+  }
+
+  .breadcrumb-home-link span {
+    display: none;
+  }
+
+  .breadcrumb-home-link {
+    padding: 0.35rem 0.5rem;
+  }
 }

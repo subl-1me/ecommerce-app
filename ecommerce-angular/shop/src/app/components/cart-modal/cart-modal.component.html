@@ -1,52 +1,168 @@
-<div id="modal" class="cart-modal">
-    <div class="background">
+<div id="modal" class="cart-drawer">
+  <!-- Overlay -->
+  <div class="cart-overlay" (click)="closeModal()"></div>
+
+  <!-- Drawer panel -->
+  <div class="cart-panel">
+    <!-- Header -->
+    <div class="cart-header">
+      <div class="header-info">
+        <h5 class="header-title">Your Cart</h5>
+        <span class="header-count" *ngIf="cart.length > 0">
+          {{ cart.length }} {{ cart.length === 1 ? "item" : "items" }}
+        </span>
+        <span class="header-count empty" *ngIf="cart.length === 0">
+          Empty
+        </span>
+      </div>
+
+      <button class="close-btn" (click)="closeModal()" aria-label="Close cart">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"
+          />
+        </svg>
+      </button>
     </div>
-    <div class="card shadow">
-        <div class="card-body">
-            <fa-icon [icon]="faXmark" class="xmark float-end" (click)="closeModal()"></fa-icon>
-            <h2>Your Cart ({{cart.length}})</h2>
-            <hr>
-            
-            <!-- Cart empty -->
-            <ng-container *ngIf="cart.length == 0 && customerID">
-                <div class="alert alert-warning">
-                    Your cart is empty. Add some products first.
-                </div>
-            </ng-container>
 
-            <!-- Not logged -->
-            <ng-container *ngIf="!customerID" >
-                <div class="not-logged text-center">
-                    <div class="alert alert-secondary">Please, log in to add products</div>
-                    <button class="btn btn-secondary" [routerLink]="['/login']">Log in</button>
-                    <hr>
-                </div>
-            </ng-container>
-
-            <!-- Product List -->
-            <ng-container *ngFor="let item of cart">
-                <div class="row">
-                    <div class="col-4">
-                        <img src="{{item.product?.coverImage}}" class="product-image">
-                    </div>
-                    <div class="col-8">
-                        <fa-icon [icon]="faTrash" class="float-end" (click)="deleteProductCart(item._id)"></fa-icon>
-                        <h5>{{item.product?.title}}</h5>
-                        <h6 class="text-muted small mb-0">Price: {{item.product?.price}}</h6>
-                        <h6 class="text-muted small mb-0">Amount: {{item.amount}}</h6>
-                        <h6 class="text-muted small">Size: {{item.size}}</h6>
-                    </div>
-                    <hr class="mt-3">
-                </div>
-            </ng-container>
-
-            <div class="footer">
-                <h4>Subtotal: ${{totalToPay}}</h4>
-                <button class="btn btn-checkout w-100 p-2" [routerLink]="['/checkout']" [disabled]="cart.length == 0">  
-                    <fa-icon [icon]="faCreditCard" class="me-1"></fa-icon>
-                    Checkout
-                </button>
-            </div>
+    <!-- Body -->
+    <div class="cart-body">
+      <!-- Empty cart -->
+      <ng-container *ngIf="cart.length === 0 && customerID">
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="42"
+              height="42"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+              />
+            </svg>
+          </div>
+          <h6 class="empty-title">Your cart is empty</h6>
+          <p class="empty-subtitle">Add some products to get started</p>
         </div>
+      </ng-container>
+
+      <!-- Not logged -->
+      <ng-container *ngIf="!customerID">
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="42"
+              height="42"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"
+              />
+            </svg>
+          </div>
+          <h6 class="empty-title">Please log in</h6>
+          <p class="empty-subtitle">Sign in to add products to your cart</p>
+          <button class="btn btn-login mt-3" [routerLink]="['/login']">
+            Log In
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- Product List -->
+      <div class="cart-items" *ngIf="cart.length > 0 && customerID">
+        <div class="cart-item" *ngFor="let item of cart">
+          <div class="item-image-wrapper">
+            <img
+              [src]="item.product?.coverImage"
+              class="item-image"
+              alt="{{ item.product?.title }}"
+            />
+          </div>
+
+          <div class="item-details">
+            <h6 class="item-title">{{ item.product?.title }}</h6>
+
+            <div class="item-meta">
+              <span class="meta-label">Size</span>
+              <span class="meta-value">{{ item.size }}</span>
+            </div>
+
+            <div class="item-meta">
+              <span class="meta-label">Qty</span>
+              <span class="meta-value">{{ item.amount }}</span>
+            </div>
+
+            <div class="item-price">${{ item.product?.price }}</div>
+          </div>
+
+          <button
+            class="item-remove"
+            (click)="deleteProductCart(item._id)"
+            aria-label="Remove item"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"
+              />
+              <path
+                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
+
+    <!-- Footer -->
+    <div class="cart-footer" *ngIf="cart.length > 0 && customerID">
+      <div class="total-row">
+        <span class="total-label">Subtotal</span>
+        <span class="total-value">${{ totalToPay }}</span>
+      </div>
+
+      <p class="total-note">Shipping and taxes calculated at checkout</p>
+
+      <button
+        class="btn btn-checkout"
+        [routerLink]="['/checkout']"
+        [disabled]="cart.length === 0"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"
+          />
+          <path
+            d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"
+          />
+        </svg>
+        Proceed to Checkout
+      </button>
+
+      <button class="btn btn-continue" (click)="closeModal()">
+        Continue Shopping
+      </button>
+    </div>
+  </div>
 </div>

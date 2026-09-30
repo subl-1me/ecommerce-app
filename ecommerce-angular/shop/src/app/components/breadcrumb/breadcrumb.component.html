@@ -1,16 +1,67 @@
-<div class="container-fluid">
-  <nav
-    style="--bs-breadcrumb-divider: '>'"
-    aria-label="breadcrumb"
-    class="breadcrumb"
-  >
-    <ol class="breadcrumb-2 rounded p-2">
-      <ng-container *ngFor="let section of urlSections">
-        <li class="breadcrumb-item">
-          <a href="#">{{ section }}</a>
+<div class="breadcrumb-wrapper">
+  <div class="container">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-home">
+          <a class="breadcrumb-link breadcrumb-home-link" [routerLink]="['/']">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z"
+              />
+            </svg>
+            Home
+          </a>
         </li>
-      </ng-container>
-      <!--<li class="breadcrumb-item active" aria-current="page">Profile</li>-->
-    </ol>
-  </nav>
+
+        <li class="breadcrumb-separator">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="10"
+            height="10"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+            />
+          </svg>
+        </li>
+
+        <ng-container
+          *ngFor="let section of urlSections; let i = index; let last = last"
+        >
+          <li class="breadcrumb-item" [class.active]="last">
+            <a *ngIf="!last" class="breadcrumb-link" href="#">
+              {{ section }}
+            </a>
+            <span *ngIf="last" class="breadcrumb-current">
+              {{ section }}
+            </span>
+          </li>
+
+          <li *ngIf="!last" class="breadcrumb-separator">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="10"
+              height="10"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+              />
+            </svg>
+          </li>
+        </ng-container>
+      </ol>
+    </nav>
+  </div>
 </div>

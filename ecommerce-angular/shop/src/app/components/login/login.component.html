@@ -1,118 +1,111 @@
-<!--<h1>Login</h1>
-<div class="container-fluid w-25">
-    <div class="card shadow bg-light">
-        <div class="card-body">
-            <h2>Go with us!</h2>
-            <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" class="text-center">
-                <div class="form-group row mb-3">
-                    <label for="email">Email</label>
-                    <div class="col-sm-10">
-                        <input type="email" class="form-control" name="email" #email="ngModel" [(ngModel)]="customer.email" placeholder="example@example.com" required>
-                        <div class="small text-danger" *ngIf="email.touched && email.invalid">Email is required.</div>
-                    </div>
-                </div>
-                <div class="form-group row mb-3">
-                    <label for="password">Password</label>
-                    <div class="col-sm-10">
-                        <input type="password" class="form-control" name="password" #password="ngModel" [(ngModel)]="customer.password" required>
-                        <div class="small text-danger" *ngIf="password.touched && password.invalid">Password is required.</div>
-                    </div>
-                </div>
-                <div class="form-group row mb-3">
-                    <div class="col-sm-5">Remember Password?</div>
-                    <div class="col-sm-5">
-                        <input class="form-check-input" type="checkbox" id="check">
-                        <label class="form-check-label" for="check"></label>
-                    </div>
-                </div>
-                <input type="submit" value="Login" class="btn btn-success" [disabled]="loginForm.invalid">
-            </form>
+<div class="login-container">
+  <div class="container">
+    <div class="row align-items-center justify-content-center g-5">
+      <!-- Ilustración -->
+      <div class="col-12 col-lg-7 order-2 order-lg-1">
+        <div class="illustration-wrapper">
+          <img
+            src="../../../assets/login-illustration.png"
+            class="illustration"
+            alt="Login illustration"
+          />
         </div>
-        <div class="card-footer text-center">
-            <h6>Do not you have an account yet?</h6>
-            <a [routerLink]="['/register']"class="text-muted">Create Account</a>
-        </div>
-    </div>
-</div>-->
+      </div>
 
-<!--
-<div class="container">
-    <div class="header">
-        <h1>Start getting better products</h1>
-    </div>
-
-    <div class="row">
-        <div class="col illustrations">
-            <div class="list-group ">
-                <div class="list-group-item">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h4 class="text-center">Select your product</h4>
-                        </div>
-                        <div class="col">
-                            <img src="../../../assets/search-illustration.png" class="w-100">
-                        </div>
-                    </div>
-                </div>
-                <div class="list-group-item shadow-sm">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <img src="../../../assets/order-illustrations.jpg" class="w-100">
-                        </div>
-                        <div class="col">
-                            <h4 class="text-center">Order it</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="list-group-item shadow">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h4 class="text-center">Recieve your product!</h4>
-                        </div>
-                        <div class="col">
-                            <img src="../../../assets/shopping-illustration.png" class="w-100">
-                        </div>
-                    </div>
-                </div>
+      <!-- Formulario -->
+      <div class="col-12 col-lg-5 order-1 order-lg-2">
+        <div class="login-card">
+          <div class="login-header">
+            <div class="brand-mark">
+              <span>{{ config.shopName[0] }}</span>
             </div>
-        </div>
-        <div class="col login-form">
+            <h2 class="login-title">Welcome back</h2>
+            <p class="login-subtitle">Sign in to continue shopping</p>
+          </div>
 
-        </div>
-    </div>
-</div>
-
--->
-
-<div class="container">
-    <div class="row align-items-center">
-        <div class="col">
-            <img id="illustration" src="../../../assets/login-illustration.png" class="w-100">
-        </div>
-        <div class="col-4 login-form">
-            <div class="title mb-3 text-center">
-                <h2>Welcome, human!</h2>
-                <h6 class="small text-muted">One step more to continue...</h6>
-                <h6 class="small text-muted">Please fill the next fields:</h6>
+          <form
+            #loginForm="ngForm"
+            (ngSubmit)="onSubmit(loginForm)"
+            class="login-form"
+          >
+            <div class="form-group">
+              <label for="email" class="form-label">Email</label>
+              <div class="input-wrapper">
+                <span class="input-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M2 2A2 2 0 0 0 .05 3.555L8 8.414l7.95-4.859A2 2 0 0 0 14 2H2Zm12.95 3.244L8 10.086 1.05 5.244A2 2 0 0 0 1 5.5v8A2 2 0 0 0 3 15h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-.05-.756Z"
+                    />
+                  </svg>
+                </span>
+                <input
+                  id="email"
+                  type="email"
+                  class="form-control form-control-custom"
+                  placeholder="example@example.com"
+                  name="email"
+                  [(ngModel)]="customer.email"
+                  required
+                />
+              </div>
             </div>
-            <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
-                <div class="form-group mb-3">
-                    <label class="small" for="email">Email</label>
-                    <input id="email" type="text" class="form-control"
-                     placeholder="example@example.com" name="email" [(ngModel)]="customer.email">
-                </div>
-                <div class="form-group mb-3">
-                    <label class="small" for="password">Password</label>
-                    <input type="password" id="password" placeholder="*******"
-                     class="form-control" name="password" [(ngModel)]="customer.password">
-                </div>
-                <div class="no-acoount small text-muted text-center mb-3">
-                    <p class="mb-0">Do not you have an account yet?</p>
-                    <a [routerLink]="['/register']"class="text-muted">Create account</a>
-                </div>
 
-                <button class="btn btn-login ">Log In</button>
-            </form>
+            <div class="form-group">
+              <label for="password" class="form-label">Password</label>
+              <div class="input-wrapper">
+                <span class="input-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"
+                    />
+                  </svg>
+                </span>
+                <input
+                  id="password"
+                  type="password"
+                  class="form-control form-control-custom"
+                  placeholder="Enter your password"
+                  name="password"
+                  [(ngModel)]="customer.password"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="forgot-row">
+              <a class="forgot-link" href="#">Forgot password?</a>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-login"
+              [disabled]="loginForm.invalid"
+            >
+              Log In
+            </button>
+
+            <div class="divider">
+              <span class="divider-text">New to Ecommerce?</span>
+            </div>
+
+            <a class="btn btn-create-account" [routerLink]="['/register']">
+              Create an Account
+            </a>
+          </form>
         </div>
+      </div>
     </div>
+  </div>
 </div>

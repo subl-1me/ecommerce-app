@@ -1,49 +1,125 @@
-<div class="container mb-5">
-    <div class="row">
-        <div class="col-sm-3 mt-5">
-            <app-profile-list-group></app-profile-list-group>
-        </div>
-        <div class="col">
-            <h2>My Orders</h2>
-            <h6 class="text-center text-muted" *ngIf="sales.length != 0">Click on any order to see more details.</h6>
-            <table class="table mt-5" >
-                <thead>
-                    <tr>
-                        <th>Transaction</th>
-                        <th>Creation date</th>
-                        <th>Status</th>
-                        <th class="float-end">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <ng-container *ngFor="let sale of sales">
-                        <tr>
-                            <td>
-                                <p class="transaction mb-0" [routerLink]="['/order/', sale.transaction]">
-                                    <fa-icon [icon]="faHashtag" class="me-1"></fa-icon>
-                                    {{sale.transaction}}
-                                </p>
-                            </td>
-                            <td class="text-muted">
-                                <fa-icon [icon]="faCalendar" class="me-1"></fa-icon>
-                                {{sale.createdAt | date: 'medium'}}
-                            </td>
-                            <td class="text-success"> 
-                                <fa-icon [icon]="faCheck" class="me-1"></fa-icon>
-                                {{sale.status}}
-                            </td>
-                            <td class="float-end">
-                                <fa-icon [icon]="faCoins" class="me-1"></fa-icon>
+<div class="orders-container">
+  <div class="container py-5">
+    <div class="row g-4">
+      <!-- Sidebar -->
+      <aside class="col-12 col-lg-3">
+        <app-profile-list-group></app-profile-list-group>
+      </aside>
 
-                                ${{sale.total}}
-                            </td>
-                        </tr>
-                    </ng-container>
-                </tbody>
-                <div class="alert alert-warning text-center" *ngIf="sales.length == 0">
-                    Your order list is empty.
-                </div>
-            </table>
+      <!-- Main -->
+      <main class="col-12 col-lg-9">
+        <!-- Header -->
+        <div class="page-header">
+          <div class="header-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+              />
+            </svg>
+          </div>
+          <div>
+            <h1 class="page-title">My Orders</h1>
+            <p class="page-subtitle" *ngIf="sales.length > 0">
+              Click on any order to see more details
+            </p>
+            <p class="page-subtitle" *ngIf="sales.length === 0">
+              Your order history will appear here
+            </p>
+          </div>
+          <span class="header-badge" *ngIf="sales.length > 0">
+            {{ sales.length }} {{ sales.length === 1 ? "order" : "orders" }}
+          </span>
         </div>
+
+        <!-- Table card -->
+        <div class="orders-card" *ngIf="sales.length > 0">
+          <div class="table-responsive">
+            <table class="table orders-table mb-0">
+              <thead>
+                <tr>
+                  <th scope="col" class="ps-4">Transaction</th>
+                  <th scope="col">Creation Date</th>
+                  <th scope="col">Status</th>
+                  <th scope="col" class="text-end pe-4">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let sale of sales" class="order-row">
+                  <td class="ps-4">
+                    <a
+                      class="transaction-link"
+                      [routerLink]="['/order/', sale.transaction]"
+                    >
+                      <span class="transaction-icon">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="12"
+                          height="12"
+                          fill="currentColor"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M8.39 12.648a1.32 1.32 0 0 0-.015.18c0 .305.21.508.5.508.266 0 .492-.172.555-.477l.554-2.703h1.204c.421 0 .617-.234.617-.547 0-.312-.188-.53-.617-.53h-.985l.516-2.524h1.265c.43 0 .618-.227.618-.547 0-.313-.188-.524-.618-.524h-1.046l.476-2.304a1.06 1.06 0 0 0 .016-.164.51.51 0 0 0-.516-.516.54.54 0 0 0-.539.43l-.523 2.554H7.617l.477-2.304c.008-.04.015-.118.015-.164a.512.512 0 0 0-.523-.516.539.539 0 0 0-.531.43L6.53 5.484H5.414c-.43 0-.617.22-.617.532 0 .312.187.539.617.539h.906l-.515 2.523H4.609c-.421 0-.609.219-.609.531 0 .313.188.547.61.547h.976l-.516 2.492c-.008.04-.015.125-.015.18 0 .305.21.508.5.508.265 0 .492-.172.554-.477l.555-2.703h2.242l-.515 2.492zm-1-6.109h2.266l-.515 2.563H6.875l.515-2.563z"
+                          />
+                        </svg>
+                      </span>
+                      {{ sale.transaction }}
+                    </a>
+                  </td>
+
+                  <td>
+                    <span class="date-text">{{
+                      sale.createdAt | date: "MMM d, y, h:mm a"
+                    }}</span>
+                  </td>
+
+                  <td>
+                    <span class="status-badge">
+                      <span class="status-dot"></span>
+                      {{ sale.status }}
+                    </span>
+                  </td>
+
+                  <td class="text-end pe-4">
+                    <span class="total-amount">${{ sale.total }}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state" *ngIf="sales.length === 0">
+          <div class="empty-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="42"
+              height="42"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+              />
+            </svg>
+          </div>
+          <h5 class="empty-title">No orders yet</h5>
+          <p class="empty-subtitle">
+            Your order history will appear here once you make your first
+            purchase
+          </p>
+          <button class="btn btn-shop" [routerLink]="['/products']">
+            Start Shopping
+          </button>
+        </div>
+      </main>
     </div>
+  </div>
 </div>

@@ -1,511 +1,305 @@
-<script src="https://js.stripe.com/v3"></script>
-
-<div class="container mt-5">
-  <div class="row checkout-section justify-content-center">
-    <div class="col-6 p-3">
-      <span>
-        <a class="float-end" [routerLink]="['/products']">Back to shopping</a>
-      </span>
-      <h1 class="title" *ngIf="!isOrderComplete">Checkout</h1>
-      <h1 class="title" *ngIf="isOrderComplete">Select payment method</h1>
-      <hr />
-      <div class="no-signup" *ngIf="!customerID">
-        <div class="alert alert-secondary text-center">
-          <h6 class="small">Log in to continue shopping!</h6>
-          <button class="btn btn-secondary" [routerLink]="['/login']">
-            Log in
-          </button>
+<div class="checkout-container">
+  <div class="container py-5">
+    <!-- Header -->
+    <div class="checkout-header">
+      <div class="d-flex align-items-center gap-3">
+        <div class="header-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"
+            />
+            <path
+              d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"
+            />
+          </svg>
+        </div>
+        <div>
+          <h1 class="checkout-title" *ngIf="!isOrderComplete">Checkout</h1>
+          <h1 class="checkout-title" *ngIf="isOrderComplete">
+            Select Payment Method
+          </h1>
+          <p class="checkout-subtitle">
+            Review your order and complete the payment
+          </p>
         </div>
       </div>
-      <ol *ngIf="customerID">
-        <li class="section" *ngIf="!isOrderComplete">
-          <!-- Order Review -->
-          <div class="review-section mt-3">
-            <div class="card">
-              <div class="card-body bg-light">
-                <ng-container *ngIf="cart.length == 0">
-                  <div class="no-products text-center p-2">
-                    <h6 class="small text-muted">Your cart is empty.</h6>
-                    <button
-                      class="btn btn-see-more"
-                      [routerLink]="['/products']"
-                    >
-                      See products
-                    </button>
-                  </div>
-                </ng-container>
-                <ng-container *ngIf="cart.length > 0">
-                  <table class="table">
-                    <tbody>
-                      <ng-container *ngFor="let item of cart">
-                        <tr>
-                          <td>
-                            <div class="row">
-                              <div class="col-4">
-                                <img
-                                  src="{{ item.product?.coverImage }}"
-                                  class="product-image rounded"
-                                />
-                              </div>
-                              <div class="col">
-                                <h6>{{ item.product?.title }}</h6>
-                                <h6 class="text-muted fst-italic mb-0">
-                                  Qty: 1
-                                </h6>
-                                <h6 class="text-muted fst-italic mb-0">
-                                  Size: {{ item.size }}
-                                </h6>
-                                <h6 class="text-muted fst-italic mb-0">
-                                  Color:
-                                </h6>
-                                <div class="circle"></div>
+      <a class="btn-back" [routerLink]="['/products']">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+          />
+        </svg>
+        Back to Shopping
+      </a>
+    </div>
 
-                                <!-- <div class="item-size mt-3">
-                                  <a
-                                    href="{{
-                                      productHrefUrl
-                                    }}/products/detail/{{ item.product?._id }}"
-                                    target="_blank"
-                                    class="product-page-link"
-                                  >
-                                    Visit product page
-                                    <fa-icon
-                                      [icon]="faLink"
-                                      class="small text-muted"
-                                    ></fa-icon>
-                                  </a>
-                                  <p
-                                    class="text-decoration-none"
-                                    (click)="
-                                      deleteProductCart(item.product?._id)
-                                    "
-                                  >
-                                    Remove
-                                    <fa-icon
-                                      [icon]="faTrash"
-                                      class="text-muted"
-                                    ></fa-icon>
-                                  </p>
-                                </div> -->
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <h6>
-                              ${{
-                                calculatePrice(item.product?.price, item.amount)
-                              }}
-                            </h6>
-                          </td>
-                        </tr>
-                      </ng-container>
-                    </tbody>
-                  </table>
-                </ng-container>
-              </div>
+    <!-- Not logged -->
+    <div class="login-prompt" *ngIf="!customerID">
+      <div class="prompt-icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"
+          />
+        </svg>
+      </div>
+      <h5 class="prompt-title">Please log in to continue</h5>
+      <p class="prompt-subtitle">
+        You need an account to complete your purchase
+      </p>
+      <button class="btn-login-prompt" [routerLink]="['/login']">Log In</button>
+    </div>
+
+    <!-- Checkout Content -->
+    <div class="row g-4" *ngIf="customerID">
+      <!-- Left: Order Summary -->
+      <div class="col-12 col-lg-7">
+        <!-- Review -->
+        <div class="section-card" *ngIf="!isOrderComplete">
+          <div class="section-header">
+            <div class="step-badge">1</div>
+            <div>
+              <h4 class="section-title">Order Review</h4>
+              <p class="section-subtitle">Review the items in your cart</p>
             </div>
           </div>
-        </li>
-        <!-- 
-        <li class="billing-address mt-3" *ngIf="!isOrderComplete">
-          Billing Address
-          <div class="card mt-3">
-            <div class="card-body bg-light">
-              <ng-container *ngIf="defaultDirection">
-                <h5 class="text-center text-muted">Default shipping address</h5>
-                <hr class="w-50 ms-auto me-auto" />
-                <table class="table">
-                  <tbody>
-                    <tr>
-                      <td>
-                        <h6>Address</h6>
-                        <div class="item-size text-muted">
-                          {{ defaultDirection.addressee }}
-                        </div>
-                      </td>
-                      <td>
-                        <h6>Delivey direction</h6>
-                        <div class="item-size text-muted">
-                          {{ defaultDirection.direction }}
-                        </div>
-                        <div class="item-size text-muted">
-                          {{ defaultDirection.country }} -
-                          {{ defaultDirection.province }} -
-                          {{ defaultDirection.region }}
-                        </div>
-                      </td>
-                      <td>
-                        <h6>ZIP</h6>
-                        <div class="item-size text-muted">
-                          {{ defaultDirection.zip }}
-                        </div>
-                      </td>
-                      <td>
-                        <h6>Contact phone</h6>
-                        <div class="item-size text-muted">
-                          {{ defaultDirection.phone }}
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </ng-container>
 
-              <ng-container *ngIf="!defaultDirection">
-                <h5 class="text-center text-muted">
-                  Please, add a default shipping address.
-                </h5>
-              </ng-container>
-            </div>
-
-            <div class="card-footer bg-light">
-              <div class="row">
-                <div class="col-6">
-                  <h6 class="refresh-list" (click)="getDefaultDirection()">
-                    Refresh
-                    <fa-icon [icon]="faRefresh" class="small"></fa-icon>
-                  </h6>
-                </div>
-                <div class="col-6">
-                  <div
-                    class="item-size float-end text-primary change-address"
-                    [routerLink]="['/directions']"
-                  >
-                    <a class="text-decoration-underline text-black">
-                      Manage shipping addresses
-                      <fa-icon [icon]="faLink"></fa-icon>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </li> -->
-        <!-- <h6 class="small text-danger" *ngIf="cart.length == 0">
-          Please, add some products to continue.
-        </h6> -->
-
-        <!-- <li class="shipping mt-3" *ngIf="!isOrderComplete">
-          <div class="shipping-section mb-3">Shipping Method</div>
-          <div class="card">
-            <div class="card-body bg-light">
-              <ng-container *ngFor="let method of shipping">
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="radio"
-                    name="shippingCost"
-                    value="{{ method.price }}"
-                    id="input"
-                    [(ngModel)]="shippingCost"
-                    (change)="addShippingCost(method.price, method.title)"
-                    required
-                  />
-                  <label class="form-check-label" for="input">
-                    <h6>{{ method.title }}</h6>
-                  </label>
-                  <h6 class="text-muted small">
-                    {{ method.time }}
-                    <span class="float-end text-black"
-                      >${{ method.price }}</span
-                    >
-                  </h6>
-                </div>
-              </ng-container>
-            </div>
-          </div>
-        </li> -->
-
-        <!-- <li class="coupon-format" *ngIf="!isOrderComplete">
-          <div class="section mb-3">Coupons</div>
-
-          <div class="promo-section me-auto ms-auto text-center w-50">
-            <form>
-              <div class="input-group mb-3">
-                <input
-                  type="text"
-                  id="input-code"
-                  class="form-control p-2 shadow-sm"
-                  placeholder="Coupon Code"
-                  aria-label=""
-                  aria-describedby="basic-addon1"
-                  name="couponCode"
-                  [(ngModel)]="couponCode"
+          <!-- Empty cart -->
+          <div class="empty-cart" *ngIf="cart.length === 0">
+            <div class="empty-cart-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="36"
+                height="36"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5z"
                 />
-                <div class="input-group-prepend">
-                  <button
-                    class="btn btn-promo p-2 shadow-sm"
-                    type="button"
-                    (click)="applyCouponCode()"
-                    *ngIf="couponCodeMessage === ''"
-                    [disabled]="!customerID"
-                    [disabled]="couponApplied.code !== ''"
-                  >
-                    Apply
-                  </button>
-                  <button
-                    class="btn btn-fail invalidCoupon p-2 shadow-sm"
-                    type="button"
-                    (click)="applyCouponCode()"
-                    *ngIf="couponCodeMessage !== ''"
-                  >
-                    <fa-icon [icon]="faXmark"></fa-icon>
-                  </button>
-                </div>
-              </div>
-            </form>
-            <div
-              class="small invalidCoupon text-danger text-center mb-2 mt-2"
-              *ngIf="couponCodeMessage !== ''"
-            >
-              {{ couponCodeMessage }}
+              </svg>
             </div>
+            <h6 class="empty-cart-title">Your cart is empty</h6>
+            <p class="empty-cart-subtitle">Add some products to continue</p>
+            <a class="btn-see-products" [routerLink]="['/products']">
+              See Products
+            </a>
+          </div>
 
-            <div class="card" *ngIf="couponApplied.code !== ''">
-              <div class="card-body bg-light">
-                <div class="list-group bg-light">
-                  <div class="list-group-item bg-light">
-                    <h6 class="me-5">
-                      Code:
-                      <span class="small">{{ couponApplied.code }}</span>
-                    </h6>
-                  </div>
-                  <div class="list-group-item bg-light">
-                    <h6 class="me-5">
-                      Type:
-                      <span class="small">{{ couponApplied.type }}</span>
-                    </h6>
-                  </div>
-                  <div class="list-group-item bg-light">
-                    <h6 class="me-5">
-                      Value:
-                      <span class="small">%{{ couponApplied.value }}</span>
-                    </h6>
-                  </div>
+          <!-- Cart items -->
+          <div class="cart-list" *ngIf="cart.length > 0">
+            <div class="cart-row" *ngFor="let item of cart">
+              <div class="cart-image-wrapper">
+                <img
+                  [src]="item.product?.coverImage"
+                  class="cart-image"
+                  [alt]="item.product?.title"
+                />
+              </div>
+
+              <div class="cart-details">
+                <h6 class="cart-item-title">{{ item.product?.title }}</h6>
+
+                <div class="cart-meta">
+                  <span class="meta-item">Qty: {{ item.amount }}</span>
+                  <span class="meta-item">Size: {{ item.size }}</span>
+                  <span class="meta-item meta-color">
+                    <span class="color-dot"></span>
+                    Color
+                  </span>
                 </div>
               </div>
-              <div class="card-footer" *ngIf="couponApplied.code !== ''">
-                <div
-                  class="small invalidCoupon text-success text-center mb-2 mt-2"
-                >
-                  Coupon applied successfully!
-                </div>
-                <div class="small float-end">
-                  <p class="remove-coupon" (click)="removeCoupon()">Remove</p>
-                </div>
+
+              <div class="cart-price">
+                ${{ calculatePrice(item.product?.price, item.amount) }}
               </div>
             </div>
-          </div>
-        </li> -->
-
-        <li class="order-summary section mt-2" *ngIf="!isOrderComplete">
-          <div class="content">
-            <div class="card">
-              <div class="card-body bg-light">
-                <div class="list-group">
-                  <div class="list-group-item bg-light">
-                    <h6>
-                      Subtotal:
-                      <span class="float-end">${{ subtotal }}</span>
-                    </h6>
-                  </div>
-                  <div class="list-group-item bg-light">
-                    <h6>
-                      Shipping cost:
-                      <span class="float-end">${{ shippingCost }}</span>
-                    </h6>
-                  </div>
-                  <div class="list-group-item bg-light">
-                    <h6
-                      data-bs-toggle="collapse"
-                      data-bs-target="#collapse-promo"
-                    >
-                      Discount:
-                      <fa-icon [icon]="faChevronDown" class="ms-1"></fa-icon>
-                      <span class="float-end" *ngIf="discount != 0"
-                        >-%{{ discount }}</span
-                      >
-                      <span class="float-end text-muted" *ngIf="discount == 0"
-                        >-</span
-                      >
-                    </h6>
-                    <div class="collapse" id="collapse-promo">
-                      <input
-                        class="form-control"
-                        placeholder="Coupon/Promo code"
-                      />
-                      <h6 class="text-muted mt-2">
-                        Cupon applied: WINTER2022
-                        <fa-icon [icon]="faXmark" class="ms-1"></fa-icon>
-                      </h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-footer">
-                <h6>
-                  Total:
-                  <span class="float-end">${{ orderTotal }}</span>
-                </h6>
-              </div>
-            </div>
-
-            <!-- <button
-              class="btn btn-complete mt-2 w-100"
-              (click)="completeOrder()"
-              *ngIf="!isOrderComplete"
-            >
-              Continue to pay
-            </button> -->
-          </div>
-        </li>
-      </ol>
-    </div>
-
-    <div class="col-6 p-5 shadow">
-      <!-- <h1 class="title">Choose payment method</h1> -->
-      <!-- <hr /> -->
-
-      <div class="paypal-payment-section">
-        <ngx-paypal
-          [config]="payPalConfig"
-          class="mt-2 w-100 paypal-button"
-        ></ngx-paypal>
-      </div>
-      <h6 class="small text-muted mt-3 mb-3 text-center">Or pay with card</h6>
-
-      <h5>Shipping information</h5>
-      <form action="" [formGroup]="form">
-        <div class="row">
-          <div class="col-12 sect">
-            <input
-              id="email"
-              class="form-control input-sect"
-              placeholder="Email"
-            />
-          </div>
-          <div class="col-12 sect">
-            <input
-              id="address"
-              class="form-control input-sect"
-              placeholder="Address"
-            />
-          </div>
-          <div class="col-12 sect">
-            <input
-              id="zip"
-              class="form-control input-sect"
-              placeholder="ZIP code"
-            />
-          </div>
-          <div class="col-12 sect">
-            <input
-              id="country"
-              class="form-control input-sect"
-              placeholder="Country"
-            />
-          </div>
-          <div class="col-12 sect">
-            <input
-              id="city"
-              class="form-control input-sect"
-              placeholder="City"
-            />
           </div>
         </div>
-      </form>
 
-      <h5 class="mt-4 mb-2">Payment details</h5>
-      <app-stripe [sale]="sale"></app-stripe>
+        <!-- Shipping info -->
+        <div class="section-card" *ngIf="!isOrderComplete">
+          <div class="section-header">
+            <div class="step-badge">2</div>
+            <div>
+              <h4 class="section-title">Shipping Information</h4>
+              <p class="section-subtitle">Where should we deliver your order</p>
+            </div>
+          </div>
 
-      <!-- <button
-        class="btn btn-pay w-100 p-3"
-        data-bs-toggle="modal"
-        data-bs-target="#exampleModal"
-      >
-        Pay
-      </button> -->
+          <form [formGroup]="form">
+            <div class="row g-3">
+              <div class="col-12">
+                <label for="email" class="form-label">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  class="form-control form-control-custom"
+                  formControlName="email"
+                  placeholder="you@example.com"
+                />
+              </div>
+
+              <div class="col-12">
+                <label for="address" class="form-label">Address</label>
+                <input
+                  id="address"
+                  class="form-control form-control-custom"
+                  formControlName="address"
+                  placeholder="Street, number, interior"
+                />
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label for="zip" class="form-label">ZIP Code</label>
+                <input
+                  id="zip"
+                  class="form-control form-control-custom"
+                  formControlName="zip"
+                  placeholder="00000"
+                />
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label for="city" class="form-label">City</label>
+                <input
+                  id="city"
+                  class="form-control form-control-custom"
+                  formControlName="city"
+                  placeholder="City"
+                />
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label for="country" class="form-label">Country</label>
+                <input
+                  id="country"
+                  class="form-control form-control-custom"
+                  formControlName="country"
+                  placeholder="Country"
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right: Order summary + Payment -->
+      <div class="col-12 col-lg-5">
+        <div class="sticky-summary">
+          <!-- Order Summary -->
+          <div class="summary-card" *ngIf="!isOrderComplete">
+            <h5 class="summary-title">Order Summary</h5>
+
+            <div class="summary-list">
+              <div class="summary-row">
+                <span class="summary-label">Subtotal</span>
+                <span class="summary-value">${{ subtotal }}</span>
+              </div>
+
+              <div class="summary-row">
+                <span class="summary-label">Shipping cost</span>
+                <span class="summary-value">${{ shippingCost }}</span>
+              </div>
+
+              <div class="summary-row summary-discount">
+                <button
+                  class="discount-toggle"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapse-promo"
+                >
+                  <span>Discount</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="12"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+                    />
+                  </svg>
+                </button>
+                <span
+                  class="summary-value summary-value-discount"
+                  *ngIf="discount != 0"
+                  >-%{{ discount }}</span
+                >
+                <span class="summary-value text-muted" *ngIf="discount == 0"
+                  >—</span
+                >
+              </div>
+
+              <div class="collapse" id="collapse-promo">
+                <div class="promo-input-group">
+                  <input
+                    class="form-control form-control-custom"
+                    placeholder="Coupon / Promo code"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="summary-total">
+              <span class="total-label">Total</span>
+              <span class="total-amount">${{ orderTotal }}</span>
+            </div>
+          </div>
+
+          <!-- Payment -->
+          <div class="payment-card">
+            <h5 class="summary-title" *ngIf="!isOrderComplete">
+              Payment Method
+            </h5>
+
+            <ngx-paypal
+              [config]="payPalConfig"
+              class="mt-2 w-100 paypal-button"
+            ></ngx-paypal>
+
+            <div class="payment-divider">
+              <span class="divider-text">Or pay with card</span>
+            </div>
+
+            <app-stripe [sale]="sale"></app-stripe>
+
+            <div class="secure-badge">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"
+                />
+              </svg>
+              Secure payment
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <!-- <div class="total-section col-lg-4">
-            <div class="d-flex justify-content-center">
-                <div class="promo-section">
-                    <h6 class="small">Apply a coupon code</h6>
-                    <form>
-                        <div class="input-group mb-3 w-100">
-                            <input type="text" class="form-control p-2 shadow-sm" placeholder="Coupon Code"
-                             aria-label="" aria-describedby="basic-addon1" name="couponCode" [(ngModel)]="couponCode">
-                            <div class="input-group-prepend">
-                                <button class="btn btn-promo p-2 shadow-sm" type="button" (click)="applyCouponCode()"
-                                 *ngIf="couponCodeMessage === ''" [disabled]="!customerID">Apply</button>
-                                <button class="btn btn-fail invalidCoupon p-2 shadow-sm" disabled type="button" (click)="applyCouponCode()" *ngIf="couponCodeMessage !== ''">
-                                    <fa-icon [icon]="faXmark"></fa-icon>
-                                </button>
-                              </div>
-                        </div>
-                    </form>
-                    <div class="small invalidCoupon text-danger text-center mb-2 mt-2" *ngIf="couponCodeMessage !== ''">
-                        {{couponCodeMessage}}
-                        <hr>
-                    </div>
-
-                </div>
-            </div>
-
-            <h6 class="text-center mt-2" *ngIf="couponsApplied.length != 0">Coupons applied</h6>
-
-            <div class="d-flex justify-content-center mb-2" *ngIf="couponsApplied.length != 0">
-                <table class="table w-50">
-                    <thead>
-                        <th>Code</th>
-                        <th>Value</th>
-                        <th>Type</th>
-                    </thead>
-                    <tbody>
-                        <ng-container class="text-center" *ngFor="let coupon of couponsApplied">
-                            <tr>
-                                <td>{{coupon.code}}</td>
-                                <td>{{coupon.value}}</td>
-                                <td>{{coupon.type}}</td>
-                                <td>
-                                    <fa-icon [icon]="faXmark"></fa-icon>
-                                </td>
-                            </tr>
-                        </ng-container>
-                    </tbody>
-                    
-                </table>
-
-            </div>
-            
-            <div class="d-flex justify-content-center ">
-                <div class="order-section w-50">
-                    <div class="card">
-                        <div class="order-info">
-                            <h4 class="ms-3 mb-5 mt-3">Order Description</h4>
-                            <h6 class="ms-3">
-                                Subtotal:
-                                <span class="float-end me-3">${{subtotal}}</span>
-                            </h6>
-                            <h6 class="ms-3 text-muted">
-                                Shipping costs:
-                                <span class="float-end me-3">${{shippingCost}}</span>
-                            </h6>
-                            <h6 class="ms-3 text-muted">
-                                Discount: 
-                                <span class="float-end me-3" *ngIf="discount != 0">-%{{discount}}</span>
-                                <span class="float-end me-3" *ngIf="discount == 0">-</span>
-                            </h6>
-                            <hr class="mt-5">
-                            <h5 class="ms-3 mt-3 mb-3">
-                                Order Total:
-                                <span class="float-end me-3">${{orderTotal}}</span>
-                            </h5>
-                        </div>
-                        <button class="btn btn-complete text-center p-2 mt-2" [disabled]="cart.length == 0">Complete Order</button>
-                    </div>
-                </div>
-            </div>
-        </div> -->
   </div>
 </div>
