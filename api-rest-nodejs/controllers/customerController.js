@@ -1,7 +1,6 @@
 "use strict";
 
 var Customer = require("../models/customer");
-var Direction = require("../models/direction");
 
 var bcrypt = require("bcrypt-nodejs");
 var jwt = require("../helpers/jwt");
@@ -47,33 +46,33 @@ const register = async function (req, res) {
 };
 
 const login = async function (req, res) {
-  var data = req.body;
-  var customerArray = [];
-
-  customerArray = await Customer.find({ email: data.email });
-
-  if (customerArray.length == 0) {
-    res.status(200).send({ message: "User doesnt exists." });
-  } else {
-    // login
-    let customer = customerArray[0];
-
-    bcrypt.compare(
-      data.password,
-      customer.password,
-      async function (error, check) {
-        if (check) {
-          res.status(200).send({
-            customer: customer,
-            token: jwt.createToken(customer),
-            message: "Login successfully.",
-          });
-        } else {
-          res.status(200).send({ message: "Password doesnt match." });
-        }
-      },
-    );
+  const data = req.body;
+  const customer = await Customer.findOne({ email: data.email });
+  if (!customer) {
+    res
+      .status(200)
+      .send({ success: false, message: "Email or Password is not valid." });
   }
+
+  // login
+  bcrypt.compare(
+    data.password,
+    customer.password,
+    async function (error, check) {
+      if (check) {
+        res.status(200).send({
+          success: true,
+          customer: credentials.safeCredentials(customer),
+          jwt: jwt.createToken(customer),
+        });
+      } else {
+        res.status(200).send({
+          success: false,
+          message: "Email or Password is not valid.",
+        });
+      }
+    },
+  );
 };
 
 // get customers list
