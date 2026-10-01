@@ -79,13 +79,13 @@ const removeCategory = async function (req, res) {
   }
 };
 
-const getConfig = async function (req, res) {
+const getConfig = async function (_req, res) {
   try {
     var actualConfig = await Config.find({ identifier: 1 });
 
-    return res.status(200).send({ actualConfig: actualConfig });
+    return res.status(200).send({ success: true, config: actualConfig[0] });
   } catch (err) {
-    return res.status(500).send({ message: "Server Error" });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
