@@ -57,7 +57,7 @@
                 </a>
               </li>
               <li><hr class="dropdown-divider" /></li>
-              <ng-container *ngFor="let category of categories">
+              <ng-container *ngFor="let category of config.categories">
                 <li>
                   <a
                     class="dropdown-item dropdown-item-custom"
@@ -109,7 +109,7 @@
           <!-- Login / User -->
           <li class="nav-item">
             <a
-              *ngIf="!customer.names && !customer.surnames"
+              *ngIf="!auth.user && !auth.user"
               [routerLink]="['/login']"
               class="nav-link nav-link-custom guest-link"
             >
@@ -117,7 +117,7 @@
               <span>Log in</span>
             </a>
 
-            <div class="dropdown" *ngIf="customer.names && customer.surnames">
+            <div class="dropdown" *ngIf="auth.user && auth.user">
               <a
                 class="nav-link nav-link-custom dropdown-toggle user-link"
                 href="#"
@@ -130,7 +130,7 @@
                   <fa-icon [icon]="faUser"></fa-icon>
                 </span>
                 <span class="user-name"
-                  >{{ customer.names }} {{ customer.surnames }}</span
+                  >{{ auth.user.names }} {{ auth.user.surnames }}</span
                 >
               </a>
               <ul
@@ -139,9 +139,9 @@
               >
                 <li>
                   <a
-                    class="dropdown-item dropdown-item-custom"
+                    class="dropdown-item dropdown-item-custo m"
                     href="#"
-                    [routerLink]="['/profile', _idStorage]"
+                    [routerLink]="['/profile', auth.user.sub]"
                     (click)="updatedBreadcrumb()"
                   >
                     <fa-icon [icon]="faUser" class="me-2"></fa-icon>

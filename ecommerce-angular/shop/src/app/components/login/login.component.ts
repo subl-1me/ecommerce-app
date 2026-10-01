@@ -6,6 +6,7 @@ import { ConfigsService } from 'src/app/services/configs.service';
 
 import { Customer } from 'src/app/models/customer';
 import { Config } from 'src/app/models/config';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -50,22 +51,35 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  public onSubmit(form: any): void {
+  public async onSubmit(form: any): Promise<void> {
     if (form.invalid) {
-      console.log('Llena bien los datos, culero.');
       return;
     }
 
-    this._customerService.login(this.customer).subscribe((response) => {
-      if (!response.customer) {
-        console.log(response.message);
-        return;
-      }
+    const response = await lastValueFrom(
+      this._customerService.login(this.customer),
+    );
 
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('_id', response.customer._id);
-      location.reload();
-    });
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+
+    const user = {
+      sub: response.customer.sub,
+      names: response.customer.names,
+      surnames: response.customer.surnames,
+      email: response.customer.email,
+      createdAt: response.customer.createdAt,
+      updatedAt: response.customer.updatedAt,
+    };
+
+    const auth = {
+      user,
+      jwt: response.jwt,
+    };
+    localStorage.setItem('auth', JSON.stringify(auth));
+    location.reload();
   }
 
   isLogged(): void {
