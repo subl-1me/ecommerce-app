@@ -120,26 +120,21 @@ const latestProducts = async function (_req, res) {
   try {
     const latestProducts = await Product.find()
       .sort({ createdAt: -1 })
-      .limit(4);
+      .limit(10);
 
-    return res.status(200).send({ products: latestProducts });
+    return res.status(200).send({ success: true, products: latestProducts });
   } catch (err) {
-    return res.status(500).send({ message: "Something went wrong." });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
 const topSellers = async function (_req, res) {
-  /*try {
-        const topSellers = await Product.find().sort({ sales: ascending }).limit(4);
-
-        return res.status(200).send({ products: topSellers })
-    }catch(err){
-        return res.status(500).send({ message: 'Somethig went wrong.' })
-    }*/
-
-  const topSellers = await Product.find().sort({ sales: -1 }).limit(4);
-
-  return res.status(200).send({ products: topSellers });
+  try {
+    const topSellers = await Product.find().sort({ sales: -1 }).limit(10);
+    return res.status(200).send({ success: true, products: topSellers });
+  } catch (err) {
+    return res.status(500).send({ success: false, message: err.message });
+  }
 };
 
 const productsByCategory = async function (req, res) {

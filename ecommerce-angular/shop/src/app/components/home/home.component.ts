@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProductsService } from 'src/app/services/products.service';
 import { ConfigsService } from 'src/app/services/configs.service';
 import { Config } from 'src/app/models/config';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -16,10 +17,7 @@ export class HomeComponent implements OnInit {
 
   public config: Config;
 
-  constructor(
-    private _productService: ProductsService,
-    private _configService: ConfigsService,
-  ) {
+  constructor(private _configService: ConfigsService) {
     this.config = {
       _id: '',
       shopName: '',
@@ -29,31 +27,16 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getNewProducts();
-    this.getTopSellers();
     this.getConfig();
   }
 
-  getConfig(): void {
-    this._configService.getShopConfigs().subscribe((response) => {
-      console.log(response);
-      this.config = response.actualConfig[0];
-    });
-  }
+  async getConfig(): Promise<void> {
+    const response = await lastValueFrom(this._configService.getShopConfigs());
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
 
-  getNewProducts(): void {
-    this._productService.getLatestProducts().subscribe((response) => {
-      if (!response.products) return;
-
-      this.latestProducts = response.products;
-    });
-  }
-
-  getTopSellers(): void {
-    this._productService.getTopSellers().subscribe((response) => {
-      if (!response.products) return;
-
-      this.topSellers = response.products;
-    });
+    this.config = response.config;
   }
 }
