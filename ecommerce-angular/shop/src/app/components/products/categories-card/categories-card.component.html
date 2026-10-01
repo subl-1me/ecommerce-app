@@ -5,8 +5,11 @@
     <input
       type="text"
       placeholder="Search category"
+      name="searchParam"
+      [(ngModel)]="searchParam"
       class="form-control search-input"
       name="filterCategory"
+      (keyup)="searchCategory($event)"
     />
     <span class="search-icon">
       <svg
@@ -28,13 +31,13 @@
   </div> -->
 
   <ul class="category-list mt-3">
-    <li class="category-item">
+    <li class="category-item" (click)="reloadList()">
       <label class="category-label">
-        <input type="checkbox" class="form-check-input" />
-        <span class="category-name">Show All</span>
+        <span class="category-name ms-2">Show All</span>
       </label>
     </li>
-    <ng-container *ngFor="let category of config.categories">
+    <hr style="opacity: 5%" />
+    <ng-container *ngFor="let category of categoriesAux">
       <li class="category-item">
         <label class="category-label" [for]="category">
           <input

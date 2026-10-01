@@ -12,100 +12,15 @@
           </div>
 
           <!-- Categories -->
-          <!-- <div class="filter-card">
-            <h6 class="filter-title">Categories</h6>
-
-            <div class="search-wrapper">
-              <input
-                type="text"
-                placeholder="Search category"
-                class="form-control search-input"
-                name="filterCategory"
-                [(ngModel)]="filterCategory"
-                (keyup)="getProductsByFilter()"
-              />
-              <span class="search-icon">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
-                  />
-                </svg>
-              </span>
-            </div>
-
-            <div *ngIf="noItemsFoundMessage !== ''" class="filter-empty-msg">
-              No products found with that search
-            </div>
-
-            <ul class="category-list mt-3">
-              <ng-container *ngFor="let category of categories">
-                <li class="category-item">
-                  <label class="category-label" [for]="category">
-                    <input
-                      type="checkbox"
-                      class="form-check-input"
-                      [id]="category"
-                      (click)="getProductsByCategory(category, $event)"
-                    />
-                    <span class="category-name">{{ category }}</span>
-                  </label>
-                </li>
-              </ng-container>
-            </ul>
-          </div> -->
-
           <app-categories-card
             (filteredProducts)="onFilterByCategory($event)"
           ></app-categories-card>
+
           <!-- Price -->
-          <div class="filter-card">
-            <h6 class="filter-title">Price Range</h6>
-            <form #priceForm="ngForm" (ngSubmit)="onSubmit()">
-              <div class="row g-2">
-                <div class="col-6">
-                  <label for="minPrice" class="price-label">Min</label>
-                  <div class="input-group">
-                    <span class="input-group-text">$</span>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="minPrice"
-                      name="min"
-                      [(ngModel)]="min"
-                      placeholder="0"
-                    />
-                  </div>
-                </div>
-                <div class="col-6">
-                  <label for="maxPrice" class="price-label">Max</label>
-                  <div class="input-group">
-                    <span class="input-group-text">$</span>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="maxPrice"
-                      name="max"
-                      [(ngModel)]="max"
-                      placeholder="999"
-                    />
-                  </div>
-                </div>
-              </div>
-              <button
-                type="submit"
-                class="btn btn-filter w-100 mt-3"
-                [disabled]="products.length == 0"
-              >
-                Apply Filter
-              </button>
-            </form>
-          </div>
+          <app-price-filter
+            [products]="products"
+            (filteredProducts)="onFilterByPrice($event)"
+          ></app-price-filter>
         </div>
       </aside>
 
@@ -135,9 +50,11 @@
               type="number"
               class="form-control form-control-sm toolbar-input"
               id="inputShow"
+              min="1"
+              max="{{ products.length }}"
               name="productsAmount"
               [(ngModel)]="productsAmount"
-              (change)="showAmount()"
+              (change)="filterByAmount()"
               min="1"
             />
           </div>
@@ -164,7 +81,7 @@
           <div class="row g-3">
             <div
               class="col-12 col-sm-6 col-lg-4"
-              *ngFor="let product of products"
+              *ngFor="let product of productsAux"
             >
               <div class="product-card">
                 <div

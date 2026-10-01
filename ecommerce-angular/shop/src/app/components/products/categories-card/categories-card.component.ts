@@ -14,6 +14,8 @@ import { lastValueFrom } from 'rxjs';
 export class CategoriesCardComponent implements OnInit {
   @Output() filteredProducts = new EventEmitter<Product[]>();
   public config: Config;
+  public categoriesAux: string[];
+  public searchParam: string;
 
   constructor(
     private _productService: ProductsService,
@@ -28,6 +30,8 @@ export class CategoriesCardComponent implements OnInit {
       shopName: '',
       categories: [],
     };
+    this.searchParam = '';
+    this.categoriesAux = [];
   }
 
   ngOnInit(): void {
@@ -50,21 +54,25 @@ export class CategoriesCardComponent implements OnInit {
 
   private getConfig(): void {
     this._configService.getShopConfigs().subscribe((response) => {
-      this.config = response.actualConfig[0];
+      this.config = response.config;
+      this.categoriesAux = this.config.categories as string[];
     });
   }
 
-  // getProductsByFilter(): void {
-  //   this._productService
-  //     .getProducts(this.filterCategory)
-  //     .subscribe((response) => {
-  //       if (response.message) {
-  //         this.noItemsFoundMessage = 'No items found with that name.';
-  //         return;
-  //       }
+  public async reloadList(): Promise<void> {
+    const response = await lastValueFrom(this._productService.getProducts());
+    if (!response.success) {
+      return;
+    }
 
-  //       this.noItemsFoundMessage = '';
-  //       this.products = response.products;
-  //     });
-  // }
+    this.filteredProducts.emit(response.products);
+  }
+
+  public searchCategory(_typedString: Event): void {
+    this.categoriesAux = this.config.categories.filter((category) =>
+      category
+        .toLocaleLowerCase()
+        .includes(this.searchParam.toLocaleLowerCase()),
+    ) as string[];
+  }
 }

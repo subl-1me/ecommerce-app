@@ -11,11 +11,11 @@ import { environment } from 'src/environments/environment';
 export class ProductsService {
   constructor(private _http: HttpClient) {}
 
-  public getProducts(filter: string): Observable<any> {
+  public getProducts(): Observable<any> {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.get(
-      (environment.API_URL || GLOBAL.localUrl) + 'products/' + filter,
+      (environment.API_URL || GLOBAL.localUrl) + 'products',
       { headers: headers },
     );
   }

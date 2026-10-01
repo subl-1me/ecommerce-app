@@ -3,26 +3,9 @@
 require("dotenv").config();
 const Product = require("../models/product");
 const ProductInventory = require("../models/productInventory");
-
-const path = require("path");
-const _fileService = require("../services/files.service");
 const uniqid = require("uniqid");
 
-const multer = require("multer");
-const { db } = require("../models/product");
-const directoryPath = path.join(__dirname, "../uploads/products/");
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "./uploads/products");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
 const { UPLOADS_URL_TEST, PORT } = process.env;
-
-const upload = multer({ storage: storage }).single("image");
 
 const add = async function (req, res) {
   if (!req.user || req.user.role !== "Admin")
@@ -87,33 +70,42 @@ const remove = async function (req, res) {
   return res.status(200).send({ message: "Product deleted successfully." });
 };
 
-const products = async function (req, res) {
-  var filter = req.params["title"];
-  var productsArray = {};
-
-  // if there is a filter param
-  if (filter) {
-    const title = new RegExp(filter, "i");
-    productsArray = await Product.find({ title: title });
-
-    if (productsArray.length == 0)
-      return res.status(200).send({ message: "Product not found. " });
-
-    return res.status(200).send({
-      status: "success",
-      products: productsArray,
-    });
+const products = async function (_req, res) {
+  try {
+    const products = await Product.find();
+    res.status(200).send({ success: true, products });
+  } catch (err) {
+    res.status(500).send({ success: false, message: err.message });
   }
+  // try{
+  // const filter = req.params["title"];
 
-  productsArray = await Product.find();
+  // // if there is a filter param
+  // if (filter) {
+  //   const title = new RegExp(filter, "i");
+  //   const products = await Product.find({ title: title });
 
-  if (productsArray.length == 0)
-    return res.status(200).send({ message: "Product not found." });
+  //   if (productsArray.length == 0)
+  //     return res.status(200).send({ message: "Product not found. " });
 
-  return res.status(200).send({
-    status: "success",
-    products: productsArray,
-  });
+  //   return res.status(200).send({
+  //     success:
+  //     products: productsArray,
+  //   });
+  // }
+
+  // productsArray = await Product.find();
+
+  // if (productsArray.length == 0)
+  //   return res.status(200).send({ message: "Product not found." });
+
+  // return res.status(200).send({
+  //   status: "success",
+  //   products: productsArray,
+  // });
+  // }catch(err){
+  //   res.status(500).send({ success: false, message: err.message})
+  // }
 };
 
 const latestProducts = async function (_req, res) {

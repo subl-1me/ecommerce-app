@@ -7,7 +7,7 @@ const routes = express.Router();
 const auth = require("../middlewares/authenticate");
 
 routes.post("/product", auth.auth, productController.add);
-routes.get("/products/:title?", productController.products);
+routes.get("/products", productController.products);
 routes.put("/product/:id", auth.auth, productController.edit);
 routes.get("/product/:id", productController.getById);
 routes.delete("/removeProduct/:id", auth.auth, productController.remove);

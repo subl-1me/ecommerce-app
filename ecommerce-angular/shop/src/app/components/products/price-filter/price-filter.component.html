@@ -1,0 +1,56 @@
+<div class="filter-card">
+  <h6 class="filter-title">Price Range</h6>
+  <form #priceForm="ngForm" (ngSubmit)="onSubmit()">
+    <div class="row g-2">
+      <div class="col-6">
+        <label for="minPrice" class="price-label">Min</label>
+        <div class="input-group">
+          <span class="input-group-text">$</span>
+          <input
+            type="number"
+            class="form-control"
+            id="minPrice"
+            name="min"
+            [(ngModel)]="min"
+            min="0"
+            max="99999"
+            placeholder="0"
+          />
+        </div>
+      </div>
+      <div class="col-6">
+        <label for="maxPrice" class="price-label">Max</label>
+        <div class="input-group">
+          <span class="input-group-text">$</span>
+          <input
+            type="number"
+            class="form-control"
+            id="maxPrice"
+            name="max"
+            min="0"
+            max="99999"
+            [(ngModel)]="max"
+            placeholder="99999"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="text-center">
+      <button
+        type="submit"
+        class="btn btn-filter w-25 mt-3 me-3"
+        [disabled]="products.length == 0"
+      >
+        Apply
+      </button>
+      <button
+        type="button"
+        (click)="reset()"
+        class="btn btn-filter w-25 mt-3"
+        [disabled]="products.length == 0"
+      >
+        Reset
+      </button>
+    </div>
+  </form>
+</div>
