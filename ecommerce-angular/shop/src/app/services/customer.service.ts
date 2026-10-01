@@ -18,7 +18,7 @@ export class CustomerService {
     return this._http.post(
       (environment.API_URL || GLOBAL.localUrl) + 'customer/register',
       customer,
-      { headers: headers }
+      { headers: headers },
     );
   }
 
@@ -28,7 +28,7 @@ export class CustomerService {
     return this._http.post(
       (environment.API_URL || GLOBAL.localUrl) + 'customer/login',
       customer,
-      { headers: headers }
+      { headers: headers },
     );
   }
 
@@ -37,7 +37,7 @@ export class CustomerService {
 
     return this._http.get(
       (environment.API_URL || GLOBAL.localUrl) + 'customer/' + _id,
-      { headers: headers }
+      { headers: headers },
     );
   }
 
@@ -47,7 +47,7 @@ export class CustomerService {
     return this._http.put(
       (environment.API_URL || GLOBAL.localUrl) + 'customer/' + _id,
       customer,
-      { headers: headers }
+      { headers: headers },
     );
   }
 }
