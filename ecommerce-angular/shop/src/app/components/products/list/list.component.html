@@ -50,7 +50,7 @@
               type="number"
               class="form-control form-control-sm toolbar-input"
               id="inputShow"
-              min="1"
+              min=""
               max="{{ products.length }}"
               name="productsAmount"
               [(ngModel)]="productsAmount"
@@ -83,36 +83,7 @@
               class="col-12 col-sm-6 col-lg-4"
               *ngFor="let product of productsAux"
             >
-              <div class="product-card">
-                <div
-                  class="product-image-wrapper"
-                  [routerLink]="['/products/detail', product._id]"
-                >
-                  <img
-                    [src]="product.gallery[0].path"
-                    class="product-image"
-                    alt="{{ product.title }}"
-                  />
-                  <span class="product-overlay">View Details</span>
-                </div>
-
-                <div class="product-body">
-                  <h6 class="product-title">{{ product.title }}</h6>
-                  <p class="product-price">${{ product.price }}</p>
-
-                  <button
-                    class="btn btn-add-cart"
-                    (click)="addToCart(product._id)"
-                  >
-                    <fa-icon [icon]="faCartShopping" class="me-1"></fa-icon>
-                    Add to Cart
-                  </button>
-
-                  <div class="cart-message" *ngIf="addToCartMesssage !== ''">
-                    {{ addToCartMesssage }}
-                  </div>
-                </div>
-              </div>
+              <app-product-card [product]="product"></app-product-card>
             </div>
           </div>
         </div>

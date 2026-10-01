@@ -38,6 +38,7 @@ import { RouterModule } from '@angular/router';
 import { TrendingProductsComponent } from './components/home/trending-products/trending-products.component';
 import { CategoriesCardComponent } from './components/products/categories-card/categories-card.component';
 import { PriceFilterComponent } from './components/products/price-filter/price-filter.component';
+import { ProductCardComponent } from './components/products/list/product-card/product-card.component';
 
 @NgModule({
   declarations: [
@@ -68,6 +69,7 @@ import { PriceFilterComponent } from './components/products/price-filter/price-f
     TrendingProductsComponent,
     CategoriesCardComponent,
     PriceFilterComponent,
+    ProductCardComponent,
   ],
   imports: [
     BrowserModule,
