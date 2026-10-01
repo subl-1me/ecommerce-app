@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 // plgs
 import { NgxPayPalModule } from 'ngx-paypal';
 import { NgxStarRatingModule } from 'ngx-star-rating';
 
-// Components 
+// Components
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -32,7 +32,10 @@ import { OrderDetailComponent } from './components/profile/order-detail/order-de
 import { ReviewComponent } from './components/review/review.component';
 import { WishlistComponent } from './components/navbar/wishlist/wishlist.component';
 import { ReviewsComponent } from './components/products/reviews/reviews.component';
-
+import { CategoryShowerComponent } from './components/home/category-shower/category-shower.component';
+import { LatestsProductsComponent } from './components/home/latests-products/latests-products.component';
+import { RouterModule } from '@angular/router';
+import { TrendingProductsComponent } from './components/home/trending-products/trending-products.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +60,10 @@ import { ReviewsComponent } from './components/products/reviews/reviews.componen
     OrderDetailComponent,
     ReviewComponent,
     WishlistComponent,
-    ReviewsComponent
+    ReviewsComponent,
+    CategoryShowerComponent,
+    LatestsProductsComponent,
+    TrendingProductsComponent,
   ],
   imports: [
     BrowserModule,
@@ -67,9 +73,10 @@ import { ReviewsComponent } from './components/products/reviews/reviews.componen
     HttpClientModule,
     NgxPayPalModule,
     ReactiveFormsModule,
-    NgxStarRatingModule
+    NgxStarRatingModule,
+    RouterModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

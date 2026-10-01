@@ -1,0 +1,39 @@
+<!-- Categories -->
+<div class="container categories-section py-5">
+  <div class="text-center mb-5">
+    <h2 class="section-title">Our Categories</h2>
+    <p class="section-subtitle">Find what suits you best</p>
+  </div>
+
+  <div class="row justify-content-center g-4">
+    <div
+      class="col-12 col-sm-6 col-md-4"
+      *ngFor="let category of config.categories"
+    >
+      <div
+        class="category-card text-center"
+        (click)="navigateByCategory(category.toString())"
+      >
+        <!-- <div class="category-image-wrapper">
+            <img
+              [src]="
+                category.image ||
+                category.coverImage ||
+                'assets/images/default-category.png'
+              "
+              [alt]="category.name"
+            />
+          </div> -->
+        <h5 class="category-name mt-3">{{ category }}</h5>
+        <span class="category-link">Explore →</span>
+      </div>
+    </div>
+
+    <!-- Estado vacío -->
+    <div class="col-12 text-center" *ngIf="config.categories.length === 0">
+      <div class="empty-categories">
+        <p class="empty-text">No categories available yet</p>
+      </div>
+    </div>
+  </div>
+</div>
