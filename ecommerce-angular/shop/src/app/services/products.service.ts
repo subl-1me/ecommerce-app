@@ -16,7 +16,7 @@ export class ProductsService {
 
     return this._http.get(
       (environment.API_URL || GLOBAL.localUrl) + 'products/' + filter,
-      { headers: headers }
+      { headers: headers },
     );
   }
 
@@ -25,7 +25,7 @@ export class ProductsService {
 
     return this._http.get(
       (environment.API_URL || GLOBAL.localUrl) + 'product/' + productID,
-      { headers: headers }
+      { headers: headers },
     );
   }
 
@@ -36,7 +36,7 @@ export class ProductsService {
       (environment.API_URL || GLOBAL.localUrl) +
         'productsByCategory/' +
         category,
-      { headers: headers }
+      { headers: headers },
     );
   }
 
@@ -45,7 +45,7 @@ export class ProductsService {
 
     return this._http.get(
       (environment.API_URL || GLOBAL.localUrl) + 'latestsProducts',
-      { headers: headers }
+      { headers: headers },
     );
   }
 
@@ -54,7 +54,7 @@ export class ProductsService {
 
     return this._http.get(
       (environment.API_URL || GLOBAL.localUrl) + 'topSellers',
-      { headers: headers }
+      { headers: headers },
     );
   }
 }

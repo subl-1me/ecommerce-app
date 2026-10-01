@@ -12,7 +12,7 @@
           </div>
 
           <!-- Categories -->
-          <div class="filter-card">
+          <!-- <div class="filter-card">
             <h6 class="filter-title">Categories</h6>
 
             <div class="search-wrapper">
@@ -58,8 +58,11 @@
                 </li>
               </ng-container>
             </ul>
-          </div>
+          </div> -->
 
+          <app-categories-card
+            (filteredProducts)="onFilterByCategory($event)"
+          ></app-categories-card>
           <!-- Price -->
           <div class="filter-card">
             <h6 class="filter-title">Price Range</h6>

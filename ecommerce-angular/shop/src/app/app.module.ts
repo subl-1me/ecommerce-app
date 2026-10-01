@@ -36,6 +36,7 @@ import { CategoryShowerComponent } from './components/home/category-shower/categ
 import { LatestsProductsComponent } from './components/home/latests-products/latests-products.component';
 import { RouterModule } from '@angular/router';
 import { TrendingProductsComponent } from './components/home/trending-products/trending-products.component';
+import { CategoriesCardComponent } from './components/products/categories-card/categories-card.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { TrendingProductsComponent } from './components/home/trending-products/t
     CategoryShowerComponent,
     LatestsProductsComponent,
     TrendingProductsComponent,
+    CategoriesCardComponent,
   ],
   imports: [
     BrowserModule,

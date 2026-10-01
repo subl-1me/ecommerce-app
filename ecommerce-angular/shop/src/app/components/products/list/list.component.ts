@@ -89,6 +89,10 @@ export class ListComponent implements OnInit, DoCheck {
     });
   }
 
+  public onFilterByCategory(products: Product[]): void {
+    this.products = products;
+  }
+
   getProducts(filter: string): void {
     this._productsService.getProducts(filter).subscribe((response) => {
       if (!response.products) return;

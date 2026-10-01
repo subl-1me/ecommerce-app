@@ -149,9 +149,9 @@ const productsByCategory = async function (req, res) {
   try {
     productsArray = await Product.find({ category: filter });
 
-    return res.status(200).send({ products: productsArray });
+    return res.status(200).send({ success: true, products: productsArray });
   } catch (err) {
-    return res.status(500).send({ message: "Error." });
+    return res.status(500).send({ success: false, message: "Error." });
   }
 };
 
