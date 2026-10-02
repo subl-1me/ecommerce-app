@@ -21,7 +21,7 @@ export class CartService {
       cart,
       {
         headers: headers,
-      }
+      },
     );
   }
 
@@ -30,7 +30,7 @@ export class CartService {
 
     return this._http.get(
       (environment.API_URL || GLOBAL.localUrl) + 'cart/' + customerID,
-      { headers: headers }
+      { headers: headers },
     );
   }
 
@@ -39,7 +39,7 @@ export class CartService {
 
     return this._http.delete(
       (environment.API_URL || GLOBAL.localUrl) + 'cart/' + registerID,
-      { headers: headers }
+      { headers: headers },
     );
   }
 }

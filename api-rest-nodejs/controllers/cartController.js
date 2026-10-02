@@ -5,7 +5,7 @@ const CartService = require("../services/cart.service");
 
 const create = async function (req, res) {
   //TODO: Create validations
-  let payload = req.body;
+  const payload = req.body;
   try {
     const cart = await CartService.add(payload.cart);
     res.status(200).send({ success: true, cart });
@@ -14,6 +14,21 @@ const create = async function (req, res) {
       success: false,
       message: res.message,
     });
+  }
+};
+
+const addItem = async function (req, res) {
+  try {
+    const cartId = req.params["cartId"];
+    const payload = req.body;
+    if (!cartId)
+      res.status(200).send({ success: false, message: "Cart ID is required." });
+
+    const cart = await CartService.item(cartId);
+    const result = await CartService.update(cart._id, payload.cart);
+    res.status(200).send({ success: true, result });
+  } catch (err) {
+    res.status(500).send({ success: false, message: err.message });
   }
 };
 
@@ -64,8 +79,9 @@ const destroy = async function (req, res) {
 };
 
 module.exports = {
-  create,
+  addItem,
   getOneById,
   destroy,
   filterItem,
+  create,
 };
