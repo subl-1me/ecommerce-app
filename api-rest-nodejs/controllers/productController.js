@@ -273,17 +273,17 @@ const setGalleryImages = async function (req, res) {
 };
 
 const getById = async function (req, res) {
-  if (!req.params["id"])
-    return res.status(200).send({ message: "Product ID is required." });
-
-  var id = req.params["id"];
-
   try {
-    var product = await Product.findById(id);
+    if (!req.params["id"])
+      return res
+        .status(200)
+        .send({ success: false, message: "Product ID is required." });
 
-    return res.status(200).send({ product: product });
+    const id = req.params["id"];
+    const product = await Product.findById(id);
+    return res.status(200).send({ success: true, product: product });
   } catch (err) {
-    return res.status(200).send({ message: "Product not found." });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 

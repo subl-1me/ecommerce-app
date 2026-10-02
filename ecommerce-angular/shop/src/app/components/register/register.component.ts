@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -11,10 +10,9 @@ import { CustomerService } from 'src/app/services/customer.service';
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
-  providers: [ CustomerService ]
+  providers: [CustomerService],
 })
 export class RegisterComponent implements OnInit {
-
   public customer: Customer;
   public token: any;
 
@@ -24,14 +22,16 @@ export class RegisterComponent implements OnInit {
 
   constructor(
     private _customerService: CustomerService,
-    private _router: Router
-  ) { 
+    private _router: Router,
+  ) {
     this.customer = {
+      username: '',
       names: '',
       surnames: '',
       email: '',
       password: '',
-    }
+      wishlist: [],
+    };
     this.confirmPasswordTemp = '';
     this.onSubmitMessage = '';
     this.token = localStorage.getItem('token');
@@ -41,26 +41,25 @@ export class RegisterComponent implements OnInit {
     this.isLogged();
   }
 
-  public onSubmit(form:any):void{
-    if(form.invalid){
+  public onSubmit(form: any): void {
+    if (form.invalid) {
       console.log('Fuck you.');
       return;
     }
 
-    if(!this.isPasswordOk()) return;
+    if (!this.isPasswordOk()) return;
 
     this.onSubmitMessage = '';
 
     this._customerService.register(this.customer).subscribe((response) => {
-      if(response.status === 'error') return;
+      if (response.status === 'error') return;
 
       this._router.navigate(['/login']);
-    })
-
+    });
   }
 
-  public isPasswordOk():boolean{
-    if(this.confirmPasswordTemp === this.customer.password){
+  public isPasswordOk(): boolean {
+    if (this.confirmPasswordTemp === this.customer.password) {
       this.onSubmitMessage = 'success';
       return true;
     }
@@ -69,8 +68,7 @@ export class RegisterComponent implements OnInit {
     return false;
   }
 
-  public isLogged():void{
-    if(this.token) this._router.navigate(['']);
+  public isLogged(): void {
+    if (this.token) this._router.navigate(['']);
   }
-
 }

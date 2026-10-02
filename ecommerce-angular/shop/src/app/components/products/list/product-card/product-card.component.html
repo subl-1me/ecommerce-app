@@ -19,6 +19,20 @@
       <fa-icon [icon]="faCartShopping" class="me-1"></fa-icon>
       Add to Cart
     </button>
+    <button
+      class="btn btn-favorite mt-2"
+      (click)="addToWishlist(product._id)"
+      *ngIf="!isOnWishlist(product._id)"
+    >
+      Add to Wishlist
+    </button>
+    <button
+      class="btn btn-favorite-active mt-2"
+      (click)="removeFromWishlist(product._id)"
+      *ngIf="isOnWishlist(product._id)"
+    >
+      Remove from Wishlist
+    </button>
 
     <!-- <div class="cart-message" *ngIf="addToCartMesssage !== ''">
       {{ addToCartMesssage }}

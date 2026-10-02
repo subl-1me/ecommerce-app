@@ -123,7 +123,6 @@
   margin: 1.5rem 0;
 }
 
-/* Imagen principal */
 .main-image-wrapper {
   background: #f8f9fa;
   border-radius: 20px;
@@ -149,7 +148,6 @@
   transform: scale(1.03);
 }
 
-/* Galería */
 .gallery-wrapper {
   display: flex;
   gap: 10px;
@@ -173,7 +171,6 @@
   box-shadow: 0 6px 16px rgba(41, 187, 106, 0.2);
 }
 
-/* Precio */
 .price-box {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
@@ -192,7 +189,6 @@
   font-size: 0.85rem;
 }
 
-/* Opciones */
 .option-group {
   margin-bottom: 1.5rem;
 }
@@ -282,7 +278,6 @@
   font-size: 0.9rem;
 }
 
-/* Cantidad y acciones */
 .quantity-and-actions {
   display: flex;
   gap: 12px;
@@ -398,7 +393,6 @@
   margin-top: 0.4rem;
 }
 
-/* Acordeones */
 .info-accordions {
   margin-top: 1.5rem;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
@@ -456,7 +450,6 @@
   text-decoration: underline;
 }
 
-/* Pago seguro */
 .payment-section {
   margin-top: 2rem;
   text-align: center;

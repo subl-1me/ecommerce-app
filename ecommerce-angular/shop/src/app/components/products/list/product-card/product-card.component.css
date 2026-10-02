@@ -159,6 +159,63 @@
   font-size: 0.95rem;
 }
 
+.btn-favorite-active {
+  background: #dc3545;
+  color: white;
+  border: 2px solid #dc3545;
+  border-radius: 12px;
+  padding: 0.65rem 1.25rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-favorite-active:hover {
+  background: white;
+  color: #dc3545;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(220, 53, 69, 0.25);
+}
+
+.btn-favorite {
+  background: white;
+  color: #29bb6a;
+  border: 2px solid #29bb6a;
+  border-radius: 12px;
+  padding: 0.65rem 1.25rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-favorite:hover {
+  background: #29bb6a;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(41, 187, 106, 0.3);
+}
+
+.btn-favorite-active {
+  background: #dc3545;
+  color: white;
+  border: 2px solid #dc3545;
+  border-radius: 12px;
+  padding: 0.65rem 1.25rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-favorite-active:hover {
+  background: white;
+  color: #dc3545;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(220, 53, 69, 0.25);
+}
+
 /* Responsive */
 @media (max-width: 991.98px) {
   .filters-sidebar {

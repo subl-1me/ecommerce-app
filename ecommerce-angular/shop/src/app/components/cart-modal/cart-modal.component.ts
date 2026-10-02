@@ -25,7 +25,7 @@ export class CartModalComponent implements OnInit {
     `${
       environment.API_URL.replace('/api/', '') ||
       GLOBAL.localUrl.replace('/api/', '')
-    }`
+    }`,
   );
 
   @Output() closeCartModal = new EventEmitter<boolean>();
@@ -51,7 +51,7 @@ export class CartModalComponent implements OnInit {
       'deleteProductCart',
       function (data: any) {
         self.getCart();
-      }.bind(self)
+      }.bind(self),
     );
   }
 

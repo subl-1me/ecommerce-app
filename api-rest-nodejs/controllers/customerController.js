@@ -170,33 +170,37 @@ const create = async function (req, res) {
 
 const edit = async function (req, res) {
   if (!req.params["id"])
-    return res.status(200).send({ message: "An user ID is required." });
+    return res
+      .status(200)
+      .send({ success: false, message: "User ID is required." });
 
-  var id = req.params["id"];
-  var params = req.body;
+  const id = req.params["id"];
+  const params = req.body;
 
   try {
-    var updatedCustomer = await Customer.findByIdAndUpdate(id, {
+    const updatedCustomer = await Customer.findByIdAndUpdate(id, {
       names: params.names,
       surnames: params.surnames,
       email: params.email,
       gender: params.gender,
       dni: params.dni,
+      password: params.password,
       birthday: params.birthday,
       country: params.country,
+      wishlist: params.wishlist,
       phone: params.phone,
       notes: params.notes,
       city: params.city,
     });
 
-    return res.status(200).send({
-      status: "success",
-      updatedCustomer: credentials.safeCredentials(updatedCustomer),
+    res.status(200).send({
+      success: true,
+      changes: credentials.safeCredentials(updatedCustomer),
     });
   } catch (err) {
-    return res.status(200).send({
-      status: "error",
-      message: "User not found",
+    res.status(500).send({
+      success: false,
+      message: err.message,
     });
   }
 };

@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { io } from 'socket.io-client';
 
 // Icons
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
@@ -16,12 +17,19 @@ import { AuthService } from 'src/app/services/auth.service';
 import { ProductsService } from 'src/app/services/products.service';
 import { Config } from 'src/app/models/config';
 import { Auth } from 'src/app/models/auth';
+import { SocketService } from 'src/app/services/socket/socket.service';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
-  providers: [CustomerService, ConfigsService, ProductsService, AuthService],
+  providers: [
+    CustomerService,
+    ConfigsService,
+    ProductsService,
+    AuthService,
+    SocketService,
+  ],
 })
 export class NavbarComponent implements OnInit {
   @Output() openCartModal = new EventEmitter<boolean>();
@@ -31,8 +39,8 @@ export class NavbarComponent implements OnInit {
   public categories: any;
 
   public showFavsMenu: boolean;
+  public wishlist: string[];
 
-  public productsFav: any;
   public loadedProducts: Array<Product>;
 
   // icons
@@ -45,8 +53,8 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     private _configsService: ConfigsService,
-    private _productsService: ProductsService,
     private _authService: AuthService,
+    private _socketService: SocketService,
   ) {
     this.config = {
       _id: '',
@@ -57,18 +65,22 @@ export class NavbarComponent implements OnInit {
         path: '',
       },
     };
+    this.wishlist = [];
     this.auth = {
       user: null,
       jwt: '',
     };
-    this.productsFav = JSON.parse(localStorage.getItem('productsFav') || '[]');
     this.loadedProducts = [];
     this.showFavsMenu = false;
+
+    this._socketService.on('updated-wishlist').subscribe((response: any) => {
+      console.log('recieved from navbar', response);
+      this.wishlist = response.wishlist;
+    });
   }
 
   ngOnInit(): void {
     this.getAuth();
-    this.getProductsFav();
     this._configsService.getShopConfigs().subscribe((res) => {
       if (res.success) {
         this.config = res.config;
@@ -78,13 +90,10 @@ export class NavbarComponent implements OnInit {
 
   getAuth(): void {
     this.auth = this._authService.getUser();
+    this.wishlist = this.auth.user.wishlist;
   }
 
   logOut(): void {
-    if (!this._authService.isAuthenticated()) {
-      return;
-    }
-
     localStorage.removeItem('auth');
     location.reload();
   }
@@ -108,18 +117,6 @@ export class NavbarComponent implements OnInit {
     ) {
       this.showFavsMenu = false;
       return;
-    }
-  }
-
-  getProductsFav(): void {
-    for (let i = 0; i < this.productsFav.length; i++) {
-      this._productsService
-        .getProductById(this.productsFav[i])
-        .subscribe((response) => {
-          if (response.product) {
-            this.loadedProducts.push(response.product);
-          }
-        });
     }
   }
 

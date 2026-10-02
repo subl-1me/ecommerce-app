@@ -1,15 +1,15 @@
 <div class="wishlist-dropdown">
   <!-- Header -->
-  <div class="wishlist-header" *ngIf="loadedProducts.length > 0">
+  <div class="wishlist-header" *ngIf="products.length > 0">
     <h6 class="wishlist-title">My Wishlist</h6>
     <span class="wishlist-count">
-      {{ loadedProducts.length }}
-      {{ loadedProducts.length === 1 ? "item" : "items" }}
+      {{ products.length }}
+      {{ products.length === 1 ? "item" : "items" }}
     </span>
   </div>
 
   <!-- Empty state -->
-  <div *ngIf="loadedProducts.length === 0" class="wishlist-empty">
+  <div *ngIf="products.length === 0" class="wishlist-empty">
     <div class="empty-icon">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -29,12 +29,12 @@
   </div>
 
   <!-- Wishlist items -->
-  <div class="wishlist-items" *ngIf="loadedProducts.length > 0">
-    <div *ngFor="let product of loadedProducts" class="wishlist-item">
+  <div class="wishlist-items" *ngIf="products.length > 0">
+    <div *ngFor="let product of products" class="wishlist-item">
       <a class="item-link" [routerLink]="['/products/detail', product._id]">
         <div class="item-image-wrapper">
           <img
-            [src]="product.gallery?.[0]?.path || product.coverImage"
+            [src]="product.gallery[0].path"
             class="item-image"
             [alt]="product.title"
           />
@@ -46,7 +46,11 @@
         </div>
       </a>
 
-      <button class="item-remove" aria-label="Remove from wishlist">
+      <button
+        class="item-remove"
+        aria-label="Remove from wishlist"
+        (click)="removeFromWishlist(product._id)"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="14"
@@ -66,7 +70,7 @@
   </div>
 
   <!-- Footer -->
-  <div class="wishlist-footer" *ngIf="loadedProducts.length > 0">
+  <div class="wishlist-footer" *ngIf="products.length > 0">
     <a class="btn btn-view-all" [routerLink]="['/wishlist']">
       View All Wishlist
     </a>

@@ -11,6 +11,7 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 import { Config } from 'src/app/models/config';
 import { lastValueFrom } from 'rxjs';
+import { SocketService } from 'src/app/services/socket/socket.service';
 
 @Component({
   selector: 'app-list',
@@ -43,6 +44,7 @@ export class ListComponent implements OnInit {
     private _productsService: ProductsService,
     private _router: ActivatedRoute,
     private _routerr: Router,
+    private _socketService: SocketService,
   ) {
     this.config = {
       _id: '',

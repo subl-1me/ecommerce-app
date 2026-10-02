@@ -34,8 +34,12 @@ export class LoginComponent implements OnInit {
       shopName: '',
     };
     this.customer = {
+      username: '',
+      names: '',
+      surnames: '',
       email: '',
       password: '',
+      wishlist: [],
     };
     this.token = localStorage.getItem('token');
   }
@@ -66,10 +70,11 @@ export class LoginComponent implements OnInit {
     }
 
     const user = {
-      sub: response.customer.sub,
+      _id: response.customer._id,
       names: response.customer.names,
       surnames: response.customer.surnames,
       email: response.customer.email,
+      wishlist: response.customer.wishlist,
       createdAt: response.customer.createdAt,
       updatedAt: response.customer.updatedAt,
     };
@@ -79,7 +84,6 @@ export class LoginComponent implements OnInit {
       jwt: response.jwt,
     };
     localStorage.setItem('auth', JSON.stringify(auth));
-    location.reload();
   }
 
   isLogged(): void {

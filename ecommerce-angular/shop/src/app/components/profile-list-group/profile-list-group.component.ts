@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 
-import { faUser } from '@fortawesome/free-solid-svg-icons'
-import { faMap } from '@fortawesome/free-solid-svg-icons'
-import { faHeart } from '@fortawesome/free-solid-svg-icons'
-import { faEye } from '@fortawesome/free-solid-svg-icons'
-import { faStar } from '@fortawesome/free-solid-svg-icons'
-import { faGear } from '@fortawesome/free-solid-svg-icons'
-import { faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faMap } from '@fortawesome/free-solid-svg-icons';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faEye } from '@fortawesome/free-solid-svg-icons';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { faGear } from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 import { Customer } from '../../models/customer';
 
@@ -16,10 +16,9 @@ import { CustomerService } from '../../services/customer.service';
   selector: 'app-profile-list-group',
   templateUrl: './profile-list-group.component.html',
   styleUrls: ['./profile-list-group.component.css'],
-  providers: [ CustomerService ]
+  providers: [CustomerService],
 })
 export class ProfileListGroupComponent implements OnInit {
-
   public customer: Customer;
   public _idStorage: any;
 
@@ -32,26 +31,32 @@ export class ProfileListGroupComponent implements OnInit {
   faGear = faGear;
   faXmark = faXmark;
 
-  constructor(
-    private _customerService: CustomerService
-  ) {
-    this.customer = {};
+  constructor(private _customerService: CustomerService) {
+    this.customer = {
+      username: '',
+      names: '',
+      surnames: '',
+      email: '',
+      password: '',
+      wishlist: [],
+    };
     this._idStorage = localStorage.getItem('_id');
-   }
+  }
 
   ngOnInit(): void {
     this.getCustomerInfo();
   }
 
-  getCustomerInfo():void{
-    this._customerService.getCustomerById(this._idStorage).subscribe((response) => {
-      if(response.status === 'error') {
-        console.log('Error Trying to Find Customer.');
-        return;
-      }
+  getCustomerInfo(): void {
+    this._customerService
+      .getCustomerById(this._idStorage)
+      .subscribe((response) => {
+        if (response.status === 'error') {
+          console.log('Error Trying to Find Customer.');
+          return;
+        }
 
-      this.customer = response.customer;
-    })
+        this.customer = response.customer;
+      });
   }
-
 }
