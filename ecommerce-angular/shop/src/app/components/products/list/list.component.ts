@@ -144,8 +144,9 @@ export class ListComponent implements OnInit {
   }
 
   public filterByAmount() {
-    this.sortByOption = 'default';
+    // this.sortByOption = 'default';
     const productsTemp = [...this.products];
+    this.sortBy();
     this.productsAux = productsTemp.splice(0, this.productsAmount);
   }
 
