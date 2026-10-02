@@ -31,8 +31,13 @@
   </div> -->
 
   <ul class="category-list mt-3">
-    <li class="category-item" (click)="reloadList()">
+    <li class="category-item">
       <label class="category-label">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          (click)="reloadList()"
+        />
         <span class="category-name ms-2">Show All</span>
       </label>
     </li>
