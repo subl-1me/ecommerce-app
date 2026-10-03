@@ -112,7 +112,7 @@ export class CheckoutComponent implements OnInit {
     private _checkoutService: CheckoutService,
     private _saleService: SaleService,
     private _stripeService: StripeService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
     this.customerID = localStorage.getItem('_id');
     this.cart = [];
@@ -299,11 +299,11 @@ export class CheckoutComponent implements OnInit {
   }
 
   calculateSubtotal(): void {
-    for (let item of this.cart) {
-      if (item.product?.price && item.amount) {
-        this.subtotal += item.product?.price * item.amount;
-      }
-    }
+    // for (let item of this.cart) {
+    //   if (item.product?.price && item.amount) {
+    //     this.subtotal += item.product?.price * item.amount;
+    //   }
+    // }
   }
 
   calculatePrice(price: any, amount: any): number {
@@ -362,25 +362,25 @@ export class CheckoutComponent implements OnInit {
       this.calculateOrderTotal();
 
       this.saleDetails = [];
-      this.getSaleDetails();
+      // this.getSaleDetails();
     });
   }
 
-  getSaleDetails(): void {
-    this.cart.forEach((item) => {
-      this.saleDetails.push({
-        product: item.product?._id,
-        customer: this.customerID,
-        subtotal: item.product?.price,
-        variety: item.size,
-        amount: item.amount,
-        sale: '',
-      });
-    });
+  // getSaleDetails(): void {
+  //   this.cart.forEach((item) => {
+  //     this.saleDetails.push({
+  //       product: item.product?._id,
+  //       customer: this.customerID,
+  //       subtotal: item.product?.price,
+  //       variety: item.size,
+  //       amount: item.amount,
+  //       sale: '',
+  //     });
+  //   });
 
-    this.sale.details = this.saleDetails;
-    console.log(this.saleDetails);
-  }
+  //   this.sale.details = this.saleDetails;
+  //   console.log(this.saleDetails);
+  // }
 
   deleteProductCart(productID: any): void {
     this._cartService.removeProductCart(productID).subscribe((response) => {
@@ -421,7 +421,7 @@ export class CheckoutComponent implements OnInit {
 
   ccSelected() {
     var paypalMethod = document.getElementById(
-      'paypal-input'
+      'paypal-input',
     ) as HTMLInputElement;
     paypalMethod.checked = false;
 

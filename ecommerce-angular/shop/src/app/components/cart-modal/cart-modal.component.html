@@ -82,27 +82,17 @@
       <div class="cart-items" *ngIf="cart.length > 0 && customerID">
         <div class="cart-item" *ngFor="let item of cart">
           <div class="item-image-wrapper">
-            <img
-              [src]="item.product?.coverImage"
-              class="item-image"
-              alt="{{ item.product?.title }}"
-            />
+            <img class="item-image" />
           </div>
 
           <div class="item-details">
-            <h6 class="item-title">{{ item.product?.title }}</h6>
-
             <div class="item-meta">
               <span class="meta-label">Size</span>
-              <span class="meta-value">{{ item.size }}</span>
             </div>
 
             <div class="item-meta">
               <span class="meta-label">Qty</span>
-              <span class="meta-value">{{ item.amount }}</span>
             </div>
-
-            <div class="item-price">${{ item.product?.price }}</div>
           </div>
 
           <button

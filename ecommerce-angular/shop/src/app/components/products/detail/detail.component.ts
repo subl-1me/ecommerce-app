@@ -82,7 +82,7 @@ export class DetailComponent implements OnInit, DoCheck {
 
     this.customerID = localStorage.getItem('_id');
 
-    this.cart = { _id: ''  };
+    this.cart = { _id: '', items: [] };
 
     this.productID = this._router.snapshot.paramMap.get('id');
     this.getProduct();
@@ -198,11 +198,6 @@ export class DetailComponent implements OnInit, DoCheck {
     }
 
     if (this.addToCartMessage === 'Added!') return;
-
-    this.cart.amount = this.selectedAmount;
-    this.cart.size = this.selectedSize;
-    this.cart.customer = this.customerID;
-    this.cart.product = this.productID;
 
     this._cartService.addProductTCart(this.cart).subscribe((response) => {
       this.invalidAmountMessage = '';

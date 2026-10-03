@@ -108,19 +108,15 @@
           <div class="cart-list" *ngIf="cart.length > 0">
             <div class="cart-row" *ngFor="let item of cart">
               <div class="cart-image-wrapper">
-                <img
-                  [src]="item.product?.coverImage"
-                  class="cart-image"
-                  [alt]="item.product?.title"
-                />
+                <img class="cart-image" />
               </div>
 
               <div class="cart-details">
-                <h6 class="cart-item-title">{{ item.product?.title }}</h6>
+                <!-- <h6 class="cart-item-title">{{ item.product?.title }}</h6> -->
 
                 <div class="cart-meta">
-                  <span class="meta-item">Qty: {{ item.amount }}</span>
-                  <span class="meta-item">Size: {{ item.size }}</span>
+                  <!-- <span class="meta-item">Qty: {{ item.amount }}</span> -->
+                  <!-- <span class="meta-item">Size: {{ item.size }}</span> -->
                   <span class="meta-item meta-color">
                     <span class="color-dot"></span>
                     Color
@@ -129,7 +125,7 @@
               </div>
 
               <div class="cart-price">
-                ${{ calculatePrice(item.product?.price, item.amount) }}
+                <!-- ${{ calculatePrice(item.product?.price, item.amount) }} -->
               </div>
             </div>
           </div>

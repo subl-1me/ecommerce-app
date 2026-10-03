@@ -62,9 +62,9 @@ export class CartModalComponent implements OnInit {
 
       this.cart = response.cart;
       for (let item of this.cart) {
-        if (item.product?.price) {
-          this.totalToPay += item.product?.price;
-        }
+        // if (item.product?.price) {
+        //   this.totalToPay += item.product?.price;
+        // }
       }
     });
   }
