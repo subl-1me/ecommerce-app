@@ -199,7 +199,7 @@ export class DetailComponent implements OnInit, DoCheck {
 
     if (this.addToCartMessage === 'Added!') return;
 
-    this._cartService.addProductTCart(this.cart).subscribe((response) => {
+    this._cartService.addItem(this.cart._id || '', '').subscribe((response) => {
       this.invalidAmountMessage = '';
       this.addToCartMessage = 'Added!';
 

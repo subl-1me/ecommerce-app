@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { environment } from '../../environments/environment';
 import { GLOBAL } from '../services/CONST';
@@ -11,35 +11,39 @@ import { Cart } from '../models/cart';
   providedIn: 'root',
 })
 export class CartService {
-  constructor(private _http: HttpClient) {}
+  public headers: HttpHeaders;
 
-  public addProductTCart(cart: Cart): Observable<any> {
-    var headers = new HttpHeaders().set('Content-Type', 'application/json');
+  constructor(private _http: HttpClient) {
+    this.headers = new HttpHeaders().set('Content-Type', 'application/json');
+  }
 
-    return this._http.post(
-      (environment.API_URL || GLOBAL.localUrl) + 'cart',
-      cart,
+  public addItem(cartId: string, itemId: string): Observable<any> {
+    return this._http.put(
+      `${environment.API_URL || GLOBAL.localUrl}cart/${cartId}/${itemId}`,
+      { body: { amount: 1, size: 'M' } },
       {
-        headers: headers,
+        headers: this.headers,
       },
     );
   }
 
-  public getCart(customerID: string): Observable<any> {
-    var headers = new HttpHeaders().set('Content-Type', 'application/json');
+  public createCart(): Observable<any> {
+    return this._http.post((environment.API_URL || GLOBAL.localUrl) + 'cart', {
+      headers: this.headers,
+    });
+  }
 
+  public getCart(customerID: string): Observable<any> {
     return this._http.get(
       (environment.API_URL || GLOBAL.localUrl) + 'cart/' + customerID,
-      { headers: headers },
+      { headers: this.headers },
     );
   }
 
   public removeProductCart(registerID: string): Observable<any> {
-    var headers = new HttpHeaders().set('Content-Type', 'application/json');
-
     return this._http.delete(
       (environment.API_URL || GLOBAL.localUrl) + 'cart/' + registerID,
-      { headers: headers },
+      { headers: this.headers },
     );
   }
 }

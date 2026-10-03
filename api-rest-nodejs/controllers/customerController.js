@@ -187,6 +187,7 @@ const edit = async function (req, res) {
       password: params.password,
       birthday: params.birthday,
       country: params.country,
+      cart: params.cart,
       wishlist: params.wishlist,
       phone: params.phone,
       notes: params.notes,

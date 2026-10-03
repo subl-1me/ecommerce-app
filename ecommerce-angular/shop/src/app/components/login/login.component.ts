@@ -39,6 +39,10 @@ export class LoginComponent implements OnInit {
       surnames: '',
       email: '',
       password: '',
+      cart: {
+        _id: '',
+        items: [],
+      },
       wishlist: [],
     };
     this.token = localStorage.getItem('token');
@@ -74,6 +78,7 @@ export class LoginComponent implements OnInit {
       names: response.customer.names,
       surnames: response.customer.surnames,
       email: response.customer.email,
+      cart: response.customer.cart,
       wishlist: response.customer.wishlist,
       createdAt: response.customer.createdAt,
       updatedAt: response.customer.updatedAt,

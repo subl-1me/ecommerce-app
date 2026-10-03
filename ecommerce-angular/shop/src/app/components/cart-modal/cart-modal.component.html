@@ -97,7 +97,7 @@
 
           <button
             class="item-remove"
-            (click)="deleteProductCart(item._id)"
+            (click)="deleteProductCart(item._id || '')"
             aria-label="Remove item"
           >
             <svg

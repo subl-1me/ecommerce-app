@@ -12,6 +12,7 @@ exports.safeCredentials = function (user) {
     phone: user.phone,
     email: user.email,
     dni: user.dni | undefined,
+    cart: user.cart,
     wishlist: user.wishlist,
     notes: user.notes,
     createdAt: user.createdAt,

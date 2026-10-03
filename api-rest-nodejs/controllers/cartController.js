@@ -1,13 +1,12 @@
 "use strict";
 
 const Cart = require("../models/cart");
+require("../models/itemCart");
 const CartService = require("../services/cart.service");
 
-const create = async function (req, res) {
-  //TODO: Create validations
-  const payload = req.body;
+const create = async function (_req, res) {
   try {
-    const cart = await CartService.add(payload.cart);
+    const cart = await CartService.add({ items: [] });
     res.status(200).send({ success: true, cart });
   } catch (err) {
     res.status(500).send({
@@ -19,13 +18,13 @@ const create = async function (req, res) {
 
 const addItem = async function (req, res) {
   try {
-    const cartId = req.params["cartId"];
+    const { cartId, itemId } = req.params;
     const payload = req.body;
     if (!cartId)
       res.status(200).send({ success: false, message: "Cart ID is required." });
 
     const cart = await CartService.item(cartId);
-    const result = await CartService.update(cart._id, payload.cart);
+    const result = await CartService.insertItem(cart, itemId, payload.body);
     res.status(200).send({ success: true, result });
   } catch (err) {
     res.status(500).send({ success: false, message: err.message });

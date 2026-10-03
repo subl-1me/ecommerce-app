@@ -14,6 +14,10 @@ export class AuthService {
         names: null,
         surnames: null,
         email: null,
+        cart: {
+          _id: '',
+          items: [],
+        },
         wishlist: [],
       },
       jwt: '',

@@ -5,10 +5,12 @@ import { Customer } from 'src/app/models/customer';
 
 import { CustomerService } from 'src/app/services/customer.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { CartService } from 'src/app/services/cart.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
 
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
+import { Cart } from 'src/app/models/cart';
 
 @Component({
   selector: 'app-product-card',
@@ -24,6 +26,7 @@ export class ProductCardComponent implements OnInit {
     private _customerService: CustomerService,
     private _authService: AuthService,
     private _socketService: SocketService,
+    private _cartService: CartService,
   ) {
     this.product = {
       _id: '',
@@ -50,7 +53,26 @@ export class ProductCardComponent implements OnInit {
     });
   }
 
-  public addToCart(productId: string): void {}
+  public async addToCart(productId: string): Promise<void> {
+    const user = this._authService.getUser().user;
+    if (!user.cart) {
+      // create new cart
+      const createResponse = await lastValueFrom(
+        this._cartService.createCart(),
+      );
+      if (!createResponse.success) {
+        alert(createResponse.message);
+        return;
+      }
+      user.cart = createResponse.cart;
+    }
+
+    const addItemResponse = await lastValueFrom(
+      this._cartService.addItem(user.cart._id || '', productId),
+    );
+    user.cart = addItemResponse.result;
+    this._authService.update(user);
+  }
 
   public async addToWishlist(productId: string): Promise<void> {
     let user = <Customer>this._authService.getUser().user;
