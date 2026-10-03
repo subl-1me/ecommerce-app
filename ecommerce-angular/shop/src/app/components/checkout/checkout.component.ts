@@ -382,12 +382,7 @@ export class CheckoutComponent implements OnInit {
   //   console.log(this.saleDetails);
   // }
 
-  deleteProductCart(productID: any): void {
-    this._cartService.removeProductCart(productID).subscribe((response) => {
-      this.orderTotal = 0;
-      this.getCart();
-    });
-  }
+  deleteProductCart(productID: any): void {}
 
   getDefaultDirection(): void {
     if (!this.customerID) return;

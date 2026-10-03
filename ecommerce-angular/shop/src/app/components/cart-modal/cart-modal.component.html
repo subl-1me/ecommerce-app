@@ -8,10 +8,11 @@
     <div class="cart-header">
       <div class="header-info">
         <h5 class="header-title">Your Cart</h5>
-        <span class="header-count" *ngIf="cart.length > 0">
-          {{ cart.length }} {{ cart.length === 1 ? "item" : "items" }}
+        <span class="header-count" *ngIf="cart.items.length > 0">
+          {{ cart.items.length }}
+          {{ cart.items.length === 1 ? "item" : "items" }}
         </span>
-        <span class="header-count empty" *ngIf="cart.length === 0">
+        <span class="header-count empty" *ngIf="cart.items.length === 0">
           Empty
         </span>
       </div>
@@ -34,7 +35,7 @@
     <!-- Body -->
     <div class="cart-body">
       <!-- Empty cart -->
-      <ng-container *ngIf="cart.length === 0 && customerID">
+      <ng-container *ngIf="cart.items.length === 0 && auth.jwt !== ''">
         <div class="empty-state">
           <div class="empty-icon">
             <svg
@@ -55,7 +56,7 @@
       </ng-container>
 
       <!-- Not logged -->
-      <ng-container *ngIf="!customerID">
+      <ng-container *ngIf="auth.jwt === ''">
         <div class="empty-state">
           <div class="empty-icon">
             <svg
@@ -79,25 +80,31 @@
       </ng-container>
 
       <!-- Product List -->
-      <div class="cart-items" *ngIf="cart.length > 0 && customerID">
-        <div class="cart-item" *ngFor="let item of cart">
+      <div class="cart-items" *ngIf="cart.items.length > 0 && auth.jwt !== ''">
+        <div class="cart-item" *ngFor="let item of cart.items">
           <div class="item-image-wrapper">
-            <img class="item-image" />
+            <img class="item-image" [src]="item.product.gallery[0].path" />
           </div>
 
           <div class="item-details">
             <div class="item-meta">
-              <span class="meta-label">Size</span>
+              <span class="meta-label text-black fw-bold">{{
+                item.product.title
+              }}</span>
             </div>
 
             <div class="item-meta">
-              <span class="meta-label">Qty</span>
+              <span class="meta-label">Size: {{ item.size }}</span>
+            </div>
+
+            <div class="item-meta">
+              <span class="meta-label">Qty: {{ item.amount }}</span>
             </div>
           </div>
 
           <button
             class="item-remove"
-            (click)="deleteProductCart(item._id || '')"
+            (click)="deleteProductFromCart(item._id || '')"
             aria-label="Remove item"
           >
             <svg
@@ -120,7 +127,7 @@
     </div>
 
     <!-- Footer -->
-    <div class="cart-footer" *ngIf="cart.length > 0 && customerID">
+    <div class="cart-footer" *ngIf="cart.items.length > 0">
       <div class="total-row">
         <span class="total-label">Subtotal</span>
         <span class="total-value">${{ totalToPay }}</span>
@@ -131,7 +138,7 @@
       <button
         class="btn btn-checkout"
         [routerLink]="['/checkout']"
-        [disabled]="cart.length === 0"
+        [disabled]="cart.items.length === 0"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

@@ -44,10 +44,12 @@ export class WishlistComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.auth.user = this._authService.getUser().user;
-    this.auth.jwt = this._authService.getUser().jwt;
-    this.wishlistAux = this.auth.user.wishlist;
-    this.getMyProducts(this.auth.user.wishlist);
+    if (!this._authService.isAuthenticated()) {
+      this.auth.user = this._authService.getUser().user;
+      this.auth.jwt = this._authService.getUser().jwt;
+      this.wishlistAux = this.auth.user.wishlist;
+      this.getMyProducts(this.auth.user.wishlist);
+    }
     this._socketService
       .on('updated-wishlist')
       .subscribe(async (response: any) => {

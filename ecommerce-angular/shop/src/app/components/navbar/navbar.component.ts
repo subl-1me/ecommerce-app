@@ -1,5 +1,4 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { io } from 'socket.io-client';
 
 // Icons
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
@@ -40,6 +39,7 @@ export class NavbarComponent implements OnInit {
 
   public showFavsMenu: boolean;
   public wishlist: string[];
+  public cartItemsCount: Number;
 
   public loadedProducts: Array<Product>;
 
@@ -72,15 +72,25 @@ export class NavbarComponent implements OnInit {
     };
     this.loadedProducts = [];
     this.showFavsMenu = false;
-
+    this.cartItemsCount = 0;
     this._socketService.on('updated-wishlist').subscribe((response: any) => {
       console.log('recieved from navbar', response);
       this.wishlist = response.wishlist;
     });
+
+    this._socketService.on('updated-cart').subscribe((response: any) => {
+      console.log('recieved from navbar - CART', response);
+      this.cartItemsCount = response.cart.items;
+    });
   }
 
   ngOnInit(): void {
-    this.getAuth();
+    console.log(this._authService.isAuthenticated());
+    if (this._authService.isAuthenticated()) {
+      this.getAuth();
+      this.getCartCount();
+      this.getWishListCount();
+    }
     this._configsService.getShopConfigs().subscribe((res) => {
       if (res.success) {
         this.config = res.config;
@@ -90,7 +100,18 @@ export class NavbarComponent implements OnInit {
 
   getAuth(): void {
     this.auth = this._authService.getUser();
-    this.wishlist = this.auth.user.wishlist;
+  }
+
+  getWishListCount(): void {
+    const wishlist = this.auth.user.wishlist;
+    if (!wishlist) return;
+    this.wishlist = [...wishlist];
+  }
+
+  getCartCount(): void {
+    const cart = this._authService.getUser().user.cart;
+    if (!cart) return;
+    this.cartItemsCount = cart.items.length;
   }
 
   logOut(): void {

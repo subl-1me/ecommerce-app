@@ -27,9 +27,9 @@ export class AuthService {
   }
 
   private loadUser(): void {
-    const auth = JSON.parse(localStorage.getItem('auth') || '{}');
+    const auth = localStorage.getItem('auth');
     if (auth) {
-      this.auth = auth;
+      this.auth = JSON.parse(auth);
     }
     // user not identified;
   }
@@ -53,6 +53,6 @@ export class AuthService {
   }
 
   public isAuthenticated(): boolean {
-    return this.auth.jwt !== null;
+    return this.auth.jwt !== '';
   }
 }

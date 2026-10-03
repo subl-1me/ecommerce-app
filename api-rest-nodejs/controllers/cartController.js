@@ -44,23 +44,26 @@ const getOneById = async function (req, res) {
   }
 };
 
-const filterItem = async function (req, res) {
+const removeItemById = async function (req, res) {
   try {
-    const cartId = req.params["cartId"];
-    const itemId = req.params["itemId"];
-
-    if (!cartId || itemId)
-      res.status(200).send({
+    const { cartId, itemId } = req.params;
+    if (!cartId || !itemId)
+      return res.status(200).send({
         success: false,
-        messaege: "Missing required parameter (cartId | itemId).",
+        message: "Missing required parameter (cartId | itemId).",
       });
 
-    let cart = await CartService.item(cartId);
-    const filtered = cart.items.filter((item) => item !== cartId);
-    const result = await CartService.update(cartId, { items: filtered });
-    res.status(200).send({ success: true, result });
+    const cart = await CartService.item(cartId);
+    const result = await CartService.removeItem(cart._id, itemId);
+
+    // if is empty, destroy it
+    if (result.cart.items.length === 0) {
+      await CartService.remove(result.card._id);
+    }
+
+    return res.status(200).send({ success: true, result });
   } catch (err) {
-    res.status(500).send({ success: false, message: err.message });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
@@ -81,6 +84,6 @@ module.exports = {
   addItem,
   getOneById,
   destroy,
-  filterItem,
+  removeItemById,
   create,
 };

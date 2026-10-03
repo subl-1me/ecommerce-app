@@ -10,7 +10,6 @@ import { SocketService } from 'src/app/services/socket/socket.service';
 
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
-import { Cart } from 'src/app/models/cart';
 
 @Component({
   selector: 'app-product-card',
@@ -65,6 +64,7 @@ export class ProductCardComponent implements OnInit {
         return;
       }
       user.cart = createResponse.cart;
+      this._socketService.emit('cart-changes', { cart: user.cart });
     }
 
     const addItemResponse = await lastValueFrom(

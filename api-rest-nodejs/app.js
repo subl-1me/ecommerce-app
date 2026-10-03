@@ -73,12 +73,12 @@ const port = process.env.PORT || 4201;
 const MONGO_URI = process.env.MONGO_URI || "";
 
 socket.on("connection", function (socket) {
-  socket.on("deleteProductCart", function (payload) {
-    socket.emit("cart", payload);
-  });
-
   socket.on("wishlist-changes", function (payload) {
     socket.broadcast.emit("updated-wishlist", payload);
+  });
+
+  socket.on("cart-changes", function (payload) {
+    socket.broadcast.emit("updated-cart", payload);
   });
 });
 

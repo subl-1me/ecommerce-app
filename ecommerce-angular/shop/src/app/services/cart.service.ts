@@ -33,17 +33,19 @@ export class CartService {
     });
   }
 
-  public getCart(customerID: string): Observable<any> {
+  public getCart(cartId: string): Observable<any> {
     return this._http.get(
-      (environment.API_URL || GLOBAL.localUrl) + 'cart/' + customerID,
+      (environment.API_URL || GLOBAL.localUrl) + 'cart/' + cartId,
       { headers: this.headers },
     );
   }
 
-  public removeProductCart(registerID: string): Observable<any> {
+  public removeItem(cartId: string, itemId: string): Observable<any> {
     return this._http.delete(
-      (environment.API_URL || GLOBAL.localUrl) + 'cart/' + registerID,
-      { headers: this.headers },
+      `${environment.API_URL || GLOBAL.localUrl}cart/${cartId}/remove/${itemId}`,
+      {
+        headers: this.headers,
+      },
     );
   }
 }

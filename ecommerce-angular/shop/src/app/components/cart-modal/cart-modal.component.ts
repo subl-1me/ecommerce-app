@@ -3,6 +3,8 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Cart } from '../../models/cart';
 import { CartService } from '../../services/cart.service';
 
+import { Auth } from 'src/app/models/auth';
+import { AuthService } from 'src/app/services/auth.service';
 import { io } from 'socket.io-client';
 
 // Icons
@@ -12,76 +14,91 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { GLOBAL } from 'src/app/services/CONST';
 import { environment } from 'src/environments/environment';
+import { SocketService } from 'src/app/services/socket/socket.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-cart-modal',
   templateUrl: './cart-modal.component.html',
   styleUrls: ['./cart-modal.component.css'],
-  providers: [CartService],
+  providers: [CartService, AuthService, SocketService],
 })
 export class CartModalComponent implements OnInit {
-  // Socket
-  public socket = io(
-    `${
-      environment.API_URL.replace('/api/', '') ||
-      GLOBAL.localUrl.replace('/api/', '')
-    }`,
-  );
-
   @Output() closeCartModal = new EventEmitter<boolean>();
 
   faXmark = faXmark;
   faCreditCard = faCreditCard;
   faTrash = faTrash;
 
-  public cart: Array<Cart>;
+  public cart: Cart;
   public customerID: any;
+  public auth: Auth;
 
   public totalToPay: number = 0;
 
-  constructor(private _cartService: CartService) {
-    this.cart = [];
+  constructor(
+    private _cartService: CartService,
+    private _authService: AuthService,
+    private _socketService: SocketService,
+  ) {
+    this.cart = {
+      items: [],
+    };
+    this.auth = {
+      user: {
+        cart: {
+          _id: '',
+          items: [],
+        },
+      },
+      jwt: '',
+    };
     this.customerID = localStorage.getItem('_id');
   }
 
   ngOnInit(): void {
     this.getCart();
-    const self = this;
-    this.socket.on(
-      'deleteProductCart',
-      function (data: any) {
-        self.getCart();
-      }.bind(self),
+    this.getAuth();
+  }
+
+  private getAuth(): void {
+    this.auth = this._authService.getUser();
+  }
+
+  public async getCart(): Promise<void> {
+    if (!this._authService.isAuthenticated()) {
+      return;
+    }
+
+    const cart = this.auth.user.cart;
+    const response = await lastValueFrom(this._cartService.getCart(cart._id));
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+    console.log(response.cart);
+    this.cart = response.cart;
+    console.log(this.cart);
+  }
+
+  public async deleteProductFromCart(productId: string): Promise<void> {
+    const response = await lastValueFrom(
+      this._cartService.removeItem(this.auth.user.cart._id, productId),
     );
-  }
 
-  getCart(): void {
-    if (!this.customerID) return;
-    this._cartService.getCart(this.customerID).subscribe((response) => {
-      if (!response.cart) return;
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
 
-      this.cart = response.cart;
-      for (let item of this.cart) {
-        // if (item.product?.price) {
-        //   this.totalToPay += item.product?.price;
-        // }
-      }
-    });
-  }
+    console.log(response);
 
-  deleteProductCart(_id: string): void {
-    this._cartService.removeProductCart(_id).subscribe((response) => {
-      console.log(response);
-      this.socket.emit('deleteProductCart', { data: this.customerID });
-    });
+    // socket
   }
 
   closeModal(): void {
     var modal = document.getElementById('modal');
     modal?.classList.add('modalGoAway');
-
-    setTimeout(() => {
-      this.closeCartModal.emit(false);
-    }, 1000);
+    this.closeCartModal.emit(false);
   }
 }

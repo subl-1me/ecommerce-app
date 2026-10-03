@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
 
   private loadConfig(): void {
     this._configService.getShopConfigs().subscribe((response) => {
-      this.config = response.actualConfig[0];
+      this.config = response.config;
     });
   }
 

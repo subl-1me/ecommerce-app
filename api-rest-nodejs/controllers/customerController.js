@@ -49,7 +49,7 @@ const login = async function (req, res) {
   const data = req.body;
   const customer = await Customer.findOne({ email: data.email });
   if (!customer) {
-    res
+    return res
       .status(200)
       .send({ success: false, message: "Email or Password is not valid." });
   }
@@ -60,15 +60,15 @@ const login = async function (req, res) {
     customer.password,
     async function (error, check) {
       if (check) {
-        res.status(200).send({
+        return res.status(200).send({
           success: true,
           customer: credentials.safeCredentials(customer),
           jwt: jwt.createToken(customer),
         });
       } else {
-        res.status(200).send({
+        return res.status(200).send({
           success: false,
-          message: "Email or Password is not valid.",
+          message: error.message,
         });
       }
     },

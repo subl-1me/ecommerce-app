@@ -3,7 +3,12 @@ const Cart = require("../models/cart");
 const ItemCart = require("../models/itemCart");
 
 const item = async function (id) {
-  const cart = await Cart.findById(id).populate("items");
+  const cart = await Cart.findById(id).populate({
+    path: "items",
+    populate: {
+      path: "product",
+    },
+  });
   if (!cart) {
     throw new Error("Cart not found.");
   }
@@ -43,6 +48,17 @@ const insertItem = async function (cart, itemId, body) {
   return updated;
 };
 
+const removeItem = async function (cartId, itemId) {
+  const result = await Cart.findOneAndUpdate(
+    { _id: cartId },
+    { $pull: { items: itemId } },
+    { new: true },
+  ).populate({ path: "items", populate: { path: "product" } });
+
+  if (!result) throw new Error("Cart not found");
+  return result;
+};
+
 const update = async function (id, body) {
   const result = await Cart.findByIdAndUpdate(
     id,
@@ -63,4 +79,5 @@ module.exports = {
   remove,
   update,
   insertItem,
+  removeItem,
 };
