@@ -1,81 +1,9 @@
 "use strict";
 
 const Customer = require("../models/customer");
-const Cart = require("../models/cart");
 const CustomerService = require("../services/customer.service");
-const bcrypt = require("bcrypt-nodejs");
-const jwt = require("../helpers/jwt");
 const credentials = require("../helpers/safeCredentials");
 const generator = require("../helpers/passwordGenerator");
-
-const register = async function (req, res) {
-  try {
-    const data = req.body;
-    const customer = await Customer.findOne({
-      email: data.email,
-    });
-
-    if (customer) {
-      return res
-        .status(200)
-        .send({ success: false, message: "Email already taken." });
-    }
-
-    bcrypt.hash(data.password, null, null, async function (err, hash) {
-      if (hash) {
-        data.password = hash;
-        // create cart
-        const cart = await Cart.create({ items: [] });
-        data.cart = cart._id;
-        const customer = await Customer.create(data);
-
-        return res.status(200).send({
-          success: true,
-          user: customer,
-        });
-      }
-      return res.status(200).send({
-        success: false,
-        message: err.message,
-      });
-    });
-  } catch (err) {
-    return res.status(500).send({ success: false, message: err.message });
-  }
-};
-
-const login = async function (req, res) {
-  const data = req.body;
-  const customer = await Customer.findOne({ email: data.email }).populate({
-    path: "cart",
-    populate: { path: "items", populate: { path: "product" } },
-  });
-  if (!customer) {
-    return res
-      .status(200)
-      .send({ success: false, message: "Email or Password is not valid." });
-  }
-
-  // login
-  bcrypt.compare(
-    data.password,
-    customer.password,
-    async function (error, check) {
-      if (check) {
-        return res.status(200).send({
-          success: true,
-          customer: credentials.safeCredentials(customer),
-          jwt: jwt.createToken(customer),
-        });
-      } else {
-        return res.status(200).send({
-          success: false,
-          message: error.message,
-        });
-      }
-    },
-  );
-};
 
 // get customers list
 const list = async function (req, res) {
@@ -189,6 +117,16 @@ const edit = async function (req, res) {
   }
 };
 
+const item = async function (id) {
+  const customer = await Customer.findById(id).populate({
+    path: "cart",
+    populate: { path: "items" },
+  });
+  if (!customer) throw new Error("Error trying to create customer.");
+
+  return customer;
+};
+
 const remove = async function (req, res) {
   if (!req.user || req.user.role !== "Admin")
     return res.status(403).send({ message: "You are not authorized." });
@@ -212,8 +150,6 @@ const remove = async function (req, res) {
 };
 
 module.exports = {
-  register,
-  login,
   list,
   listById,
   create,

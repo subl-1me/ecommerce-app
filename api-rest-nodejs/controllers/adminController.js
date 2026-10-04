@@ -1,7 +1,7 @@
 "use strict";
 
 var Admin = require("../models/admin");
-var bcrypt = require("bcrypt-nodejs");
+var bcrypt = require("bcryptjs");
 var jwt = require("../helpers/jwt");
 
 const adminRegister = async function (req, res) {

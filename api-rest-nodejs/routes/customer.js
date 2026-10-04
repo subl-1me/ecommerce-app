@@ -6,8 +6,6 @@ const customerController = require("../controllers/customerController");
 
 const routes = express.Router();
 
-routes.post("/customer/register", customerController.register);
-routes.post("/customer/login", customerController.login);
 routes.get(
   "/customers/:filterBy?/:content?",
   auth.auth,
