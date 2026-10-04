@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Customer } from '../../models/customer';
 import { Auth } from 'src/app/models/auth';
+
 import { CustomerService } from '../../services/customer.service';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -15,6 +16,7 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -67,25 +69,17 @@ export class ProfileComponent implements OnInit {
     this.auth = this._authService.getUser();
   }
 
-  onSubmit() {
-    this._customerService
-      .editProfile(this.auth.user._id, this.customer)
-      .subscribe((response) => {
-        if (response.status === 'error') {
-          this.editMessage = 'Error Trying to Update User. Try Again Later.';
+  public async onSubmit(): Promise<void> {
+    const response = await lastValueFrom(
+      this._customerService.editProfile(this.auth.user._id, this.customer),
+    );
 
-          setTimeout(() => {
-            this.editMessage = '';
-          }, 3000);
-          return;
-        }
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
 
-        this.editMessage = 'Saved!';
-        this.getCustomerInfo();
-        setTimeout(() => {
-          this.editMessage = '';
-        }, 1000);
-      });
+    alert('updated');
   }
 
   getCustomerInfo(): void {
