@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/models/product';
 import { Review } from 'src/app/models/review';
 import { Cart } from 'src/app/models/cart';
+import { Auth } from 'src/app/models/auth';
 
 import { ProductsService } from 'src/app/services/products.service';
 import { ReviewService } from 'src/app/services/review.service';
@@ -16,10 +17,9 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
-import { Auth } from 'src/app/models/auth';
 import { AuthService } from 'src/app/services/auth.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
-import { last, lastValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { CustomerService } from 'src/app/services/customer.service';
 
 @Component({
@@ -41,7 +41,6 @@ export class DetailComponent implements OnInit {
   public auth: Auth;
   public cart: Cart;
 
-  public customerID: any;
   public isLoading: boolean;
 
   public review: Review;
@@ -241,27 +240,9 @@ export class DetailComponent implements OnInit {
     this.addToCartMessage = '';
   }
 
-  submitReview(form: any): void {
-    this.review.customer = this.customerID;
-    this.review.product = this.productID;
+  submitReview(form: any): void {}
 
-    this._reviewService
-      .postReview(this.review, this.productID)
-      .subscribe((response) => {
-        this.getReviews();
-        this.disableReviewForm();
-        form.reset();
-      });
-  }
-
-  getReviews(): void {
-    this._reviewService.getReviews(this.productID).subscribe((response) => {
-      if (!response.reviews) return;
-
-      this.reviews = response.reviews;
-      console.log(this.reviews);
-    });
-  }
+  getReviews(): void {}
 
   enableReviewForm(): void {
     this.showReviewForm = true;
