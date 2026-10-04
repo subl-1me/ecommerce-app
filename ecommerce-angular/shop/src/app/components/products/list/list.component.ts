@@ -3,15 +3,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ConfigsService } from '../../../services/configs.service';
 import { ProductsService } from 'src/app/services/products.service';
+import { SocketService } from 'src/app/services/socket/socket.service';
 
 import { Product } from 'src/app/models/product';
+import { Config } from 'src/app/models/config';
+
+import { lastValueFrom } from 'rxjs';
 
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
-import { Config } from 'src/app/models/config';
-import { lastValueFrom } from 'rxjs';
-import { SocketService } from 'src/app/services/socket/socket.service';
 
 @Component({
   selector: 'app-list',
@@ -23,18 +24,18 @@ export class ListComponent implements OnInit {
   public filterCategory: any = [];
   public config: Config;
 
-  public sortByOption: any;
+  public sortByOption: string;
   public productsAmount: number;
   public totalProductsMessage: string;
   public noItemsFoundMessage: string;
 
   public addToCartMesssage: string;
-  public productsCount: any;
   public expandProductCard: boolean;
 
   public products: Product[];
   public productsAux: Product[];
 
+  // icons
   public faHeart = faHeart;
   public faStar = faStar;
   public faCartShopping = faCartShopping;
@@ -44,7 +45,6 @@ export class ListComponent implements OnInit {
     private _productsService: ProductsService,
     private _router: ActivatedRoute,
     private _routerr: Router,
-    private _socketService: SocketService,
   ) {
     this.config = {
       _id: '',
@@ -74,7 +74,7 @@ export class ListComponent implements OnInit {
     // this.getCategoryRoute();
   }
 
-  getCategoryRoute(): void {
+  public getCategoryRoute(): void {
     let categoryRoute = this._router.snapshot.paramMap
       .get('category')
       ?.toLowerCase();
@@ -150,7 +150,7 @@ export class ListComponent implements OnInit {
     this.productsAux = productsTemp.splice(0, this.productsAmount);
   }
 
-  addToCart(productID: any): void {
+  public addToCart(productID: any): void {
     this._routerr.navigate([`products/detail/${productID}`]);
   }
 }
