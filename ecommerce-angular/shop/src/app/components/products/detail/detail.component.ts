@@ -30,6 +30,7 @@ export class DetailComponent implements OnInit, DoCheck {
   public cart: Cart;
 
   public customerID: any;
+  public isLoading: boolean;
 
   public review: Review;
   public reviews: Array<Review>;
@@ -79,14 +80,11 @@ export class DetailComponent implements OnInit, DoCheck {
       coverImage: '',
       category: '',
     };
-
+    this.isLoading = false;
     this.customerID = localStorage.getItem('_id');
-
     this.cart = { _id: '', items: [] };
-
     this.productID = this._router.snapshot.paramMap.get('id');
     this.getProduct();
-
     this.isAdded = false;
     this.selectedAmount = 1;
     this.selectedSize = 'Select Size';
@@ -116,11 +114,12 @@ export class DetailComponent implements OnInit, DoCheck {
   }
 
   getProduct(): void {
+    this.isLoading = true;
     this._productsService
       .getProductById(this.productID)
       .subscribe((response) => {
         if (!response.product) return;
-
+        this.isLoading = false;
         this.product = response.product;
       });
   }
