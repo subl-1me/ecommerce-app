@@ -12,7 +12,7 @@ import { lastValueFrom } from 'rxjs';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  providers: [CustomerService, Router],
+  providers: [CustomerService, ConfigsService],
 })
 export class LoginComponent implements OnInit {
   public customer: Customer;
