@@ -155,7 +155,7 @@
                 [(ngModel)]="selectedSize"
                 (change)="optionSelected()"
               >
-                <option selected disabled value="">Choose a size</option>
+                <option selected disabled value="">Select</option>
                 <option value="1">XL</option>
                 <option value="2">M</option>
               </select>
@@ -184,6 +184,7 @@
                   [(ngModel)]="selectedAmount"
                   (change)="isNegativeOrZero()"
                   min="1"
+                  max="product.stock"
                   required
                 />
                 <div class="action-buttons">

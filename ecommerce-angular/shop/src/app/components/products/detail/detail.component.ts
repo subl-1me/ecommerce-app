@@ -87,7 +87,7 @@ export class DetailComponent implements OnInit, DoCheck {
     this.getProduct();
     this.isAdded = false;
     this.selectedAmount = 1;
-    this.selectedSize = 'Select Size';
+    this.selectedSize = '';
     this.invalidAmountMessage = '';
 
     this.addToCartMessage = '';
