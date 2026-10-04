@@ -17,7 +17,7 @@ export class CartService {
     this.headers = new HttpHeaders().set('Content-Type', 'application/json');
   }
 
-  public addItem(cartId: string, itemId: string): Observable<any> {
+  public addItem(cartId: string, itemId: string, body?: any): Observable<any> {
     return this._http.put(
       `${environment.API_URL || GLOBAL.localUrl}cart/${cartId}`,
       { amount: 1, size: 'M', productId: itemId },

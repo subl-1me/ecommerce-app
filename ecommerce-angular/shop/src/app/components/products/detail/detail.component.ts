@@ -168,6 +168,25 @@ export class DetailComponent implements OnInit {
     return this.auth.user.wishlist.includes(this.productID);
   }
 
+  public async addToCart(): Promise<void> {
+    let auth = this._authService.getUser();
+    const response = await lastValueFrom(
+      this._cartService.addItem(auth.user.cart._id, this.productID, {
+        amount: this.selectedAmount,
+        size: this.selectedSize,
+      }),
+    );
+
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+
+    auth.user.cart = response.result;
+    this._socketService.emit('cart-changes', { cart: auth.user.cart });
+    this._authService.update(auth.user);
+  }
+
   public async removeFromWishlist(): Promise<void> {
     let auth = this._authService.getUser();
     let wishlist = auth.user.wishlist;
@@ -212,36 +231,6 @@ export class DetailComponent implements OnInit {
     this.showGeneral = false;
     this.showDetails = false;
     this.showReviews = true;
-  }
-
-  // Cart Methods
-  addToCart(): void {
-    // Case user is not logged
-    if (!this.customerID) {
-      this.returnToLogin();
-      return;
-    }
-
-    if (this.selectedSize === 'Select Size') {
-      this.addToCartMessage = 'Please, select a size.';
-      return;
-    }
-
-    if (this.selectedAmount <= 0) {
-      this.invalidAmountMessage = 'You must select at least one item.';
-      return;
-    }
-
-    if (this.addToCartMessage === 'Added!') return;
-
-    this._cartService.addItem(this.cart._id || '', '').subscribe((response) => {
-      this.invalidAmountMessage = '';
-      this.addToCartMessage = 'Added!';
-
-      setTimeout(() => {
-        this.addToCartMessage = '';
-      }, 1000);
-    });
   }
 
   public returnToLogin(): void {
