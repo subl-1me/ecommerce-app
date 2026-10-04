@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { CustomerService } from 'src/app/services/customer.service';
 import { ConfigsService } from 'src/app/services/configs.service';
+import { Router } from '@angular/router';
 
 import { Customer } from 'src/app/models/customer';
 import { Config } from 'src/app/models/config';
@@ -12,17 +12,16 @@ import { lastValueFrom } from 'rxjs';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  providers: [CustomerService],
+  providers: [CustomerService, Router],
 })
 export class LoginComponent implements OnInit {
   public customer: Customer;
-  public token: any;
   public config: Config;
 
   constructor(
     private _customerService: CustomerService,
-    private _router: Router,
     private _configService: ConfigsService,
+    private _router: Router,
   ) {
     this.config = {
       categories: [],
@@ -45,18 +44,14 @@ export class LoginComponent implements OnInit {
       },
       wishlist: [],
     };
-    this.token = localStorage.getItem('token');
   }
 
   ngOnInit(): void {
-    this.isLogged();
     this.loadConfig();
   }
 
-  private loadConfig(): void {
-    this._configService.getShopConfigs().subscribe((response) => {
-      this.config = response.config;
-    });
+  private async loadConfig(): Promise<void> {
+    await lastValueFrom(this._configService.getShopConfigs());
   }
 
   public async onSubmit(form: any): Promise<void> {
@@ -70,6 +65,11 @@ export class LoginComponent implements OnInit {
 
     if (!response.success) {
       alert(response.message);
+      return;
+    }
+
+    if (!response.auth) {
+      alert('Unknown authentication error: ' + response.message);
       return;
     }
 
@@ -89,9 +89,6 @@ export class LoginComponent implements OnInit {
       jwt: response.jwt,
     };
     localStorage.setItem('auth', JSON.stringify(auth));
-  }
-
-  isLogged(): void {
-    if (this.token && this.customer.names != '') this._router.navigate(['']);
+    this._router.navigate(['']); // go to home
   }
 }
