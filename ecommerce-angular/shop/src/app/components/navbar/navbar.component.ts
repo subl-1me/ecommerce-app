@@ -74,13 +74,11 @@ export class NavbarComponent implements OnInit {
     this.showFavsMenu = false;
     this.cartItemsCount = 0;
     this._socketService.on('updated-wishlist').subscribe((response: any) => {
-      console.log('recieved from navbar', response);
       this.wishlist = response.wishlist;
     });
 
     this._socketService.on('updated-cart').subscribe((response: any) => {
-      console.log('recieved from navbar - CART', response);
-      this.cartItemsCount = response.cart.items;
+      this.cartItemsCount = response.cart.items.length;
     });
   }
 

@@ -53,12 +53,17 @@ export class CartModalComponent implements OnInit {
       },
       jwt: '',
     };
-    this.customerID = localStorage.getItem('_id');
+
+    this._socketService.on('updated-cart').subscribe((payload: any) => {
+      this.cart = payload.cart;
+    });
   }
 
   ngOnInit(): void {
-    this.getCart();
-    this.getAuth();
+    if (this._authService.isAuthenticated()) {
+      this.getCart();
+      this.getAuth();
+    }
   }
 
   private getAuth(): void {
@@ -70,20 +75,23 @@ export class CartModalComponent implements OnInit {
       return;
     }
 
-    const cart = this.auth.user.cart;
+    const cart = this._authService.getUser().user.cart;
+    if (!cart) {
+      return;
+    }
+
     const response = await lastValueFrom(this._cartService.getCart(cart._id));
     if (!response.success) {
       alert(response.message);
       return;
     }
-    console.log(response.cart);
     this.cart = response.cart;
-    console.log(this.cart);
   }
 
   public async deleteProductFromCart(productId: string): Promise<void> {
+    const cart = this._authService.getUser().user.cart;
     const response = await lastValueFrom(
-      this._cartService.removeItem(this.auth.user.cart._id, productId),
+      this._cartService.removeItem(cart._id, productId),
     );
 
     if (!response.success) {
@@ -91,9 +99,12 @@ export class CartModalComponent implements OnInit {
       return;
     }
 
-    console.log(response);
-
     // socket
+    this._socketService.emit('cart-changes', { cart: response.result });
+    let auth = this._authService.getUser();
+    this.cart = response.result;
+    auth.user.cart = response.result;
+    this._authService.update(auth.user);
   }
 
   closeModal(): void {

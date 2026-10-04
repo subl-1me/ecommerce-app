@@ -1,6 +1,7 @@
 "use strict";
 const Cart = require("../models/cart");
 const ItemCart = require("../models/itemCart");
+const ItemCartService = require("../services/item-cart.service");
 
 const item = async function (id) {
   const cart = await Cart.findById(id).populate({
@@ -30,14 +31,9 @@ const remove = async function (id) {
   return response;
 };
 
-const insertItem = async function (cart, itemId, body) {
+const insertItem = async function (cart, payload) {
   // create item
-  const newItem = await ItemCart.create({
-    product: itemId,
-    amount: body.amount,
-    size: body.size,
-  });
-
+  const newItem = await ItemCartService.add(payload);
   const updated = await Cart.findByIdAndUpdate(
     cart._id,
     {

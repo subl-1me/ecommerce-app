@@ -57,7 +57,6 @@ export class RegisterComponent implements OnInit {
       this._router.navigate(['/login']);
     });
   }
-
   public isPasswordOk(): boolean {
     if (this.confirmPasswordTemp === this.customer.password) {
       this.onSubmitMessage = 'success';

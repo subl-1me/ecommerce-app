@@ -19,8 +19,8 @@ export class CartService {
 
   public addItem(cartId: string, itemId: string): Observable<any> {
     return this._http.put(
-      `${environment.API_URL || GLOBAL.localUrl}cart/${cartId}/${itemId}`,
-      { body: { amount: 1, size: 'M' } },
+      `${environment.API_URL || GLOBAL.localUrl}cart/${cartId}`,
+      { amount: 1, size: 'M', productId: itemId },
       {
         headers: this.headers,
       },

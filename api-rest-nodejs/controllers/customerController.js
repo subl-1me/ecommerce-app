@@ -1,53 +1,55 @@
 "use strict";
 
-var Customer = require("../models/customer");
-
-var bcrypt = require("bcrypt-nodejs");
-var jwt = require("../helpers/jwt");
-var credentials = require("../helpers/safeCredentials");
-var generator = require("../helpers/passwordGenerator");
+const Customer = require("../models/customer");
+const Cart = require("../models/cart");
+const CustomerService = require("../services/customer.service");
+const bcrypt = require("bcrypt-nodejs");
+const jwt = require("../helpers/jwt");
+const credentials = require("../helpers/safeCredentials");
+const generator = require("../helpers/passwordGenerator");
 
 const register = async function (req, res) {
-  //
-  var data = req.body;
-  var customerArray = [];
-
-  // Check if email is already taken
-  customerArray = await Customer.find({
-    email: data.email,
-  });
-
-  if (customerArray.length == 0) {
-    // check await
-    // register
-    if (data.password) {
-      bcrypt.hash(data.password, null, null, async function (err, hash) {
-        if (hash) {
-          data.password = hash;
-          var reg = await Customer.create(data);
-          res.status(200).send({
-            message: "User created sucessfully",
-            user: reg,
-          });
-        } else {
-          res.status(200).send({ message: "Error bcrypting password" });
-        }
-      });
-    } else {
-      res.status(200).send({
-        message: "There is not a password",
-      });
-    }
-  } else {
-    res.status(200).send({
-      message: "Email already taken. Try with another",
+  try {
+    const data = req.body;
+    const customer = await Customer.findOne({
+      email: data.email,
     });
+
+    if (customer) {
+      return res
+        .status(200)
+        .send({ success: false, message: "Email already taken." });
+    }
+
+    bcrypt.hash(data.password, null, null, async function (err, hash) {
+      if (hash) {
+        data.password = hash;
+        // create cart
+        const cart = await Cart.create({ items: [] });
+        data.cart = cart._id;
+        const customer = await Customer.create(data);
+
+        return res.status(200).send({
+          success: true,
+          user: customer,
+        });
+      }
+      return res.status(200).send({
+        success: false,
+        message: err.message,
+      });
+    });
+  } catch (err) {
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
 const login = async function (req, res) {
   const data = req.body;
-  const customer = await Customer.findOne({ email: data.email });
+  const customer = await Customer.findOne({ email: data.email }).populate({
+    path: "cart",
+    populate: { path: "items", populate: { path: "product" } },
+  });
   if (!customer) {
     return res
       .status(200)
@@ -169,34 +171,17 @@ const create = async function (req, res) {
 };
 
 const edit = async function (req, res) {
-  if (!req.params["id"])
-    return res
-      .status(200)
-      .send({ success: false, message: "User ID is required." });
-
-  const id = req.params["id"];
-  const params = req.body;
-
   try {
-    const updatedCustomer = await Customer.findByIdAndUpdate(id, {
-      names: params.names,
-      surnames: params.surnames,
-      email: params.email,
-      gender: params.gender,
-      dni: params.dni,
-      password: params.password,
-      birthday: params.birthday,
-      country: params.country,
-      cart: params.cart,
-      wishlist: params.wishlist,
-      phone: params.phone,
-      notes: params.notes,
-      city: params.city,
-    });
+    const { id } = req.params;
+    if (!id)
+      return res
+        .status(200)
+        .send({ success: false, message: "Customer ID is required." });
 
+    const result = await CustomerService.update(id, req.body);
     res.status(200).send({
       success: true,
-      changes: credentials.safeCredentials(updatedCustomer),
+      changes: credentials.safeCredentials(result),
     });
   } catch (err) {
     res.status(500).send({

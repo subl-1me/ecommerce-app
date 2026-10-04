@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, IterableDiffers, OnInit } from '@angular/core';
 import { Input } from '@angular/core';
 import { Product } from 'src/app/models/product';
 import { Customer } from 'src/app/models/customer';
@@ -10,6 +10,9 @@ import { SocketService } from 'src/app/services/socket/socket.service';
 
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 import { lastValueFrom } from 'rxjs';
+import { Cart } from 'src/app/models/cart';
+import { Auth } from 'src/app/models/auth';
+import { ItemCartService } from 'src/app/services/item-cart.service';
 
 @Component({
   selector: 'app-product-card',
@@ -20,12 +23,15 @@ export class ProductCardComponent implements OnInit {
   @Input() product: Product;
   public faCartShopping = faCartShopping;
   public wishlistAux: string[];
+  public cartAux: Cart;
+  public auth: Auth;
 
   constructor(
     private _customerService: CustomerService,
     private _authService: AuthService,
     private _socketService: SocketService,
     private _cartService: CartService,
+    private _itemCartService: ItemCartService,
   ) {
     this.product = {
       _id: '',
@@ -40,16 +46,34 @@ export class ProductCardComponent implements OnInit {
       coverImage: '',
       category: '',
     };
+    this.cartAux = {
+      items: [],
+    };
+    this.auth = {
+      user: null,
+      jwt: '',
+    };
     this.wishlistAux = [];
   }
 
   ngOnInit(): void {
     this.getWishList();
+    this.getAuth();
     this._socketService.on('updated-wishlist').subscribe((response: any) => {
-      console.log('Recieved from product-card', response);
       this.wishlistAux = response.wishlist;
       this._authService.updateWishlist(response.wishlist);
     });
+
+    this._socketService.on('updated-cart').subscribe((response: any) => {
+      console.log('Recieved from product-card', response);
+      // this._authService.updateWishlist(response.wishlist);
+      this.cartAux = response.cart;
+    });
+  }
+
+  public getAuth(): void {
+    this.auth = this._authService.getUser();
+    this.cartAux = this.auth.user.cart;
   }
 
   public async addToCart(productId: string): Promise<void> {
@@ -64,19 +88,22 @@ export class ProductCardComponent implements OnInit {
         return;
       }
       user.cart = createResponse.cart;
-      this._socketService.emit('cart-changes', { cart: user.cart });
     }
+
+    // set cart to user
+    await lastValueFrom(this._customerService.editProfile(user._id, user));
 
     const addItemResponse = await lastValueFrom(
       this._cartService.addItem(user.cart._id || '', productId),
     );
     user.cart = addItemResponse.result;
+    this._socketService.emit('cart-changes', { cart: user.cart });
+    this.cartAux = user.cart;
     this._authService.update(user);
   }
 
   public async addToWishlist(productId: string): Promise<void> {
     let user = <Customer>this._authService.getUser().user;
-    console.log(user);
     user.wishlist = [...user.wishlist, productId];
     const response = await lastValueFrom(
       this._customerService.editProfile(user._id || '', user),
