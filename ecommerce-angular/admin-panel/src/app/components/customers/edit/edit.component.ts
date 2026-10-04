@@ -53,7 +53,16 @@ export class EditComponent implements OnInit {
     this.newNote = '';
     this.notes = [];
     this.selectedNotes = [];
-    this.customer = { _id: '', notes: [], wishlist: [], cart: { items: [] } };
+    this.customer = {
+      _id: '',
+      notes: [],
+      wishlist: [],
+      cart: { items: [] },
+      username: '',
+      email: '',
+      names: '',
+      surnames: '',
+    };
     this.token = this._identityService.getToken();
     this.responseStatus = '';
   }
@@ -74,6 +83,7 @@ export class EditComponent implements OnInit {
         email: 'john.doe@example.com',
         dni: 12345678,
         gender: 'Male',
+        username: 'johntitor',
         wishlist: [],
         cart: {
           items: [],

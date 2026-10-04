@@ -63,7 +63,9 @@ export class RegisterComponent implements OnInit {
       surnames: '',
       email: '',
       dni: 0,
+      username: '',
       gender: '',
+      notes: [],
       wishlist: [],
       cart: {
         items: [],

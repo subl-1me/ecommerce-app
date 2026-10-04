@@ -66,7 +66,7 @@
             >
               <tr>
                 <th scope="col" class="ps-4" style="width: 50px">#</th>
-                <th scope="col">Unique ID</th>
+                <th scope="col">Username</th>
                 <th scope="col">Names</th>
                 <th scope="col">Surnames</th>
                 <th scope="col">Email</th>
@@ -113,7 +113,8 @@
                     class="bg-light rounded px-2 py-1 small"
                     style="font-size: 0.75rem"
                   >
-                    {{ customer._id || "N/A" }}
+                    <span class="text-white">@</span>
+                    {{ customer.username || "N/A" }}
                   </code>
                 </td>
                 <td class="fw-medium">{{ customer.names || "N/A" }}</td>
@@ -248,16 +249,17 @@
               border: 1px solid rgba(255, 255, 255, 0.05);
             "
           >
-            <i class="fas fa-user text-white-50 fs-2"></i>
+            <h4 class="text-white fw-medium mb-1">
+              {{ selectedCustomer.names[0] }} {{ selectedCustomer.surnames[0] }}
+            </h4>
           </div>
           <div>
             <h4 class="text-white fw-medium mb-1">
               {{ selectedCustomer.names }} {{ selectedCustomer.surnames }}
             </h4>
-            <div class="d-flex align-items-center gap-2 text-white-50 small">
-              <i class="fas fa-envelope text-primary opacity-50"></i>
-              <span>{{ selectedCustomer.email }}</span>
-            </div>
+            <h5 class="text-white fw-medium mb-1">
+              @{{ selectedCustomer.username }}
+            </h5>
           </div>
         </div>
 

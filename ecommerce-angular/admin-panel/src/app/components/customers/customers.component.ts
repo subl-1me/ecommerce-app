@@ -56,11 +56,13 @@ export class CustomersComponent implements OnInit {
     private _modalsService: ModalService,
   ) {
     this.selectedCustomer = {
+      username: '',
       names: '',
       surnames: '',
       _id: '',
       email: '',
       wishlist: [],
+      notes: [],
       cart: {
         items: [],
       },
@@ -138,8 +140,10 @@ export class CustomersComponent implements OnInit {
 
   public resetSelectedCustomer(): void {
     this.selectedCustomer = {
+      username: '',
       names: '',
       surnames: '',
+      notes: [],
       _id: '',
       email: '',
       wishlist: [],
