@@ -16,7 +16,7 @@ export class CustomerService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.post(
-      (environment.API_URL || GLOBAL.localUrl) + 'customer/register',
+      (environment.API_URL || GLOBAL.localUrl) + 'customer/auth/register',
       customer,
       { headers: headers },
     );
@@ -26,7 +26,7 @@ export class CustomerService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.post(
-      (environment.API_URL || GLOBAL.localUrl) + 'customer/login',
+      (environment.API_URL || GLOBAL.localUrl) + 'customer/auth/login',
       customer,
       { headers: headers },
     );
