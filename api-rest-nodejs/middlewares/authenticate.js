@@ -1,28 +1,31 @@
-'use strict'
+"use strict";
 
-var jwt = require('jwt-simple');
-var moment = require('moment');
-const secret = 'hi-iwanttobeadeveloper';
+var jwt = require("jwt-simple");
+var moment = require("moment");
+const secret = "hi-iwanttobeadeveloper";
 
-exports.auth = function(req, res, next){
+exports.auth = function (req, res, next) {
+  if (!req.headers.authorization)
+    return res.status(403).send({ message: "Token not found." });
 
+  var token = req.headers.authorization.replace(/['"]+/g, "");
+  var segment = token.split(".");
 
-    if(!req.headers.authorization) return res.status(403).send({ message: 'Token not found.' });
+  // invalid token cases
+  if (segment.length != 3)
+    return res.status(403).send({ message: "Invalid token." });
 
-    var token = req.headers.authorization.replace(/['"]+/g,'');
-    var segment = token.split('.');
+  try {
+    var payload = jwt.decode(token, secret);
 
-    // invalid token cases
-    if(segment.length != 3) return res.status(403).send({ message: 'Invalid token.' });
+    if (payload.exp < moment().unix)
+      return res.status(402).send({ message: "Token expired." });
+  } catch (err) {
+    return res
+      .status(400)
+      .send({ message: "Something went wrong validating token. Try again" });
+  }
 
-    try {
-        var payload = jwt.decode(token, secret);
-
-        if(payload.exp < moment().unix) return res.status(402).send({ message: 'Token expired.' });   
-    } catch(err){
-        return res.status(400).send({ message: 'Something went wrong validating token. Try again' });
-    }
-
-    req.user = payload;
-    next();
-}
+  req.authentication = payload;
+  next();
+};

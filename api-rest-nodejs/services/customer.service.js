@@ -24,6 +24,17 @@ const update = async function (id, body) {
   return updated;
 };
 
+const itemsByFilter = async function (filter, value) {
+  const query = { [filter]: value };
+  const items = await Customer.find(query);
+  return items;
+};
+
+const items = async function () {
+  const items = await Customer.find();
+  return items;
+};
+
 const item = async function (id) {
   const customer = await Customer.findById(id).populate({
     path: "cart",
@@ -34,7 +45,15 @@ const item = async function (id) {
   return customer;
 };
 
+const destroyById = async function (id) {
+  const result = await Customer.findByIdAndDelete(id);
+  return result;
+};
+
 module.exports = {
   update,
   item,
+  items,
+  itemsByFilter,
+  destroyById,
 };

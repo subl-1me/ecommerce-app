@@ -19,6 +19,12 @@ export var constans = {
     uploadMultipleImage: 'upload-multiple',
     removeByPublicId: 'remove-single-upload',
     removeMultipleImages: 'remove-multiple-img',
+    customer: {
+      list: 'customer/${filter}/${value}',
+      getById: 'customer/${id}',
+      editById: 'customer/${id}',
+      removeById: 'customer/${id}',
+    },
   },
   productStatusList: ['Published', 'Draft', 'Archived'],
   productCoverImageDefault: {

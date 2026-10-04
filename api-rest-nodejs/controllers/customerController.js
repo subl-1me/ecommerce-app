@@ -7,53 +7,29 @@ const generator = require("../helpers/passwordGenerator");
 
 // get customers list
 const list = async function (req, res) {
-  if (!req.user || req.user.role !== "Admin")
-    return res.status(403).send({ message: "You are not authorized." });
+  try {
+    const { authentication } = req;
+    if (!authentication || authentication.role !== "Admin")
+      return res
+        .status(403)
+        .send({ success: false, message: "You are not authorized." });
 
-  const filterBy = req.query.filterBy;
-  var content = req.query.content; // content that user send to search
+    const filter = req.query.filter;
+    const value = req.query.value;
 
-  var customersArray = [];
+    const customers = filter
+      ? await CustomerService.itemsByFilter(filter, value)
+      : await CustomerService.items();
 
-  // no filters
-  if (filterBy == undefined && content == undefined) {
-    customersArray = await Customer.find();
-
-    var safeArray = [];
-
-    //safe user
-    customersArray.forEach((cust) => {
-      safeArray.push(credentials.safeCredentials(cust));
+    return res.status(200).send({
+      success: true,
+      list: customers,
     });
-
-    res.status(200).send({
-      status: "success",
-      customers: safeArray,
+  } catch (err) {
+    return res.status(500).send({
+      success: false,
+      message: err.message,
     });
-  }
-
-  content = new RegExp(content, "i");
-
-  if (filterBy == "email") {
-    customersArray = await Customer.find({ email: content });
-    var safeArray = [];
-
-    //safe user
-    customersArray.forEach((cust) => {
-      safeArray.push(credentials.safeCredentials(cust));
-    });
-
-    if (customersArray.length == 0) {
-      res.status(200).send({
-        message: "user does not exists",
-        status: "error",
-      });
-    } else {
-      res.status(200).send({
-        filter: "email",
-        customers: safeArray,
-      });
-    }
   }
 };
 
@@ -117,34 +93,27 @@ const edit = async function (req, res) {
   }
 };
 
-const item = async function (id) {
-  const customer = await Customer.findById(id).populate({
-    path: "cart",
-    populate: { path: "items" },
-  });
-  if (!customer) throw new Error("Error trying to create customer.");
-
-  return customer;
-};
-
 const remove = async function (req, res) {
-  if (!req.user || req.user.role !== "Admin")
-    return res.status(403).send({ message: "You are not authorized." });
-  if (!req.params["id"])
-    return res.status(200).send({ message: "An user ID is required." });
-
-  var id = req.params["id"];
-
   try {
-    await Customer.findByIdAndDelete({ _id: id });
+    const { authentication } = req;
+    const { id } = req.params;
+    if (!authentication || authentication.role !== "Admin")
+      return res
+        .status(403)
+        .send({ success: false, message: "You are not authorized." });
+    if (!id)
+      return res
+        .status(200)
+        .send({ success: false, message: "User ID is required." });
 
+    const result = await CustomerService.destroyById(id);
     return res.status(200).send({
-      status: "success",
+      success: true,
     });
   } catch (err) {
-    return res.status(400).send({
-      status: "error",
-      message: "User does not exists.",
+    return res.status(500).send({
+      success: false,
+      message: err.message,
     });
   }
 };

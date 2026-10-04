@@ -168,7 +168,7 @@ export class EditComponent implements OnInit {
       this.customer.notes = <string[]>updatedNotes;
     }
     this._customerService
-      .edit(this.customer, this.token, this.customerId)
+      .edit(this.customerId, this.customer, this.token)
       .subscribe((response) => {
         if (response.status == 'success') {
           this.responseStatus = response.status;

@@ -24,6 +24,7 @@ import {
 import { CustomersService } from 'src/app/services/customers.service';
 import { IdentityService } from 'src/app/services/identity.service';
 import { ModalService } from 'src/app/services/modal.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-customers',
@@ -43,7 +44,7 @@ export class CustomersComponent implements OnInit {
 
   public customers = Array<Customer>();
   public selectedCustomer: Customer;
-  public filter: string;
+  public filterValue: string;
   public searchMessage: string;
   public token: any;
 
@@ -61,7 +62,7 @@ export class CustomersComponent implements OnInit {
       email: '',
     };
     this.customers = [];
-    this.filter = '';
+    this.filterValue = '';
     this.searchMessage = '';
     this.token = this._identityService.getToken();
   }
@@ -70,28 +71,25 @@ export class CustomersComponent implements OnInit {
     this.list();
   }
 
-  public list(): void {
-    this._customersService.list(this.token).subscribe((res) => {
-      if (res.status == 'success') {
-        this.searchMessage = res.status;
-        this.customers = res.customers;
-      }
-    });
+  public async list(): Promise<void> {
+    const response = await lastValueFrom(
+      this._customersService.list(this.token),
+    );
+
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+
+    this.customers = [...response.list];
   }
 
-  public updateList(): void {
-    this.list();
+  public async updateList(): Promise<void> {
+    await this.list();
     //TODO: add wait timer
   }
 
-  public filterBy(type: string) {
-    this._customersService
-      .filterBy(type, this.filter, this.token)
-      .subscribe((res) => {
-        if (res.status === 'error') this.searchMessage = res.status;
-        this.customers = res.customers;
-      });
-  }
+  public async filterBy(type: string): Promise<void> {}
 
   public openDetailsModal(customer: Customer): void {
     this.selectedCustomer = customer;
