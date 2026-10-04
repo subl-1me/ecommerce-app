@@ -44,7 +44,7 @@ export class ProfileListGroupComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getCustomerInfo();
+    // this.getCustomerInfo();
   }
 
   getCustomerInfo(): void {

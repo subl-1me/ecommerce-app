@@ -130,24 +130,22 @@ const list = async function (req, res) {
 };
 
 const listById = async function (req, res) {
-  if (!req.params["id"])
-    return res.status(200).send({ message: "An user ID is required." });
-
-  var id = req.params["id"];
-
-  //await new Promise(resolve => setTimeout(resolve, 3000));
-
   try {
-    var user = await Customer.findById({ _id: id });
+    const { id } = req.params;
+    if (!id)
+      return res
+        .status(200)
+        .send({ success: false, message: "Customer ID is required." });
 
+    const customer = await CustomerService.item(id);
     res.status(200).send({
-      status: "success",
-      customer: credentials.safeCredentials(user),
+      success: true,
+      customer: credentials.safeCredentials(customer),
     });
   } catch (err) {
-    res.status(200).send({
-      status: "error",
-      message: "User does not exists.",
+    res.status(500).send({
+      success: false,
+      message: err.message,
     });
   }
 };

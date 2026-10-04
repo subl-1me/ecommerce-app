@@ -2,6 +2,7 @@
 
 // filter password
 exports.safeCredentials = function (user) {
+  console.log(user);
   const simplifyProduct = () => {
     return {
       _id: user.cart._id,

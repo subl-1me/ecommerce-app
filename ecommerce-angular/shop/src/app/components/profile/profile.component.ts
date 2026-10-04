@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Customer } from '../../models/customer';
-
+import { Auth } from 'src/app/models/auth';
 import { CustomerService } from '../../services/customer.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 // Icons
 import { faSave } from '@fortawesome/free-solid-svg-icons';
@@ -34,11 +35,14 @@ export class ProfileComponent implements OnInit {
   faCheck = faCheck;
 
   public customer: Customer;
-  public _idStorage: any;
+  public auth: Auth;
 
   public editMessage: string;
 
-  constructor(private _customerService: CustomerService) {
+  constructor(
+    private _customerService: CustomerService,
+    private _authService: AuthService,
+  ) {
     this.customer = {
       username: '',
       names: '',
@@ -47,17 +51,25 @@ export class ProfileComponent implements OnInit {
       password: '',
       wishlist: [],
     };
-    this._idStorage = localStorage.getItem('_id');
+    this.auth = {
+      user: null,
+      jwt: '',
+    };
     this.editMessage = '';
   }
 
   ngOnInit(): void {
+    this.getAuth();
     this.getCustomerInfo();
+  }
+
+  private getAuth(): void {
+    this.auth = this._authService.getUser();
   }
 
   onSubmit() {
     this._customerService
-      .editProfile(this._idStorage, this.customer)
+      .editProfile(this.auth.user._id, this.customer)
       .subscribe((response) => {
         if (response.status === 'error') {
           this.editMessage = 'Error Trying to Update User. Try Again Later.';
@@ -78,10 +90,10 @@ export class ProfileComponent implements OnInit {
 
   getCustomerInfo(): void {
     this._customerService
-      .getCustomerById(this._idStorage)
+      .getCustomerById(this.auth.user._id)
       .subscribe((response) => {
-        if (!response.customer) {
-          console.log('Please, log in...');
+        if (!response.success) {
+          alert('Please, log in...');
           return;
         }
 

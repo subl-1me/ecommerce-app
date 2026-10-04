@@ -24,6 +24,17 @@ const update = async function (id, body) {
   return updated;
 };
 
+const item = async function (id) {
+  const customer = await Customer.findById(id).populate({
+    path: "cart",
+    populate: { path: "items" },
+  });
+  if (!customer) throw new Error("Error trying to create customer.");
+
+  return customer;
+};
+
 module.exports = {
   update,
+  item,
 };

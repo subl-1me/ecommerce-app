@@ -141,7 +141,7 @@
                   <a
                     class="dropdown-item dropdown-item-custo m"
                     href="#"
-                    [routerLink]="['/profile', auth.user.sub]"
+                    [routerLink]="['/profile', auth.user._id]"
                     (click)="updatedBreadcrumb()"
                   >
                     <fa-icon [icon]="faUser" class="me-2"></fa-icon>
