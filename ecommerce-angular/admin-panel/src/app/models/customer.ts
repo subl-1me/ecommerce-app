@@ -1,5 +1,7 @@
+import { Cart } from './cart';
+
 export interface Customer {
-  sub: number;
+  _id: string;
   names?: string;
   surnames?: string;
   email?: string;
@@ -7,6 +9,8 @@ export interface Customer {
   phone?: string;
   gender?: string;
   notes?: string[];
+  wishlist: string[];
+  cart: Cart;
   password?: string;
   createdAt?: Date;
   updatedAt?: Date;

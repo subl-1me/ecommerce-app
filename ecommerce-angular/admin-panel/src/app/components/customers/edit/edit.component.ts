@@ -53,7 +53,7 @@ export class EditComponent implements OnInit {
     this.newNote = '';
     this.notes = [];
     this.selectedNotes = [];
-    this.customer = { sub: 0, notes: [] };
+    this.customer = { _id: '', notes: [], wishlist: [], cart: { items: [] } };
     this.token = this._identityService.getToken();
     this.responseStatus = '';
   }
@@ -68,12 +68,16 @@ export class EditComponent implements OnInit {
     if (confirm('Are you sure you want to reset all changes?')) {
       // Resetear a los valores originales
       this.customer = {
-        sub: 0,
+        _id: '',
         names: 'John',
         surnames: 'Doe',
         email: 'john.doe@example.com',
         dni: 12345678,
         gender: 'Male',
+        wishlist: [],
+        cart: {
+          items: [],
+        },
         notes: [],
       };
       form.reset();

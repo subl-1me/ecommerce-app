@@ -58,12 +58,16 @@ export class RegisterComponent implements OnInit {
 
   resetForm(form: any) {
     this.newCustomer = {
-      sub: 0,
+      _id: '',
       names: '',
       surnames: '',
       email: '',
       dni: 0,
       gender: '',
+      wishlist: [],
+      cart: {
+        items: [],
+      },
     };
     form.reset();
     form.controls['gender'].setValue('Choose...');

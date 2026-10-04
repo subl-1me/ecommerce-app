@@ -58,8 +58,12 @@ export class CustomersComponent implements OnInit {
     this.selectedCustomer = {
       names: '',
       surnames: '',
-      sub: 0,
+      _id: '',
       email: '',
+      wishlist: [],
+      cart: {
+        items: [],
+      },
     };
     this.customers = [];
     this.filterValue = '';
@@ -136,14 +140,18 @@ export class CustomersComponent implements OnInit {
     this.selectedCustomer = {
       names: '',
       surnames: '',
-      sub: 0,
+      _id: '',
       email: '',
+      wishlist: [],
+      cart: {
+        items: [],
+      },
     };
   }
 
   public confirmDeleteSelectedCustomer(): void {
     this._customersService
-      .remove(this.token, this.selectedCustomer.sub.toString())
+      .remove(this.token, this.selectedCustomer._id)
       .subscribe((res) => {
         console.log(res);
         this.closeRemoveCustomerModal();
