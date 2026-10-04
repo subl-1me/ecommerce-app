@@ -44,16 +44,16 @@ export class WishlistComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this._authService.isAuthenticated()) {
+    if (this._authService.isAuthenticated()) {
       this.auth.user = this._authService.getUser().user;
       this.auth.jwt = this._authService.getUser().jwt;
       this.wishlistAux = this.auth.user.wishlist;
       this.getMyProducts(this.auth.user.wishlist);
     }
+
     this._socketService
       .on('updated-wishlist')
       .subscribe(async (response: any) => {
-        console.log('recieved from navbar/wishlist', response);
         this.wishlistAux = response.wishlist;
         await this.getMyProducts(response.wishlist);
         this._authService.updateWishlist(response.wishlist);
@@ -77,7 +77,6 @@ export class WishlistComponent implements OnInit {
 
     // send socket
     this._socketService.emit('wishlist-changes', { wishlist: user.wishlist });
-    console.log(filtered);
     this._authService.updateWishlist(filtered);
     //update on local storage
     await this.getMyProducts(filtered);
