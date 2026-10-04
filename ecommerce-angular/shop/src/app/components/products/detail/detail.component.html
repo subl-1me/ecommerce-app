@@ -204,17 +204,17 @@
                   </button>
 
                   <button
-                    *ngIf="!isProductFavorite()"
+                    *ngIf="!isOnWishlist()"
                     class="btn btn-favorite"
-                    (click)="addToFavorite()"
+                    (click)="addToWishlist()"
                     type="button"
                   >
                     Add to Wishlist
                   </button>
                   <button
-                    *ngIf="isProductFavorite()"
+                    *ngIf="isOnWishlist()"
                     class="btn btn-favorite-active"
-                    (click)="removeFromFavorite()"
+                    (click)="removeFromWishlist()"
                     type="button"
                   >
                     Remove from Wishlist
