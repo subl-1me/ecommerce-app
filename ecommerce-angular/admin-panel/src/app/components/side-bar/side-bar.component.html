@@ -1,80 +1,103 @@
- <!--  SIDEBAR (20%) -->
-        <div class="sidebar bg-dark text-white d-flex flex-column" 
-             style="flex-shrink: 0;">
-            
-            <nav class="nav flex-column p-3 gap-1 flex-grow-1">
-                <h6 class="text-white-50 text-uppercase small fw-bold px-3 mb-3" style="letter-spacing: 0.5px;">
-                    Ecommerce Admin Panel
-                </h6>
-                
-                <a class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2" 
-                   [routerLink]="['']" 
-                   routerLinkActive="active-sidebar-link"
-                   #dashboardLink="routerLinkActive"
-                    [class.default-active]="dashboardLink.isActive"
-                    [routerLinkActiveOptions]="{exact: true}"
-                   style="cursor: pointer; transition: all 0.2s ease;">
-                    <fa-icon [icon]="faHouse" class="fs-5" style="width: 20px;"></fa-icon>
-                    <span>Dashboard</span>
-                </a>
-                
-                <a class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2" 
-                   [routerLink]="['/panel/customers']" 
-                   routerLinkActive="active-sidebar-link"
-                    #customersLink="routerLinkActive"
-                    [class.default-active]="customersLink.isActive"
-                   style="cursor: pointer; transition: all 0.2s ease;">
-                    <fa-icon [icon]="faUserLarge" class="fs-5" style="width: 20px;"></fa-icon>
-                    <span>My Customers</span>
-                </a>
-                
-                <a class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2" 
-                   [routerLink]="['/panel/products']" 
-                   routerLinkActive="active-sidebar-link"
-                    #productsLink="routerLinkActive"
-                    [class.default-active]="productsLink.isActive"
-                   style="cursor: pointer; transition: all 0.2s ease;">
-                    <fa-icon [icon]="faTag" class="fs-5" style="width: 20px;"></fa-icon>
-                    <span>My Products</span>
-                </a>
-                
-                <a class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2" 
-                   [routerLink]="['/panel/coupons']" 
-                   routerLinkActive="active-sidebar-link"
-                    #couponsLink="routerLinkActive"
-                    [class.default-active]="couponsLink.isActive"
-                   style="cursor: pointer; transition: all 0.2s ease;">
-                    <fa-icon [icon]="faGift" class="fs-5" style="width: 20px;"></fa-icon>
-                    <span>Coupons</span>
-                </a>
-                
-                <a class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2" 
-                   [routerLink]="['/panel/messages']" 
-                   routerLinkActive="active-sidebar-link"
-                    #messagesLink="routerLinkActive"
-                    [class.default-active]="messagesLink.isActive"
-                   style="cursor: pointer; transition: all 0.2s ease;">
-                    <fa-icon [icon]="faMessage" class="fs-5" style="width: 20px;"></fa-icon>
-                    <span>Messages</span>
-                    <span class="badge bg-danger rounded-pill ms-auto">5</span>
-                </a>
-                
-                <hr class="border-secondary opacity-25 my-2">
-                
-                <a class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2" 
-                   [routerLink]="['/panel/configurations']" 
-                   routerLinkActive="active-sidebar-link"
-                   style="cursor: pointer; transition: all 0.2s ease;">
-                    <fa-icon [icon]="faGear" class="fs-5" style="width: 20px;"></fa-icon>
-                    <span>Environment Config</span>
-                </a>
-            </nav>
-            
-            <!-- Footer  -->
-            <div class="p-3 border-top border-secondary border-opacity-25 ">
-                <div class="bg-white bg-opacity-10 rounded-3 p-3 text-center">
-                    <small class="text-white-100 d-block">Logged as: @{{getIdentityName()}} </small>
-                    <small id="logout" class="d-block-inline text-decoration-underline" (click)="logout()">Log out </small>
-                </div>
-            </div>
-        </div>
+<!--  SIDEBAR (20%) -->
+<div
+  class="sidebar bg-dark text-white d-flex flex-column"
+  style="flex-shrink: 0"
+>
+  <nav class="nav flex-column p-3 gap-1 flex-grow-1">
+    <h6
+      class="text-white-50 text-uppercase small fw-bold px-3 mb-3"
+      style="letter-spacing: 0.5px"
+    >
+      Ecommerce Admin Panel
+    </h6>
+
+    <a
+      class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2"
+      [routerLink]="['']"
+      routerLinkActive="active-sidebar-link"
+      #dashboardLink="routerLinkActive"
+      [class.default-active]="dashboardLink.isActive"
+      [routerLinkActiveOptions]="{ exact: true }"
+      style="cursor: pointer; transition: all 0.2s ease"
+    >
+      <fa-icon [icon]="faHouse" class="fs-5" style="width: 20px"></fa-icon>
+      <span>Dashboard</span>
+    </a>
+
+    <a
+      class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2"
+      [routerLink]="['/panel/customers']"
+      routerLinkActive="active-sidebar-link"
+      #customersLink="routerLinkActive"
+      [class.default-active]="customersLink.isActive"
+      style="cursor: pointer; transition: all 0.2s ease"
+    >
+      <fa-icon [icon]="faUserLarge" class="fs-5" style="width: 20px"></fa-icon>
+      <span>My Customers</span>
+    </a>
+
+    <a
+      class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2"
+      [routerLink]="['/panel/products']"
+      routerLinkActive="active-sidebar-link"
+      #productsLink="routerLinkActive"
+      [class.default-active]="productsLink.isActive"
+      style="cursor: pointer; transition: all 0.2s ease"
+    >
+      <fa-icon [icon]="faTag" class="fs-5" style="width: 20px"></fa-icon>
+      <span>My Products</span>
+    </a>
+
+    <a
+      class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2"
+      [routerLink]="['/panel/coupons']"
+      routerLinkActive="active-sidebar-link"
+      #couponsLink="routerLinkActive"
+      [class.default-active]="couponsLink.isActive"
+      style="cursor: pointer; transition: all 0.2s ease"
+    >
+      <fa-icon [icon]="faGift" class="fs-5" style="width: 20px"></fa-icon>
+      <span>Coupons</span>
+    </a>
+
+    <a
+      class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2"
+      [routerLink]="['/panel/messages']"
+      routerLinkActive="active-sidebar-link"
+      #messagesLink="routerLinkActive"
+      [class.default-active]="messagesLink.isActive"
+      style="cursor: pointer; transition: all 0.2s ease"
+    >
+      <fa-icon [icon]="faMessage" class="fs-5" style="width: 20px"></fa-icon>
+      <span>Messages</span>
+      <span class="badge bg-danger rounded-pill ms-auto">5</span>
+    </a>
+
+    <hr class="border-secondary opacity-25 my-2" />
+
+    <a
+      class="nav-link text-white rounded-3 d-flex align-items-center gap-3 px-3 py-2"
+      [routerLink]="['/panel/configurations']"
+      routerLinkActive="active-sidebar-link"
+      style="cursor: pointer; transition: all 0.2s ease"
+    >
+      <fa-icon [icon]="faGear" class="fs-5" style="width: 20px"></fa-icon>
+      <span>Environment Config</span>
+    </a>
+  </nav>
+
+  <!-- Footer  -->
+  <div class="p-3 border-top border-secondary border-opacity-25">
+    <div class="bg-white bg-opacity-10 rounded-3 p-3 text-center">
+      <small class="text-white-100 d-block"
+        >Logged as: @{{ getUsername() }}
+      </small>
+      <small
+        id="logout"
+        class="d-block-inline text-decoration-underline"
+        (click)="logout()"
+        >Log out
+      </small>
+    </div>
+  </div>
+</div>
