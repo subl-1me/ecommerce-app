@@ -35,7 +35,7 @@ export class RegisterComponent implements OnInit {
   ) {
     this.formSubmitted = false;
     this.newCustomer.password = 'none';
-    this.token = this._identityService.getToken();
+    this.token = '';
     this.responseMessage = '';
   }
 

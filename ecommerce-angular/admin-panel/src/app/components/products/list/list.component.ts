@@ -53,7 +53,7 @@ export class ListComponent implements OnInit, DoCheck {
     private _identityService: IdentityService,
     private _modalService: ModalService,
   ) {
-    this.token = this._identityService.getToken();
+    this.token = '';
     this.selectedProduct = null;
     this.products = [];
     this.titleFilter = '';

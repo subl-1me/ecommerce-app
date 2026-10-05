@@ -78,7 +78,7 @@ export class CreateComponent implements DoCheck, OnInit {
     };
     this.selectedStatus = '';
     this.editorContent = '';
-    this.token = this._identityService.getToken();
+    this.token = '';
     this.actualConfig = {
       shopName: '',
       serie: '',

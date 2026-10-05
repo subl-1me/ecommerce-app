@@ -40,7 +40,7 @@ export class InventoryComponent implements OnInit {
     private _router: ActivatedRoute,
   ) {
     this.inventories = [];
-    this.token = this._identityService.getToken();
+    this.token = '';
     this.productID = this._router.snapshot.paramMap.get('id');
     this.adminID = localStorage.getItem('_id');
     this.newProductInventory = {};

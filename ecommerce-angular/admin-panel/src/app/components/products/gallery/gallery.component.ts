@@ -48,7 +48,7 @@ export class GalleryComponent implements OnInit {
   ) {
     this.isFileChoosen = false;
     this.uploadErrorMessage = '';
-    this.token = this._identityService.getToken();
+    this.token = '';
     this.productID = <string>this._router.snapshot.paramMap.get('id');
     this.uploadedImage = '';
     this.tempGalleryImages = [];

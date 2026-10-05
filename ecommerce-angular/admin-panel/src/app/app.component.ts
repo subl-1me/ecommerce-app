@@ -6,22 +6,18 @@ import { IdentityService } from './services/identity.service';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [ IdentityService ]
+  providers: [IdentityService],
 })
-export class AppComponent{
-
+export class AppComponent {
   public token: any;
 
-  constructor(
-    private _identityService: IdentityService,
-  ){
-    this.token = this._identityService.getToken();
+  constructor(private _identityService: IdentityService) {
+    this.token = '';
   }
 
-  public isAuthenticated():boolean{
-    return this._identityService.isAuthenticated(['Admin']);
+  public isAuthenticated(): boolean {
+    return this._identityService.isAuthenticated();
   }
-
 
   title = 'admin-panel';
 }

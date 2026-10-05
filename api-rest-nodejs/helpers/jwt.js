@@ -1,22 +1,25 @@
-'use strict'
+"use strict";
 
-var jwt = require('jwt-simple');
-var moment = require('moment');
+require("dotenv");
+const jwt = require("jwt-simple");
+const moment = require("moment");
+const JWT_KEY = process.env.JWT_KEY;
 
-var key = 'hi-iwanttobeadeveloper';
+const createToken = function (user) {
+  if (!JWT_KEY) throw new Error("Missing JWT KEY.");
+  const payload = {
+    sub: user._id,
+    names: user.names,
+    surnames: user.surnames,
+    email: user.email,
+    role: user.role,
+    iat: moment().unix(),
+    exp: moment().add(7, "days").unix(),
+  };
 
-exports.createToken = function(user){
-    var payload = {
-        sub: user._id,
-        names: user.names,
-        surnames: user.surnames,
-        email: user.email,
-        role: user.role,
-        iat: moment().unix(),
-        exp: moment().add(7, 'days').unix()
-    }
+  return jwt.encode(payload, JWT_KEY);
+};
 
-    return jwt.encode(payload, key);
-}
-
-
+module.exports = {
+  createToken,
+};

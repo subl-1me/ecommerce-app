@@ -12,23 +12,19 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 
-
-
 @Component({
   selector: 'app-options-button',
   templateUrl: './options-button.component.html',
   styleUrls: ['./options-button.component.css'],
-  providers: [ ProductService, CustomersService, IdentityService ]
+  providers: [ProductService, CustomersService, IdentityService],
 })
 export class OptionsButtonComponent implements OnInit {
-
   // Icons
   faPen = faPen;
   faCartFlatbed = faCartFlatbed;
   faTrash = faTrash;
   faGear = faGear;
   faPlusCircle = faPlusCircle;
-
 
   @Input() id: any;
   @Input() path: any;
@@ -39,17 +35,16 @@ export class OptionsButtonComponent implements OnInit {
   constructor(
     private _customersService: CustomersService,
     private _productService: ProductService,
-    private _identityService: IdentityService
-  ) { 
+    private _identityService: IdentityService,
+  ) {
     this.context = '';
-    this.token = this._identityService.getToken();
+    this.token = '';
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  remove():void{
-    switch(this.context){
+  remove(): void {
+    switch (this.context) {
       case 'products':
         this.removeProduct();
         break;
@@ -62,19 +57,18 @@ export class OptionsButtonComponent implements OnInit {
     }
   }
 
-  removeProduct():void{
+  removeProduct(): void {
     this._productService.remove(this.token, this.id).subscribe((res) => {
       this.context = '';
       location.reload();
       console.log(res);
-    })
+    });
   }
 
-  removeCustomer():void{
+  removeCustomer(): void {
     this._customersService.remove(this.token, this.id).subscribe((res) => {
       this.context = '';
       location.reload();
-    })
+    });
   }
-
 }

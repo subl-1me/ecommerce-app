@@ -64,7 +64,7 @@ export class EditComponent implements OnInit {
       names: '',
       surnames: '',
     };
-    this.token = this._identityService.getToken();
+    this.token = '';
     this.responseStatus = '';
   }
 

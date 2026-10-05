@@ -89,7 +89,7 @@ export class EditProductComponent implements OnInit {
     this.productStatusList = constans.productStatusList;
     this.editorContent = '';
     this.productID = this._router.snapshot.paramMap.get('id');
-    this.token = this._identityServie.getToken();
+    this.token = '';
     this.actualConfig = {
       shopName: '',
       serie: '',

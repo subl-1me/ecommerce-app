@@ -13,10 +13,9 @@ import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
   selector: 'app-add',
   templateUrl: './add.component.html',
   styleUrls: ['./add.component.css'],
-  providers: [ CouponsService, IdentityService ]
+  providers: [CouponsService, IdentityService],
 })
 export class AddComponent implements OnInit {
-
   // Icons
   faCircleInfo = faCircleInfo;
   faAdd = faAdd;
@@ -30,24 +29,22 @@ export class AddComponent implements OnInit {
 
   constructor(
     private _couponsService: CouponsService,
-    private _identityService: IdentityService
-  ) { 
+    private _identityService: IdentityService,
+  ) {
     this.coupon = {};
-    this.token = _identityService.getToken();
+    this.token = '';
     this.responseMessage = '';
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  addCoupon(form:any):void{
+  addCoupon(form: any): void {
     this._couponsService.add(this.token, this.coupon).subscribe((response) => {
-      if(!response.coupon) return;
+      if (!response.coupon) return;
 
       this.responseMessage = 'success';
       this.addSuccess.emit(true);
       form.reset();
-    })
+    });
   }
-
 }

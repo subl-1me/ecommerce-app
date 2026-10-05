@@ -70,7 +70,7 @@ export class CustomersComponent implements OnInit {
     this.customers = [];
     this.filterValue = '';
     this.searchMessage = '';
-    this.token = this._identityService.getToken();
+    this.token = '';
   }
 
   ngOnInit(): void {
@@ -79,7 +79,7 @@ export class CustomersComponent implements OnInit {
 
   public async list(): Promise<void> {
     const response = await lastValueFrom(
-      this._customersService.list(this.token),
+      this._customersService.list(this._identityService.getAuth().jwt),
     );
 
     if (!response.success) {

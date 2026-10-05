@@ -12,10 +12,9 @@ import { faAdd } from '@fortawesome/free-solid-svg-icons';
   selector: 'app-coupon',
   templateUrl: './coupon.component.html',
   styleUrls: ['./coupon.component.css'],
-  providers: [ CouponsService, IdentityService ]
+  providers: [CouponsService, IdentityService],
 })
 export class CouponComponent implements OnInit {
-
   // Icons
   faTrash = faTrash;
   faAdd = faAdd;
@@ -26,10 +25,10 @@ export class CouponComponent implements OnInit {
 
   constructor(
     private _couponService: CouponsService,
-    private _identityService: IdentityService
-  ) { 
+    private _identityService: IdentityService,
+  ) {
     this.coupons = [];
-    this.token = this._identityService.getToken();
+    this.token = '';
     this.responseMessage = '';
   }
 
@@ -37,9 +36,9 @@ export class CouponComponent implements OnInit {
     this.getCoupons();
   }
 
-  getCoupons():void{
+  getCoupons(): void {
     this._couponService.coupons(this.token).subscribe((response) => {
-      if(!response.coupons){
+      if (!response.coupons) {
         this.responseMessage = response.message;
         return;
       }
@@ -47,23 +46,21 @@ export class CouponComponent implements OnInit {
       this.responseMessage = '';
       console.log(response);
       this.coupons = response.coupons;
-    })
+    });
   }
 
-  addSuccess(event:any):void{
-    if(!event) return;
+  addSuccess(event: any): void {
+    if (!event) return;
 
     this.getCoupons();
   }
 
-  remove(couponID:any):void{
-    if(!couponID) return;
+  remove(couponID: any): void {
+    if (!couponID) return;
 
     this._couponService.remove(this.token, couponID).subscribe((response) => {
       this.getCoupons();
-      if(response.message !== 'success') return;
-
-    })
+      if (response.message !== 'success') return;
+    });
   }
-
 }

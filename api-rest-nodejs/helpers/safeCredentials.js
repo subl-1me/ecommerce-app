@@ -1,8 +1,7 @@
 "use strict";
 
 // filter password
-exports.safeCredentials = function (user) {
-  console.log(user);
+const safeCredentials = (user) => {
   const simplifyProduct = () => {
     return {
       _id: user.cart._id,
@@ -43,4 +42,20 @@ exports.safeCredentials = function (user) {
   };
 
   return credentials;
+};
+
+const safeAdmin = (admin) => {
+  return {
+    _id: admin._id,
+    username: admin.username,
+    email: admin.email,
+    role: admin.role,
+    createdAt: admin.createdAt,
+    updatedAt: admin.updatedAt,
+  };
+};
+
+module.exports = {
+  safeCredentials,
+  safeAdmin,
 };
