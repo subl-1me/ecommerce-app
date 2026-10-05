@@ -36,7 +36,7 @@ export class CustomersService {
     );
   }
 
-  public listById(token: any, id: any): Observable<any> {
+  public listById(id: string, token: string): Observable<any> {
     this.setToken(token);
     const endpoint = constans.endpointsAux.customer.getById.replace(
       '${id}',

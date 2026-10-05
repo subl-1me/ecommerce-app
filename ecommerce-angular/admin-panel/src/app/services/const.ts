@@ -20,7 +20,7 @@ export var constans = {
     removeByPublicId: 'remove-single-upload',
     removeMultipleImages: 'remove-multiple-img',
     customer: {
-      list: 'customer/${filter}/${value}',
+      list: 'customer/filter/${filter}/${value}',
       getById: 'customer/${id}',
       editById: 'customer/${id}',
       removeById: 'customer/${id}',
