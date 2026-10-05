@@ -1,2 +1,5 @@
 [build]
 command = "ng build --configuration production"
+
+[build.environment]
+API_URL="https://ecommerce-app-1-l8py.onrender.com"
