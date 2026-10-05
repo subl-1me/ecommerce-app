@@ -16,6 +16,7 @@ import { environment } from 'src/environments/environment';
 
 import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-list',
@@ -61,18 +62,19 @@ export class ListComponent implements OnInit, DoCheck {
   }
 
   ngOnInit(): void {
-    this.list();
+    this.getList();
   }
 
   ngDoCheck(): void {}
 
-  list(): void {
-    this._productService.list(this.token).subscribe((res) => {
-      if (res.status == 'success') {
-        this.products = res.products;
-        console.log(this.products);
-      }
-    });
+  public async getList(): Promise<void> {
+    const response = await lastValueFrom(this._productService.list(this.token));
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+
+    this.products = response.products;
   }
 
   filter(): void {
