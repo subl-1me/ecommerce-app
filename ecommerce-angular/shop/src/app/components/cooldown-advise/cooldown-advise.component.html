@@ -1,0 +1,85 @@
+<!-- Loading Modal -->
+<div class="loading-modal" *ngIf="isServerWaking">
+  <div class="loading-overlay"></div>
+
+  <div class="loading-card">
+    <div class="loading-icon-wrapper">
+      <div class="loading-ring"></div>
+      <div class="loading-ring loading-ring-2"></div>
+      <div class="loading-icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"
+          />
+          <path
+            d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319z"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <h4 class="loading-title">Waking up the Ecommerce Application</h4>
+    <p class="loading-subtitle">
+      This may take up to a minute. Thanks for your patience.
+    </p>
+
+    <div class="loading-progress">
+      <div class="loading-progress-bar"></div>
+    </div>
+
+    <!-- Steps -->
+    <ul class="loading-steps">
+      <li
+        class="loading-step"
+        [class.active]="currentStep >= 1"
+        [class.done]="currentStep > 1"
+      >
+        <span class="step-dot"></span>
+        <span class="step-text">Waiting for server response...</span>
+      </li>
+      <li
+        class="loading-step"
+        [class.active]="currentStep >= 2"
+        [class.done]="currentStep > 2"
+      >
+        <span class="step-dot"></span>
+        <span class="step-text">Starting up...</span>
+      </li>
+      <!-- <li
+        class="loading-step"
+        [class.active]="currentStep >= 3"
+        [class.done]="currentStep > 3"
+      >
+        <span class="step-dot"></span>
+        <span class="step-text">Almost ready</span>
+      </li> -->
+    </ul>
+
+    <!-- Hint -->
+    <div class="loading-hint">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="12"
+        height="12"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+      >
+        <path
+          d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+        />
+        <path
+          d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"
+        />
+      </svg>
+      <span>
+        Due this is a Demo, some external services needs to restart.
+      </span>
+    </div>
+  </div>
+</div>

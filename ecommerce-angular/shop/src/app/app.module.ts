@@ -39,6 +39,7 @@ import { TrendingProductsComponent } from './components/home/trending-products/t
 import { CategoriesCardComponent } from './components/products/categories-card/categories-card.component';
 import { PriceFilterComponent } from './components/products/price-filter/price-filter.component';
 import { ProductCardComponent } from './components/products/list/product-card/product-card.component';
+import { CooldownAdviseComponent } from './components/cooldown-advise/cooldown-advise.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { ProductCardComponent } from './components/products/list/product-card/pr
     CategoriesCardComponent,
     PriceFilterComponent,
     ProductCardComponent,
+    CooldownAdviseComponent,
   ],
   imports: [
     BrowserModule,
