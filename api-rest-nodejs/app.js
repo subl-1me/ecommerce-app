@@ -23,6 +23,7 @@ const orderRoutes = require("./routes/order");
 const promotionRoutes = require("./routes/promotion");
 const contactRoutes = require("./routes/contact");
 const uploadRoutes = require("./routes/uploads");
+const serverRoutes = require("./routes/server.routes");
 
 const {
   createInitialEcommerceConfig,
@@ -63,6 +64,7 @@ app.use("/api", orderRoutes);
 app.use("/api", promotionRoutes);
 app.use("/api", contactRoutes);
 app.use("/api", uploadRoutes);
+app.use("/api", serverRoutes);
 
 const server = require("http").createServer(app);
 const socket = require("socket.io")(server, {

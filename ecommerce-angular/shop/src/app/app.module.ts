@@ -37,6 +37,7 @@ import { LatestsProductsComponent } from './components/home/latests-products/lat
 import { RouterModule } from '@angular/router';
 import { TrendingProductsComponent } from './components/home/trending-products/trending-products.component';
 import { CategoriesCardComponent } from './components/products/categories-card/categories-card.component';
+import { CooldownAdviseComponent } from './components/cooldown-advise/cooldown-advise.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { CategoriesCardComponent } from './components/products/categories-card/c
     LatestsProductsComponent,
     TrendingProductsComponent,
     CategoriesCardComponent,
+    CooldownAdviseComponent,
   ],
   imports: [
     BrowserModule,
