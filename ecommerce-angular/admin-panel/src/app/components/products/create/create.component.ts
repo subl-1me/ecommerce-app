@@ -96,6 +96,7 @@ export class CreateComponent implements OnInit {
       slug: '',
       category: '',
       fullDesc: '',
+      sales: [],
       gallery: [],
       status: 'Draft',
       variants: [],

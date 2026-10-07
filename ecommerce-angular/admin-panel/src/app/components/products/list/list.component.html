@@ -160,12 +160,12 @@
                 </td>
 
                 <td class="text-center fw-semibold">
-                  {{ product.sales || 0 }}
+                  {{ product.sales.length }}
                 </td>
 
                 <td class="text-center">
                   <span class="fw-semibold">
-                    {{ product.stock || 0 }}
+                    {{ product.stock.length }}
                   </span>
                 </td>
 
@@ -173,7 +173,7 @@
                   <span
                     class="d-flex align-items-center justify-content-center gap-1"
                   >
-                    {{ product.rating || "N/A" }}
+                    {{ product.rating }}
                   </span>
                 </td>
 
@@ -489,7 +489,7 @@
                 Sales
               </p>
               <p class="text-white-75 mb-0 fs-6">
-                {{ selectedProduct.sales || 0 }}
+                {{ selectedProduct.sales.length }}
               </p>
             </div>
           </div>

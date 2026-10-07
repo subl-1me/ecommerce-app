@@ -81,6 +81,7 @@ export class EditProductComponent implements OnInit {
       fullDesc: '',
       gallery: [],
       variants: [],
+      sales: [],
       stock: [],
       price: 0,
     };

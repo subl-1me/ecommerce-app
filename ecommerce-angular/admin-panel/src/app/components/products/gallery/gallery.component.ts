@@ -60,6 +60,7 @@ export class GalleryComponent implements OnInit {
       shortDesc: '',
       fullDesc: '',
       gallery: [],
+      sales: [],
       variants: [],
       stock: [],
       price: 0,

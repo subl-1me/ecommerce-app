@@ -1,6 +1,7 @@
 import ProductImage from './productImage';
 import ProductInventory from './productInventory';
 import ProductVariant from './productVariant';
+import Sale from './sale';
 
 export interface Product {
   _id?: string;
@@ -12,8 +13,8 @@ export interface Product {
   stock: ProductInventory[];
   price: number;
   category: string;
+  sales: Sale[];
   status?: string;
-  sales?: string;
   reviews?: any;
   rating?: string;
   updatedAt?: string;
