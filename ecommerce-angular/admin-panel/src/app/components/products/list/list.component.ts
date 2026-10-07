@@ -119,12 +119,11 @@ export class ListComponent implements OnInit, DoCheck {
     var arrayToExport: any[] = [];
     this.products.forEach((product) => {
       arrayToExport.push({
-        title: product.title,
+        slug: product.slug,
         category: product.category,
         price: product.price,
         rating: product.rating,
         sales: product.sales,
-        stock: product.stock,
       });
     });
 

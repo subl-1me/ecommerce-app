@@ -1,31 +1,38 @@
 "use strict";
 
-var jwt = require("jwt-simple");
-var moment = require("moment");
-const secret = "hi-iwanttobeadeveloper";
+require("dotenv");
+const jwt = require("jwt-simple");
+const moment = require("moment");
+const JWT_KEY = process.env.JWT_KEY;
 
 exports.auth = function (req, res, next) {
-  if (!req.headers.authorization)
-    return res.status(403).send({ message: "Token not found." });
-
-  var token = req.headers.authorization.replace(/['"]+/g, "");
-  var segment = token.split(".");
-
-  // invalid token cases
-  if (segment.length != 3)
-    return res.status(403).send({ message: "Invalid token." });
-
   try {
-    var payload = jwt.decode(token, secret);
+    if (!req.headers.authorization)
+      return res
+        .status(403)
+        .send({ success: false, message: "Token not found." });
 
+    var token = req.headers.authorization.replace(/['"]+/g, "");
+    var segment = token.split(".");
+
+    // invalid token cases
+    if (segment.length != 3)
+      return res
+        .status(403)
+        .send({ success: false, message: "Invalid token." });
+
+    const payload = jwt.decode(token, JWT_KEY);
     if (payload.exp < moment().unix)
-      return res.status(402).send({ message: "Token expired." });
-  } catch (err) {
-    return res
-      .status(400)
-      .send({ message: "Something went wrong validating token. Try again" });
-  }
+      return res
+        .status(403)
+        .send({ success: false, message: "Token expired." });
 
-  req.authentication = payload;
-  next();
+    req.authentication = payload;
+    next();
+  } catch (err) {
+    return res.status(500).send({
+      success: false,
+      message: err.message,
+    });
+  }
 };

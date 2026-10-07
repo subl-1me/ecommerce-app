@@ -57,7 +57,7 @@
               <input
                 type="text"
                 name="title"
-                [(ngModel)]="product.title"
+                [(ngModel)]="product.slug"
                 class="form-control"
                 id="titleInput"
                 placeholder="Product name"
@@ -202,7 +202,7 @@
                 id="descriptionInput"
                 rows="3"
                 name="description"
-                [(ngModel)]="product.description"
+                [(ngModel)]="product.shortDesc"
                 placeholder="Brief description of the product..."
                 style="
                   border-radius: 12px;
@@ -228,7 +228,7 @@
                 Brief description of the product
               </small>
               <small style="color: rgba(255, 255, 255, 0.3)">
-                {{ product.description?.length || 0 }} characters
+                {{ product.shortDesc.length || 0 }} characters
               </small>
             </div>
             <div
@@ -255,7 +255,7 @@
                 id="fullDescriptionInput"
                 rows="6"
                 name="content"
-                [(ngModel)]="product.content"
+                [(ngModel)]="product.fullDesc"
                 placeholder="Detailed description of the product..."
                 style="
                   border-radius: 12px;
@@ -281,7 +281,7 @@
                 Detailed description with features, specifications, etc.
               </small>
               <small style="color: rgba(255, 255, 255, 0.3)">
-                {{ product.content?.length || 0 }} characters
+                {{ product.fullDesc || 0 }} characters
               </small>
             </div>
           </div>

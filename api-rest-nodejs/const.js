@@ -6,6 +6,7 @@ const constans = {
   customCloudinaryTags: {
     ecommerce_logo: "ecommerce_logo_custom",
   },
+  allowRoles: ["Admin", "Moderator"],
 };
 
 module.exports = {

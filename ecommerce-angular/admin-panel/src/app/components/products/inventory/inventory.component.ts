@@ -6,7 +6,7 @@ import { IdentityService } from 'src/app/services/identity.service';
 import { ProductInventoryService } from 'src/app/services/product-inventory.service';
 
 // Models
-import { ProductInventory } from 'src/app/models/productInventory';
+import ProductInventory from 'src/app/models/productInventory';
 
 // Icons
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -43,7 +43,12 @@ export class InventoryComponent implements OnInit {
     this.token = '';
     this.productID = this._router.snapshot.paramMap.get('id');
     this.adminID = localStorage.getItem('_id');
-    this.newProductInventory = {};
+    this.newProductInventory = {
+      productId: '',
+      addedBy: '',
+      stock: 0,
+      provider: '',
+    };
     this.isProductAdded = false;
   }
 
@@ -66,8 +71,8 @@ export class InventoryComponent implements OnInit {
   }
 
   addNewInventoryRegister(form: any): void {
-    this.newProductInventory.product = this.productID;
-    this.newProductInventory.admin = this.adminID;
+    this.newProductInventory.productId = this.productID;
+    this.newProductInventory.addedBy = this.adminID;
 
     this._ProductInventoryService
       .add(this.token, this.newProductInventory)

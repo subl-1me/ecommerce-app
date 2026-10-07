@@ -55,12 +55,13 @@ export class GalleryComponent implements OnInit {
     this.reuploadErrorMessage = '';
     this.fileData = [];
     this.product = {
-      title: '',
+      slug: '',
       category: '',
-      content: '',
+      shortDesc: '',
+      fullDesc: '',
       gallery: [],
-      description: '',
-      stock: 0,
+      variants: [],
+      stock: [],
       price: 0,
     };
   }

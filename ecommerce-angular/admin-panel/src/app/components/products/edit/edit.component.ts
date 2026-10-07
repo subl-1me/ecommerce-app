@@ -75,13 +75,13 @@ export class EditProductComponent implements OnInit {
     this.selectedFiles = [];
     this.isEdit = true;
     this.product = {
-      title: '',
+      slug: '',
       category: '',
-      content: '',
-      status: 'Draft',
+      shortDesc: '',
+      fullDesc: '',
       gallery: [],
-      description: '',
-      stock: 0,
+      variants: [],
+      stock: [],
       price: 0,
     };
     this.selectedNewStatus = '';

@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { constans } from '../services/const';
 import { environment } from 'src/environments/environment';
 
-import { ProductInventory } from '../models/productInventory';
+import ProductInventory from '../models/productInventory';
 
 @Injectable({
   providedIn: 'root',
@@ -23,13 +23,13 @@ export class ProductInventoryService {
       (environment.API_URL || constans.defaultUrl) + 'inventories/' + productId,
       {
         headers: headers,
-      }
+      },
     );
   }
 
   public add(
     token: string,
-    newProductInventory: ProductInventory
+    newProductInventory: ProductInventory,
   ): Observable<any> {
     var headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export class ProductInventoryService {
       newProductInventory,
       {
         headers: headers,
-      }
+      },
     );
   }
 
@@ -55,7 +55,7 @@ export class ProductInventoryService {
       (environment.API_URL || constans.defaultUrl) +
         'inventory/' +
         inventoryRegisterID,
-      { headers: headers }
+      { headers: headers },
     );
   }
 }

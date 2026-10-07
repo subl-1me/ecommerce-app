@@ -1,7 +1,8 @@
-export interface ProductInventory{
-    product?: string,
-    stock?: number,
-    provider?: string,
-    admin?: string,
-    createdAt?: string
+export default interface ProductInventory {
+  productId: string;
+  stock: number;
+  provider: string;
+  addedBy: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

@@ -1,43 +1,29 @@
 "use strict";
 
 require("dotenv").config();
+const { constans } = require("../const");
 const Product = require("../models/product");
-const ProductInventory = require("../models/productInventory");
+const ProductService = require("../services/product.service");
 const uniqid = require("uniqid");
 
 const { UPLOADS_URL_TEST, PORT } = process.env;
 
 const add = async function (req, res) {
-  if (!req.user || req.user.role !== "Admin")
-    return res.status(403).send({ message: "You are not authorized." });
-
   try {
-    var params = req.body;
-    var productName = req.body.title.toLowerCase();
-    var slug = productName;
+    const { authentication } = req;
+    if (!authentication || !constans.allowRoles.includes(authentication.role))
+      return res
+        .status(403)
+        .send({ success: false, message: "You are not authorized." });
 
-    var newProduct = await Product.create(params);
-    newProduct.slug = slug;
-
-    // Register Initial Inventory
-    var inventoryData = {
-      product: newProduct._id,
-      stock: params.stock,
-      admin: req.user.sub,
-    };
-
-    var newProductInventory = await ProductInventory.create(inventoryData);
-
+    const { body } = req;
+    const product = await ProductService.create(body);
     return res.status(200).send({
-      status: "success",
-      product: newProduct,
-      productInventory: newProductInventory,
+      success: true,
+      product,
     });
   } catch (err) {
-    console.log(err);
-    return res
-      .status(200)
-      .send({ message: "Something went wrong adding product." });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
