@@ -1,4 +1,6 @@
+import VariantValue from './variantValue';
+
 export default interface ProductVariant {
   name: string;
-  values: string[] | Map<string, string>;
+  values: VariantValue[];
 }

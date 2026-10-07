@@ -36,12 +36,12 @@
           <img
             [src]="product.gallery[0].path"
             class="item-image"
-            [alt]="product.title"
+            [alt]="product.slug"
           />
         </div>
 
         <div class="item-info">
-          <h6 class="item-title">{{ product.title }}</h6>
+          <h6 class="item-title">{{ product.slug }}</h6>
           <p class="item-price">${{ product.price }}</p>
         </div>
       </a>

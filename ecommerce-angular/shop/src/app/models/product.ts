@@ -1,15 +1,18 @@
+import ProductVariant from './productVariant';
+import { Sale } from './sale';
+import Stock from './stock';
+
 export interface Product {
   _id: string;
-  title: string;
-  description: string;
-  content: string;
-  stock: string;
+  slug: string;
+  shortDesc: string;
+  fullDesc: string;
   price: number;
-  sales: string;
+  sales: Sale[];
+  stock: Stock[];
+  variants: ProductVariant[];
   rating: string;
   gallery: Gallery[];
-  colors?: string[];
-  coverImage: string;
   category: string;
 }
 

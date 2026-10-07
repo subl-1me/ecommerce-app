@@ -7,6 +7,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Product } from 'src/app/models/product';
 import { Config } from '../../../models/config';
 import { ConfigService } from 'src/app/services/config/config.service';
+import MetaData from 'src/app/models/productMetadata';
 
 // Icons
 import { faSave } from '@fortawesome/free-solid-svg-icons';
@@ -17,6 +18,8 @@ import { ProductService } from 'src/app/services/product.service';
 import { IdentityService } from 'src/app/services/identity.service';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
 import Photo from 'src/app/types/Photo';
+import ProductVariant from 'src/app/models/productVariant';
+import VariantValue from 'src/app/models/variantValue';
 
 @Component({
   selector: 'app-creatse',
@@ -33,7 +36,6 @@ export class CreateComponent implements OnInit {
   public config: Config = this.getDefaultConfig();
 
   public newColorName: string = '';
-  public newColorHex: string = '#000';
   public colorsMapAux = new Map<string, String>();
   public sizePresets: string[] = ['S', 'M', 'L', 'XL'];
   public sizesSetAux = new Set<string>();
@@ -42,10 +44,8 @@ export class CreateComponent implements OnInit {
   public showSizeSelectorPrompt: boolean = false;
   public showValuePrompt: boolean = false;
 
-  public variantTypes: Array<{
-    name: string;
-    values: string[] | Map<string, string>;
-  }> = [];
+  public variantTypes: Array<ProductVariant> = [];
+  public metaData: MetaData = {};
 
   public newVariantType: string = '';
   public newVariantValue: string = '';
@@ -178,7 +178,7 @@ export class CreateComponent implements OnInit {
           // complex obj
           this.variantTypes.push({
             name: variantPreset || this.newVariantType,
-            values: new Map<string, string>(),
+            values: [],
           });
           break;
         default:
@@ -196,17 +196,18 @@ export class CreateComponent implements OnInit {
     this.newVariantType = '';
   }
 
-  public removeValueFromVariant(index: number, value: string): void {
-    const variant = this.variantTypes[index];
-    if (!variant) {
-      return;
-    }
+  public removeValueFromVariant(index: number, value: VariantValue): void {
+    // const variant = this.variantTypes[index];
+    // if (!variant) {
+    //   return;
+    // }
+    // let values = this.toStringArray(variant.values);
+    // values = values.filter((val) => val !== value);
+    // this.variantTypes[index].values;
+  }
 
-    if (this.isArray(variant.values)) {
-      let values = this.toStringArray(variant.values);
-      values = values.filter((val) => val !== value);
-      this.variantTypes[index].values = [...values];
-    }
+  public getHex(value: VariantValue): string {
+    return value.meta?.['hex'] ?? '#fff';
   }
 
   public removeVariantType(index: Number): void {}
@@ -240,28 +241,25 @@ export class CreateComponent implements OnInit {
       return;
     }
 
-    const vValues = this.variantTypes[variant].values;
-    // means it controlls size
-    if (Array.isArray(vValues)) {
-      // check if already exists
-      const vValuesString = this.toStringArray(
-        this.variantTypes[variant].values,
-      );
-      const value = vValuesString.includes(this.newVariantValue);
-      if (value) return;
+    let vValues = this.variantTypes[variant].values;
+    // check if already exists
+    const value = vValues.find((val) => val.label === this.newVariantValue);
+    if (value) return;
 
-      vValuesString.push(this.newVariantValue);
-      this.variantTypes[variant].values = [...vValuesString];
-      this.newVariantValue = '';
-    }
+    const meta: Record<string, string> = Object.fromEntries(
+      Object.entries(this.metaData).map(([key, value]) => [key, String(value)]),
+    );
 
-    // custom or preset
-    if (vValues instanceof Map) {
-      vValues.set(this.newColorHex, this.newColorName);
-      this.variantTypes[variant].values = vValues;
-      this.newColorHex = '';
-      this.newColorName = '';
-    }
+    const valueStructure: VariantValue = {
+      label: this.metaData.hex ? this.newColorName : this.newVariantValue,
+      meta,
+    };
+    vValues.push(valueStructure);
+    this.variantTypes[variant].values = [...vValues];
+    this.newVariantValue = '';
+    this.newColorName = '';
+    this.metaData = {};
+    console.log(this.variantTypes);
   }
 
   public getMapValuesArray(map: Map<string, string>): string[] {
@@ -347,27 +345,6 @@ export class CreateComponent implements OnInit {
     };
   }
 
-  public addToColorList(): void {
-    // dont reapet names
-    if (this.colorsMapAux.has(this.newColorName)) return;
-
-    // dont repeat hex
-    const mapArray = Array.from(this.colorsMapAux.values());
-    const values = Array.from(this.colorsMapAux.values());
-    const entryHex =
-      // this.colorsMapAux.set({
-      //   name: this.newColorName,
-      //   hex: this.newColorHex,
-      // });
-
-      (this.newColorHex = '#000');
-    this.newColorName = '';
-  }
-
-  public removeFromColorList(name: string): void {
-    this.colorsMapAux.delete(name);
-  }
-
   public async startCreation() {
     if (this.previewsAux.length === 0) {
       alert('Product need at least 1 image.');
@@ -384,6 +361,7 @@ export class CreateComponent implements OnInit {
         formData.append('image', f.file);
       }
     });
+
     const uploader = await firstValueFrom(
       this._productService.uploadMultipleImage(formData, this.token),
     );
@@ -394,9 +372,9 @@ export class CreateComponent implements OnInit {
     }
     const { uploads } = uploader;
     this.setCoverToZeroIndex(); // re-order
+    this.product.variants = this.variantTypes;
     this.product.gallery = [...this.product.gallery, ...uploads];
     this.product.status = this.selectedStatus || this.productStatusAxus;
-    this.product.variants = this.variantTypes;
     const response = await lastValueFrom(
       this._productService.create(
         this._identityService.getAuth().jwt,

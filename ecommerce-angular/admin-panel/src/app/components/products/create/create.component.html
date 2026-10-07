@@ -478,7 +478,7 @@
                               class="form-control form-control-color color-picker-input"
                               value="#29bb6a"
                               name="newColorHex"
-                              [(ngModel)]="newColorHex"
+                              [(ngModel)]="metaData.hex"
                             />
                           </div>
 
@@ -549,13 +549,12 @@
 
                 <!-- If contains a list of strings -->
                 <!-- size chips -->
-
-                <ng-container *ngIf="isArray(variant.values)">
+                <ng-container *ngIf="variant.name === 'Size'">
                   <span
                     class="variant-chip"
-                    *ngFor="let value of toStringArray(variant.values)"
+                    *ngFor="let value of variant.values"
                   >
-                    <span class="variant-chip-text">{{ value }}</span>
+                    <span class="variant-chip-text">{{ value.label }}</span>
                     <button
                       type="button"
                       class="variant-chip-remove"
@@ -568,24 +567,22 @@
                 </ng-container>
 
                 <!-- Color chips -->
-                <ng-container *ngIf="isMap(variant.values)">
+                <ng-container *ngIf="variant.name === 'Color'">
                   <div
                     class="color-chip me-2"
-                    *ngFor="let color of getMapKeysArray(variant.values)"
+                    *ngFor="let value of variant.values"
                   >
                     <span
                       class="color-chip-swatch"
-                      [style.background]="color"
+                      [style.background]="getHex(value)"
                     ></span>
                     <span class="color-chip-name"
-                      >{{ color }} -
-                      {{ getColorNameByHex(color, variant.values) }}</span
+                      >{{ value.label }} - {{ getHex(value) }}</span
                     >
                     <button
                       type="button"
                       class="color-chip-remove"
                       aria-label="Remove color"
-                      (click)="removeValueFromVariant(vIndex, color)"
                     >
                       ×
                     </button>

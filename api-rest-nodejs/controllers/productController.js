@@ -17,6 +17,7 @@ const add = async function (req, res) {
         .send({ success: false, message: "You are not authorized." });
 
     const { body } = req;
+
     const product = await ProductService.create(body);
     return res.status(200).send({
       success: true,

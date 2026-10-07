@@ -6,13 +6,13 @@
     <img
       [src]="product.gallery[0].path"
       class="product-image"
-      alt="{{ product.title }}"
+      alt="{{ product.slug }}"
     />
     <span class="product-overlay">View Details</span>
   </div>
 
   <div class="product-body">
-    <h6 class="product-title">{{ product.title }}</h6>
+    <h6 class="product-title">{{ product.slug }}</h6>
     <p class="product-price">${{ product.price }}</p>
 
     <button class="btn btn-add-cart" (click)="addToCart(product._id)">

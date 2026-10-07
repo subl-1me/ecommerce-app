@@ -1,6 +1,7 @@
 "use strict";
 
 var mongoose = require("mongoose");
+const productVariant = require("../models/productVariant");
 var Schema = mongoose.Schema;
 
 var productSchema = Schema({
@@ -12,7 +13,7 @@ var productSchema = Schema({
   sales: [{ type: Schema.ObjectId, ref: "sale", required: false }],
   rating: { type: Number, default: 0, required: true },
   category: { type: String, required: true },
-  variants: [{ type: Object, required: true }],
+  variants: { type: [productVariant], default: [] },
   price: { type: Number, default: 0, required: true },
   reviews: [{ type: Schema.ObjectId, ref: "review", require: false }],
   status: { type: String, default: "draft", required: true },

@@ -68,7 +68,7 @@
       <div
         class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3"
       >
-        <h1 class="product-title mb-0">{{ product.title }}</h1>
+        <h1 class="product-title mb-0">{{ product.slug }}</h1>
         <span class="product-category-badge">{{ product.category }}</span>
       </div>
 
@@ -110,9 +110,9 @@
         <div class="col-12 col-lg-6">
           <div class="main-image-wrapper">
             <img
-              [src]="product.gallery?.[0]?.path || product.coverImage"
+              [src]="product.gallery[0].path"
               class="main-product-image"
-              alt="{{ product.title }}"
+              alt="{{ product.slug }}"
             />
           </div>
 
@@ -427,13 +427,13 @@
         <div class="row g-5 align-items-center">
           <div
             class="col-12 col-lg-6 details-text"
-            [innerHTML]="product.content"
+            [innerHTML]="product.fullDesc"
           ></div>
           <div class="col-12 col-lg-6 text-center">
             <img
-              [src]="product.gallery?.[0]?.path || product.coverImage"
+              [src]="product.gallery[0].path"
               class="detail-image"
-              alt="{{ product.title }}"
+              alt="{{ product.slug }}"
             />
           </div>
         </div>

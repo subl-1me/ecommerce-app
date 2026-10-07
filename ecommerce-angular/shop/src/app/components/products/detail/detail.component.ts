@@ -81,15 +81,15 @@ export class DetailComponent implements OnInit {
   ) {
     this.product = {
       _id: '',
-      title: '',
-      description: '',
-      content: '',
-      stock: '',
+      slug: '',
+      shortDesc: '',
+      fullDesc: '',
+      stock: [],
+      variants: [],
       price: 0,
-      sales: '',
+      sales: [],
       rating: '',
       gallery: [],
-      coverImage: '',
       category: '',
     };
     this.auth = {
