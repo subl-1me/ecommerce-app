@@ -13,6 +13,7 @@ import { lastValueFrom } from 'rxjs';
 import { Cart } from 'src/app/models/cart';
 import { Auth } from 'src/app/models/auth';
 import { ItemCartService } from 'src/app/services/item-cart.service';
+import VariantValue from 'src/app/models/variantValue';
 
 @Component({
   selector: 'app-product-card',
@@ -69,6 +70,24 @@ export class ProductCardComponent implements OnInit {
       // this._authService.updateWishlist(response.wishlist);
       this.cartAux = response.cart;
     });
+  }
+
+  public getProductColorVariants(product: Product): any {
+    const colorVariants = product.variants.find((val) => val.name === 'Color');
+    if (!colorVariants) {
+      return [];
+    }
+
+    return colorVariants.values;
+  }
+
+  public getProductSizeVariants(product: Product): any {
+    const colorVariants = product.variants.find((val) => val.name === 'Size');
+    if (!colorVariants) {
+      return [];
+    }
+
+    return colorVariants.values;
   }
 
   public getAuth(): void {

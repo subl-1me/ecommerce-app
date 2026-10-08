@@ -15,10 +15,46 @@
     <h6 class="product-title">{{ product.slug }}</h6>
     <p class="product-price">${{ product.price }}</p>
 
+    <!-- Colors -->
+    <div
+      class="variant-block"
+      *ngIf="getProductColorVariants(product).length > 0"
+    >
+      <span class="variant-label">Colors</span>
+      <div class="variant-swatches">
+        <button
+          *ngFor="let color of getProductColorVariants(product)"
+          type="button"
+          class="variant-swatch"
+          [style.background]="color.meta.hex"
+          [attr.aria-label]="color.label"
+          [title]="color.label"
+        ></button>
+      </div>
+    </div>
+
+    <!-- Sizes -->
+    <div
+      class="variant-block"
+      *ngIf="getProductSizeVariants(product).length > 0"
+    >
+      <span class="variant-label">Sizes</span>
+      <div class="variant-chips">
+        <button
+          *ngFor="let size of getProductSizeVariants(product)"
+          type="button"
+          class="variant-chip"
+        >
+          {{ size.label }}
+        </button>
+      </div>
+    </div>
+
     <button class="btn btn-add-cart" (click)="addToCart(product._id)">
       <fa-icon [icon]="faCartShopping" class="me-1"></fa-icon>
       Add to Cart
     </button>
+
     <button
       class="btn btn-favorite mt-2"
       (click)="addToWishlist(product._id)"
@@ -33,9 +69,5 @@
     >
       Remove from Wishlist
     </button>
-
-    <!-- <div class="cart-message" *ngIf="addToCartMesssage !== ''">
-      {{ addToCartMesssage }}
-    </div> -->
   </div>
 </div>
