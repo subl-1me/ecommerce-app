@@ -1,6 +1,7 @@
 export default interface ProductInventory {
+  _id?: string;
   product: string;
-  stock: number;
+  qty: number;
   provider: string;
   addedBy: string;
   createdAt?: Date;

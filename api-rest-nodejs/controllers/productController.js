@@ -285,7 +285,7 @@ const getById = async function (req, res) {
         .send({ success: false, message: "Product ID is required." });
 
     const id = req.params["id"];
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).populate("stock");
     return res.status(200).send({ success: true, product: product });
   } catch (err) {
     return res.status(500).send({ success: false, message: err.message });

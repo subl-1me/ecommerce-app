@@ -1,6 +1,6 @@
 export default interface Stock {
   _id?: string;
-  productId: string;
+  product: string;
   qty: number;
   provider: string;
   addedBy: string;

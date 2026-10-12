@@ -223,7 +223,11 @@ export class DetailComponent implements OnInit {
     this._authService.update(auth.user);
   }
 
-  public calcualteTotalStock(stocks: ProductInventory[]) {}
+  public calcualteTotalStock(stocks: ProductInventory[]) {
+    return stocks.reduce((accum, current) => {
+      return (accum += current.qty);
+    }, 0);
+  }
 
   isProductFavorite(): boolean {
     return false;

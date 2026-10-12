@@ -180,7 +180,8 @@
             <div class="stock-info">
               <span class="stock-dot"></span>
               <span class="stock-text">
-                Available stock: <strong>{{ product.stock }}</strong>
+                Available stock:
+                <strong>{{ calcualteTotalStock(product.stock) }}</strong>
               </span>
             </div>
 
