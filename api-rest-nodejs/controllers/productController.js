@@ -59,7 +59,7 @@ const remove = async function (req, res) {
 
 const products = async function (_req, res) {
   try {
-    const products = await Product.find();
+    const products = await Product.find().populate("stock");
     res.status(200).send({ success: true, products });
   } catch (err) {
     res.status(500).send({ success: false, message: err.message });
@@ -138,8 +138,6 @@ const edit = async function (req, res) {
   var id = req.params["id"];
   var params = req.body;
 
-  console.log(params);
-
   try {
     var productName = req.body.title.toLowerCase();
     var slug = productName.replace(/\s/g, "-");
@@ -165,6 +163,26 @@ const edit = async function (req, res) {
     return res
       .status(200)
       .send({ message: "Something went wront updating product. Try again." });
+  }
+};
+
+const editProductStock = async function (req, res) {
+  try {
+    const { productId } = req.params;
+    if (!productId) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Product not found" });
+    }
+
+    const stock = req.body;
+    if (!stock) {
+      return res.status(400).send({ success: false, message: "Missing body." });
+    }
+
+    const updated = await ProductService.updateStock(productId, stock);
+  } catch (err) {
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
@@ -305,6 +323,7 @@ module.exports = {
   add,
   products,
   edit,
+  editProductStock,
   getById,
   remove,
   uploadCoverImage,

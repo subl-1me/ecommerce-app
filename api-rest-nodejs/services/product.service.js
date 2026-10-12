@@ -11,6 +11,7 @@ const update = async function (id, body) {
     password: body.password,
     birthday: body.birthday,
     country: body.country,
+    stock: body.stok,
     cart: body.cart,
     wishlist: body.wishlist,
     phone: body.phone,
@@ -22,6 +23,26 @@ const update = async function (id, body) {
   });
 
   return updated;
+};
+
+const updateStock = async function (productId, stock, action) {
+  let response;
+  switch (action) {
+    case "add":
+      response = await Product.findByIdAndUpdate(productId, {
+        $push: { stock },
+      });
+      break;
+    case "subtract":
+      response = await Product.findByIdAndUpdate(productId, {
+        $pull: { stock },
+      });
+      break;
+    default:
+      break;
+  }
+
+  return response;
 };
 
 const itemsByFilter = async function (filter, value) {
@@ -38,12 +59,12 @@ const create = async function (body) {
 };
 
 const items = async function () {
-  const items = await Customer.find();
+  const items = await Product.find();
   return items;
 };
 
 const item = async function (id) {
-  const customer = await Customer.findById(id).populate({
+  const customer = await Product.findById(id).populate({
     path: "cart",
     populate: { path: "items" },
   });
@@ -53,7 +74,7 @@ const item = async function (id) {
 };
 
 const destroyById = async function (id) {
-  const result = await Customer.findByIdAndDelete(id);
+  const result = await Product.findByIdAndDelete(id);
   return result;
 };
 
@@ -64,4 +85,5 @@ module.exports = {
   items,
   itemsByFilter,
   destroyById,
+  updateStock,
 };

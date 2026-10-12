@@ -17,6 +17,7 @@ import { environment } from 'src/environments/environment';
 import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
 import { lastValueFrom } from 'rxjs';
+import ProductInventory from 'src/app/models/productInventory';
 
 @Component({
   selector: 'app-list',
@@ -66,6 +67,12 @@ export class ListComponent implements OnInit, DoCheck {
   }
 
   ngDoCheck(): void {}
+
+  public getTotalStockNumber(productStock: ProductInventory[]): number {
+    return productStock.reduce((accum, current) => {
+      return (accum += current.qty);
+    }, 0);
+  }
 
   public async getList(): Promise<void> {
     const response = await lastValueFrom(this._productService.list(this.token));

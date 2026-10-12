@@ -20,6 +20,19 @@
   text-align: center;
 }
 
+.variant-swatch {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
 .not-found-illustration {
   max-width: 280px;
   width: 100%;

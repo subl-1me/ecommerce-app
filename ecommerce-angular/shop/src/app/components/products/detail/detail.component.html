@@ -140,8 +140,14 @@
             <div class="option-group">
               <label class="option-label">Available Colors</label>
               <div class="color-options">
-                <span class="color-circle color-black" title="Black"></span>
-                <span class="color-circle color-blue" title="Blue"></span>
+                <button
+                  *ngFor="let color of getProductColorVariants(product)"
+                  type="button"
+                  class="variant-swatch"
+                  [style.background]="color.meta.hex"
+                  [attr.aria-label]="color.label"
+                  [title]="color.label"
+                ></button>
               </div>
             </div>
 
@@ -156,8 +162,12 @@
                 (change)="optionSelected()"
               >
                 <option selected disabled value="">Select</option>
-                <option value="1">XL</option>
-                <option value="2">M</option>
+                <option
+                  *ngFor="let size of getProductSizeVariants(product)"
+                  value="size.label"
+                >
+                  {{ size.label }}
+                </option>
               </select>
               <div
                 *ngIf="addToCartMessage && addToCartMessage !== 'Added!'"

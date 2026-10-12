@@ -1,7 +1,10 @@
 <div class="inventory-container">
   <div class="card inventory-card shadow-sm border-0 rounded-4 overflow-hidden">
+    <!-- Header -->
     <div class="card-header bg-transparent border-0 p-4">
-      <div class="d-flex align-items-center justify-content-between">
+      <div
+        class="d-flex align-items-center justify-content-between flex-wrap gap-3"
+      >
         <div class="d-flex align-items-center gap-3">
           <div
             class="bg-white bg-opacity-10 rounded-circle p-3 d-flex align-items-center justify-content-center"
@@ -20,17 +23,16 @@
             >
           </div>
         </div>
-        <div>
-          <span
-            class="badge bg-primary bg-opacity-25 text-white rounded-pill px-3 py-2"
-          >
-            {{ inventories.length }} registers
-          </span>
-        </div>
+        <span
+          class="badge bg-primary bg-opacity-25 text-white rounded-pill px-3 py-2"
+        >
+          {{ inventories.length }} registers
+        </span>
       </div>
     </div>
 
     <div class="card-body p-4">
+      <!-- Alert -->
       <div
         class="alert alert-warning border-0 rounded-3 d-flex align-items-start gap-3"
         style="
@@ -50,18 +52,20 @@
 
       <hr class="opacity-25" style="border-color: rgba(255, 255, 255, 0.1)" />
 
+      <!-- New Register -->
       <h4 class="text-white mb-3">New Register</h4>
       <form
         #addNewInventoryRegisterForm="ngForm"
         (ngSubmit)="addNewInventoryRegister(addNewInventoryRegisterForm)"
       >
         <div class="row g-3 align-items-end">
+          <!-- Stock -->
           <div class="col-md-3">
             <div class="form-floating" style="color: white">
               <input
                 type="number"
                 name="stock"
-                [(ngModel)]="newProductInventory.stock"
+                [(ngModel)]="newProductInventory.qty"
                 class="form-control"
                 id="stockInput"
                 placeholder="Stock"
@@ -84,9 +88,8 @@
                   padding: 1rem 0.75rem;
                   font-weight: 500;
                 "
+                >* Stock</label
               >
-                * Stock
-              </label>
             </div>
             <div
               *ngIf="
@@ -100,7 +103,8 @@
             </div>
           </div>
 
-          <div class="col-md-3">
+          <!-- Provider -->
+          <div class="col-md-6">
             <div class="form-floating" style="color: white">
               <input
                 type="text"
@@ -127,9 +131,8 @@
                   padding: 1rem 0.75rem;
                   font-weight: 500;
                 "
+                >* Provider</label
               >
-                * Provider
-              </label>
             </div>
             <div
               *ngIf="
@@ -143,6 +146,47 @@
             </div>
           </div>
 
+          <!-- Size selector (only if product has sizes) -->
+          <!-- <div class="col-md-3" *ngIf="getProductSizeVariants().length > 0">
+                <div class="form-floating" style="color: white">
+                  <select
+                    class="form-select"
+                    id="sizeSelect"
+                    name="size"
+                    style="
+                      border-radius: 12px;
+                      border: 1px solid rgba(255, 255, 255, 0.15);
+                      background: rgba(255, 255, 255, 0.08);
+                      color: white;
+                      transition: all 0.3s ease;
+                      height: calc(3.5rem + 2px);
+                      padding: 1.5rem 0.75rem 0.5rem;
+                    "
+                  >
+                    <option selected disabled value="" class="text-white-50">
+                      Choose a size...
+                    </option>
+                    <option
+                      *ngFor="let size of getProductSizeVariants()"
+                      [value]="size"
+                      class="text-white"
+                    >
+                      {{ size.label }}
+                    </option>
+                  </select>
+                  <label
+                    for="sizeSelect"
+                    style="
+                      color: rgba(255, 255, 255, 0.6);
+                      padding: 1rem 0.75rem;
+                      font-weight: 500;
+                    "
+                    >* Size</label
+                  >
+                </div>
+              </div> -->
+
+          <!-- Submit -->
           <div class="col-md-3">
             <button
               type="submit"
@@ -159,6 +203,18 @@
             </button>
           </div>
 
+          <!-- Size info when product has sizes -->
+          <div class="col-12" *ngIf="getProductSizeVariants().length > 0">
+            <div class="stock-size-notice">
+              <span class="stock-size-notice-icon">i</span>
+              <span
+                >This product has multiple sizes. Select the size you are adding
+                stock for.</span
+              >
+            </div>
+          </div>
+
+          <!-- Success -->
           <div class="col-md-3">
             <div
               *ngIf="isProductAdded"
@@ -177,6 +233,28 @@
 
       <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1)" />
 
+      <!-- Stock by Size (current) -->
+      <div
+        class="stock-by-size-section mb-4"
+        *ngIf="getProductSizeVariants().length > 0"
+      >
+        <h4 class="text-white mb-3">Stock by Size</h4>
+        <div class="stock-by-size-grid">
+          <div
+            class="stock-size-card"
+            *ngFor="let size of getProductSizeVariants()"
+          >
+            <div class="stock-size-label">{{ size.label }}</div>
+            <div class="stock-size-value">
+              <small>0 units</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1)" />
+
+      <!-- Inventory History -->
       <h4 class="text-white mb-3">Inventory History</h4>
       <div class="table-responsive" style="max-height: 500px; overflow-y: auto">
         <table class="table table-hover align-middle mb-0">
@@ -229,6 +307,17 @@
                   letter-spacing: 0.5px;
                 "
               >
+                Size
+              </th>
+              <th
+                scope="col"
+                style="
+                  color: #9ca3af;
+                  font-size: 0.7rem;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                "
+              >
                 Provider
               </th>
               <th
@@ -259,7 +348,7 @@
           </thead>
           <tbody>
             <tr *ngIf="inventories.length === 0">
-              <td colspan="6" class="text-center py-5">
+              <td colspan="7" class="text-center py-5">
                 <div class="d-flex flex-column align-items-center">
                   <h5 class="text-white-50">No inventory registers</h5>
                   <p class="text-white-50 small">
@@ -278,10 +367,18 @@
               >
                 <td class="ps-3 text-white-75">{{ ind + 1 }}</td>
                 <td class="text-white-75 fw-medium">
-                  {{ inventory.admin.names }} {{ inventory.admin.surnames }}
+                  {{ inventory.addedBy.username }}
                 </td>
                 <td class="text-white-75">
-                  <span class="fw-semibold">{{ inventory.stock }}</span>
+                  <span class="fw-semibold">{{ inventory.qty }}</span>
+                </td>
+                <td class="text-white-75">
+                  <span *ngIf="inventory.size" class="size-tag">{{
+                    inventory.size
+                  }}</span>
+                  <span *ngIf="!inventory.size" class="text-white-50 small"
+                    >—</span
+                  >
                 </td>
                 <td class="text-white-75">
                   <span *ngIf="inventory.provider != 'none'">{{

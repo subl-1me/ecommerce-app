@@ -12,12 +12,18 @@ import ProductInventory from 'src/app/models/productInventory';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import Auth from 'src/app/models/auth';
+import { Product } from 'src/app/models/product';
+import ProductVariant from 'src/app/models/productVariant';
+import { lastValueFrom } from 'rxjs';
+import { ProductService } from 'src/app/services/product.service';
+import VariantValue from 'src/app/models/variantValue';
 
 @Component({
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.css'],
-  providers: [IdentityService, ProductInventoryService],
+  providers: [IdentityService, ProductInventoryService, ProductService],
 })
 export class InventoryComponent implements OnInit {
   // Icons
@@ -25,28 +31,27 @@ export class InventoryComponent implements OnInit {
   faAngleLeft = faAngleLeft;
   faPlus = faPlus;
 
-  public token: any;
-  public adminID: any;
-  public productID: any;
+  public productId: string;
+  public auth: Auth = this._identityService.getAuth();
 
   public isProductAdded: boolean;
 
   public inventories: any;
   public newProductInventory: ProductInventory;
+  public productVariants: ProductVariant[] = [];
 
   constructor(
     private _identityService: IdentityService,
     private _ProductInventoryService: ProductInventoryService,
     private _router: ActivatedRoute,
+    private _productService: ProductService,
   ) {
     this.inventories = [];
-    this.token = '';
-    this.productID = this._router.snapshot.paramMap.get('id');
-    this.adminID = localStorage.getItem('_id');
+    this.productId = this._router.snapshot.paramMap.get('id') || '';
     this.newProductInventory = {
-      productId: '',
+      product: '',
       addedBy: '',
-      stock: 0,
+      qty: 0,
       provider: '',
     };
     this.isProductAdded = false;
@@ -54,34 +59,68 @@ export class InventoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.getInventories();
+    this.getProductVariant();
+  }
+
+  public async getProductVariant(): Promise<void> {
+    const response = await lastValueFrom(
+      this._productService.getById(this.productId, this.auth.jwt),
+    );
+
+    if (!response.success) {
+      alert('Error fetching product data:' + response.message);
+      return;
+    }
+
+    this.productVariants = response.product.variants;
   }
 
   getInventories(): void {
     this._ProductInventoryService
-      .inventories(this.token, this.productID)
+      .inventories(this.productId, this.auth.jwt)
       .subscribe((response) => {
-        if (!response.inventories) {
-          console.log(response);
-          this.inventories = [];
+        if (!response.success) {
+          alert(response.message);
+          return;
         }
 
+        console.log(response);
         this.inventories = response.inventories;
         this.registerSuccessStatus();
       });
   }
 
+  public getProductColorVariants(): any {
+    const colors = this.productVariants.find((val) => val.name === 'Color');
+    if (!colors) {
+      return [];
+    }
+
+    return colors.values;
+  }
+
+  public getProductSizeVariants(): any {
+    const sizes = this.productVariants.find((val) => val.name === 'Size');
+    if (!sizes) {
+      return [];
+    }
+
+    return sizes.values;
+  }
+
   addNewInventoryRegister(form: any): void {
-    this.newProductInventory.productId = this.productID;
-    this.newProductInventory.addedBy = this.adminID;
+    this.newProductInventory.product = this.productId;
+    this.newProductInventory.addedBy = this.auth.admin._id || 'undefined';
 
     this._ProductInventoryService
-      .add(this.token, this.newProductInventory)
+      .add(this.newProductInventory, this.auth.jwt)
       .subscribe((response) => {
-        if (!response.newInventory) {
-          console.log('error');
+        if (!response.success) {
+          alert(response.message);
           return;
         }
 
+        console.log(response);
         form.reset();
         this.getInventories();
         this.isProductAdded = true;
@@ -91,7 +130,7 @@ export class InventoryComponent implements OnInit {
 
   removeInventoryRegister(inventoryRegisterID: any): void {
     this._ProductInventoryService
-      .remove(this.token, inventoryRegisterID)
+      .remove(inventoryRegisterID, this.auth.jwt)
       .subscribe((response) => {
         this.getInventories();
         console.log(response);

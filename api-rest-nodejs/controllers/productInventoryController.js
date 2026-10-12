@@ -2,58 +2,60 @@
 
 const Product = require("../models/product");
 const ProductInventory = require("../models/productInventory");
+const ProductInventoryService = require("../services/product.inventory.service");
+const ProductService = require("../services/product.service");
 
 const inventories = async function (req, res) {
-  if (!req.user || req.user.role !== "Admin")
-    return res.status(403).send({ message: "You are not authorized." });
-  if (!req.params["id"])
-    return res.status(200).send({ message: "Product ID is required." });
-
-  var productID = req.params["id"];
-
   try {
-    var inventoriesArray = {};
-    var inventoriesArray = await ProductInventory.find({
-      product: productID,
-    }).populate("admin");
+    const { authentication } = req;
+    const productId = req.params["id"];
+    if (!authentication || authentication.role !== "Admin")
+      return res
+        .status(403)
+        .send({ success: false, message: "You are not authorized." });
+    if (!productId)
+      return res
+        .status(200)
+        .send({ success: false, message: "Product ID is required." });
 
-    return res.status(200).send({ inventories: inventoriesArray });
+    const inventories =
+      await ProductInventoryService.itemsByProductId(productId);
+    return res.status(200).send({ success: true, inventories });
   } catch (err) {
-    return res.status(500).send({ message: "Something went wrong." });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
 const add = async function (req, res) {
-  if (!req.user || req.user.role !== "Admin")
-    return res.status(403).send({ message: "You are not authorized." });
-
-  var params = req.body;
-
   try {
+    if (!req.authentication || req.authentication.role !== "Admin")
+      return res
+        .status(403)
+        .send({ success: false, message: "You are not authorized." });
+
+    const { body } = req;
+    if (!body)
+      return res.status(200).send({ success: false, message: "Missing body." });
+
     // Check if product exists
-    var product = await Product.findById(params.product);
+    const product = await Product.findById(body.product);
     if (!product)
-      return res.status(200).send({ message: "Product not found." });
+      return res
+        .status(200)
+        .send({ success: false, message: "Product not found." });
 
-    var newInventory = await ProductInventory.create(params);
-
+    const newInventory = await ProductInventoryService.create(body);
     // Set new product stock
-    var newStock = parseInt(product.stock) + parseInt(params.stock);
-    var updatedProduct = await Product.findByIdAndUpdate(params.product, {
-      stock: newStock,
-    });
-
-    if (!newInventory)
-      return res(200).send({ message: "Error adding register." });
-
-    return res.status(200).send({ newInventory: newInventory });
+    await ProductService.updateStock(product._id, newInventory, "add");
+    // const updated = await ProductService.update(product._id, product);
+    return res.status(200).send({ success: true });
   } catch (err) {
-    return res.status(500).send({ message: "Something went wrong." });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
 const remove = async function (req, res) {
-  if (!req.user || req.user.role !== "Admin")
+  if (!req.authentication || req.authentication.role !== "Admin")
     return res.status(403).send({ message: "You are not authorized." });
   if (!req.params["id"])
     return res

@@ -21,6 +21,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { SocketService } from 'src/app/services/socket/socket.service';
 import { lastValueFrom } from 'rxjs';
 import { CustomerService } from 'src/app/services/customer.service';
+import ProductInventory from 'src/app/models/productInventory';
 
 @Component({
   selector: 'app-detail',
@@ -186,6 +187,24 @@ export class DetailComponent implements OnInit {
     this._authService.update(auth.user);
   }
 
+  public getProductColorVariants(product: Product): any {
+    const colorVariants = product.variants.find((val) => val.name === 'Color');
+    if (!colorVariants) {
+      return [];
+    }
+
+    return colorVariants.values;
+  }
+
+  public getProductSizeVariants(product: Product): any {
+    const colorVariants = product.variants.find((val) => val.name === 'Size');
+    if (!colorVariants) {
+      return [];
+    }
+
+    return colorVariants.values;
+  }
+
   public async removeFromWishlist(): Promise<void> {
     let auth = this._authService.getUser();
     let wishlist = auth.user.wishlist;
@@ -203,6 +222,8 @@ export class DetailComponent implements OnInit {
     this._socketService.emit('wishlist-changes', { wishlist: filtered });
     this._authService.update(auth.user);
   }
+
+  public calcualteTotalStock(stocks: ProductInventory[]) {}
 
   isProductFavorite(): boolean {
     return false;

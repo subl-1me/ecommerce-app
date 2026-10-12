@@ -165,7 +165,7 @@
 
                 <td class="text-center">
                   <span class="fw-semibold">
-                    {{ product.stock.length }}
+                    {{ getTotalStockNumber(product.stock) }}
                   </span>
                 </td>
 
@@ -453,7 +453,7 @@
               </p>
               <p class="mb-0">
                 <span class="fw-bold fs-6">
-                  {{ selectedProduct.stock }}
+                  {{ getTotalStockNumber(selectedProduct.stock) }}
                 </span>
                 <span class="text-white-50 small ms-1">units</span>
               </p>

@@ -9,6 +9,7 @@ const auth = require("../middlewares/authenticate");
 routes.post("/product", auth.auth, productController.add);
 routes.get("/products", productController.products);
 routes.put("/product/:id", auth.auth, productController.edit);
+routes.put("/product/:id/stock", auth.auth, productController.editProductStock);
 routes.get("/product/:id", productController.getById);
 routes.delete("/removeProduct/:id", auth.auth, productController.remove);
 routes.post(
