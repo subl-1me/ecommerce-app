@@ -19,12 +19,26 @@ const create = async function (_req, res) {
 
 const addItem = async function (req, res) {
   try {
-    const { cartId } = req.params;
-    const payload = req.body;
-    if (!cartId)
-      res.status(200).send({ success: false, message: "Cart ID is required." });
+    const { cartId, productId } = req.params;
+
+    const body = req.body;
+    if (!cartId || !productId)
+      res.status(200).send({
+        success: false,
+        message: `Missing parameter: ${!cartId ? "CartID" : "ProductId"}`,
+      });
+
+    if (!body)
+      res.status(200).send({
+        success: false,
+        message: `Missing body.`,
+      });
 
     const cart = await CartService.item(cartId);
+    const payload = {
+      ...body,
+      product: productId,
+    };
     const result = await CartService.insertItem(cart, payload);
     res.status(200).send({ success: true, result });
   } catch (err) {

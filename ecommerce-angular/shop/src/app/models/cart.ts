@@ -1,13 +1,4 @@
-import { Product } from './product';
-
-interface CartItem {
-  _id?: string;
-  size: string;
-  product: Product;
-  amount: Number;
-  createdAt?: string;
-  updatedAt?: string;
-}
+import CartItem from './cartItem';
 
 export interface Cart {
   _id?: string;

@@ -147,6 +147,7 @@
                   [style.background]="color.meta.hex"
                   [attr.aria-label]="color.label"
                   [title]="color.label"
+                  (click)="cartItem.color = color.meta.hex"
                 ></button>
               </div>
             </div>
@@ -157,14 +158,13 @@
                 id="sizeSelect"
                 class="form-select form-select-custom"
                 required
-                name="selectedSize"
-                [(ngModel)]="selectedSize"
-                (change)="optionSelected()"
+                name="size"
+                [(ngModel)]="cartItem.size"
               >
                 <option selected disabled value="">Select</option>
                 <option
                   *ngFor="let size of getProductSizeVariants(product)"
-                  value="size.label"
+                  value="{{ size.label }}"
                 >
                   {{ size.label }}
                 </option>
@@ -191,11 +191,11 @@
                 <input
                   type="number"
                   class="form-control quantity-input"
-                  name="selectedAmount"
-                  [(ngModel)]="selectedAmount"
+                  name="qty"
+                  [(ngModel)]="cartItem.qty"
                   (change)="isNegativeOrZero()"
                   min="1"
-                  max="product.stock"
+                  max="{{ calcualteTotalStock(product.stock) }}"
                   required
                 />
                 <div class="action-buttons">

@@ -5,15 +5,12 @@ import { CartService } from '../../services/cart.service';
 
 import { Auth } from 'src/app/models/auth';
 import { AuthService } from 'src/app/services/auth.service';
-import { io } from 'socket.io-client';
 
 // Icons
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
-import { GLOBAL } from 'src/app/services/CONST';
-import { environment } from 'src/environments/environment';
 import { SocketService } from 'src/app/services/socket/socket.service';
 import { lastValueFrom } from 'rxjs';
 
@@ -85,6 +82,7 @@ export class CartModalComponent implements OnInit {
       alert(response.message);
       return;
     }
+    console.log(response);
     this.cart = response.cart;
   }
 

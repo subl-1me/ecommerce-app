@@ -98,7 +98,18 @@
             </div>
 
             <div class="item-meta">
-              <span class="meta-label">Qty: {{ item.amount }}</span>
+              <span class="meta-label">Qty: {{ item.qty }}</span>
+            </div>
+
+            <div class="item-meta">
+              <span class="meta-label"
+                >Color:
+                <button
+                  type="button"
+                  class="variant-swatch"
+                  [style.background]="item.color"
+                ></button
+              ></span>
             </div>
           </div>
 

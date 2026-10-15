@@ -11,11 +11,7 @@ const item = async function (id) {
 };
 
 const add = async function (body) {
-  const newItem = await ItemCart.create({
-    product: body.productId,
-    amount: body.amount,
-    size: body.size,
-  });
+  const newItem = await ItemCart.create(body);
   if (!newItem) {
     throw new Error("Error creating item cart.");
   }

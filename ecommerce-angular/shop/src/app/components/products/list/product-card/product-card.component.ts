@@ -111,14 +111,6 @@ export class ProductCardComponent implements OnInit {
 
     // set cart to user
     await lastValueFrom(this._customerService.editProfile(user._id, user));
-
-    const addItemResponse = await lastValueFrom(
-      this._cartService.addItem(user.cart._id || '', productId),
-    );
-    user.cart = addItemResponse.result;
-    this._socketService.emit('cart-changes', { cart: user.cart });
-    this.cartAux = user.cart;
-    this._authService.update(user);
   }
 
   public async addToWishlist(productId: string): Promise<void> {

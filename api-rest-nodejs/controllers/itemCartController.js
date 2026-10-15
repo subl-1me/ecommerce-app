@@ -5,7 +5,6 @@ const ItemCartService = require("../services/item-cart.service");
 const create = async function (req, res) {
   try {
     const payload = req.body;
-    console.log(payload);
     const item = await ItemCartService.add(payload);
     return res.status(200).send({ success: true, item });
   } catch (err) {

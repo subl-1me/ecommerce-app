@@ -22,6 +22,7 @@ import { SocketService } from 'src/app/services/socket/socket.service';
 import { lastValueFrom } from 'rxjs';
 import { CustomerService } from 'src/app/services/customer.service';
 import ProductInventory from 'src/app/models/productInventory';
+import CartItemInput from 'src/app/models/cartItemInput';
 
 @Component({
   selector: 'app-detail',
@@ -37,10 +38,11 @@ import ProductInventory from 'src/app/models/productInventory';
 })
 export class DetailComponent implements OnInit {
   public product: Product;
-  public productID: any;
+  public productID: string;
 
   public auth: Auth;
   public cart: Cart;
+  public cartItem: CartItemInput;
 
   public isLoading: boolean;
 
@@ -97,9 +99,15 @@ export class DetailComponent implements OnInit {
       user: null,
       jwt: '',
     };
+
+    this.cartItem = {
+      qty: 1,
+      size: '',
+      color: '',
+    };
     this.isLoading = false;
     this.cart = { _id: '', items: [] };
-    this.productID = this._router.snapshot.paramMap.get('id');
+    this.productID = this._router.snapshot.paramMap.get('id') || '';
     this.isAdded = false;
     this.selectedAmount = 1;
     this.selectedSize = '';
@@ -171,10 +179,11 @@ export class DetailComponent implements OnInit {
   public async addToCart(): Promise<void> {
     let auth = this._authService.getUser();
     const response = await lastValueFrom(
-      this._cartService.addItem(auth.user.cart._id, this.productID, {
-        amount: this.selectedAmount,
-        size: this.selectedSize,
-      }),
+      this._cartService.addItem(
+        auth.user.cart._id,
+        this.productID,
+        this.cartItem,
+      ),
     );
 
     if (!response.success) {
