@@ -63,6 +63,14 @@ export class CartModalComponent implements OnInit {
     }
   }
 
+  public calcualteSubTotal(): number {
+    return this.cart.items.reduce((accum, current) => {
+      const price = current.product?.price || 0;
+      const qty = current.qty || 0;
+      return accum + price * qty;
+    }, 0);
+  }
+
   private getAuth(): void {
     this.auth = this._authService.getUser();
   }

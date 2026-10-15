@@ -103,6 +103,12 @@
 
             <div class="item-meta">
               <span class="meta-label"
+                >Price per Unit: {{ item.product.price }}</span
+              >
+            </div>
+
+            <div class="item-meta">
+              <span class="meta-label"
                 >Color:
                 <button
                   type="button"
@@ -141,7 +147,7 @@
     <div class="cart-footer" *ngIf="cart.items.length > 0">
       <div class="total-row">
         <span class="total-label">Subtotal</span>
-        <span class="total-value">${{ totalToPay }}</span>
+        <span class="total-value">${{ calcualteSubTotal() }}</span>
       </div>
 
       <p class="total-note">Shipping and taxes calculated at checkout</p>
