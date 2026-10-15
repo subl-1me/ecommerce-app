@@ -1,11 +1,10 @@
 import { Component, DoCheck, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements DoCheck, OnInit {
   title = 'shop';
@@ -13,9 +12,7 @@ export class AppComponent implements DoCheck, OnInit {
   public showCartModal: boolean;
   public showNavBar: boolean;
 
-  constructor(
-    private _router: Router
-  ){
+  constructor(private _router: Router) {
     this.showCartModal = false;
     this.showNavBar = true;
   }
@@ -24,14 +21,12 @@ export class AppComponent implements DoCheck, OnInit {
     this.getUrl();
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
 
-  }
-
-  getUrl():void{
+  getUrl(): void {
     let url = window.location.href;
     let data = url.split('/');
-    if(data[3] === 'checkout'){
+    if (data[3] === 'checkout') {
       this.showNavBar = false;
       return;
     }
@@ -39,11 +34,11 @@ export class AppComponent implements DoCheck, OnInit {
     this.showNavBar = true;
   }
 
-  openModal(event:any):void{
+  openModal(event: any): void {
     this.showCartModal = event;
   }
 
-  closeModal(event:any):void{
+  closeModal(event: any): void {
     this.showCartModal = event;
   }
 }

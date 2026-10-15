@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 import { ServerService } from 'src/app/services/server.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-cooldown-advise',
@@ -8,16 +9,19 @@ import { ServerService } from 'src/app/services/server.service';
   styleUrls: ['./cooldown-advise.component.css'],
 })
 export class CooldownAdviseComponent implements OnInit {
+  public isProd: boolean = false;
   constructor(private _serverService: ServerService) {}
 
   ngOnInit(): void {
     this.startWakeUpFlow();
+    this.isProd = environment.production;
   }
 
   isServerWaking = false;
   currentStep = 0;
 
   private async startWakeUpFlow(): Promise<void> {
+    if (!this.isProd) return;
     this.isServerWaking = true;
     this.currentStep = 1;
 
