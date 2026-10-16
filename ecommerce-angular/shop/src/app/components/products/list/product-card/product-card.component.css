@@ -358,10 +358,12 @@
   }
 
   .product-price {
-    font-size: 1.15rem;
+    margin-top: 0;
+    font-size: 1.3rem;
   }
 
   .product-title {
-    font-size: 0.88rem;
+    margin-bottom: 0 !important;
+    font-size: 1rem;
   }
 }

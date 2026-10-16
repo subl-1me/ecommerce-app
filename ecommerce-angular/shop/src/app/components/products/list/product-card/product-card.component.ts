@@ -1,4 +1,5 @@
-import { Component, IterableDiffers, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Input } from '@angular/core';
 import { Product } from 'src/app/models/product';
 import { Customer } from 'src/app/models/customer';
@@ -13,7 +14,6 @@ import { lastValueFrom } from 'rxjs';
 import { Cart } from 'src/app/models/cart';
 import { Auth } from 'src/app/models/auth';
 import { ItemCartService } from 'src/app/services/item-cart.service';
-import VariantValue from 'src/app/models/variantValue';
 
 @Component({
   selector: 'app-product-card',
@@ -32,7 +32,7 @@ export class ProductCardComponent implements OnInit {
     private _authService: AuthService,
     private _socketService: SocketService,
     private _cartService: CartService,
-    private _itemCartService: ItemCartService,
+    private _router: Router,
   ) {
     this.product = {
       _id: '',
@@ -111,6 +111,10 @@ export class ProductCardComponent implements OnInit {
 
     // set cart to user
     await lastValueFrom(this._customerService.editProfile(user._id, user));
+  }
+
+  public navigateToProductDetails(productId: string): void {
+    this._router.navigate([`products/detail/${productId}`]);
   }
 
   public async addToWishlist(productId: string): Promise<void> {
