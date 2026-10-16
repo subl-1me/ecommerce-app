@@ -151,9 +151,10 @@ export class CheckoutComponent implements OnInit {
         '',
         [Validators.required, Validators.min(1), Validators.max(100000)],
       ],
-      email: [false, [Validators.required, Validators.requiredTrue]],
-      country: [false, [Validators.required, Validators.requiredTrue]],
-      city: [false, [Validators.required, Validators.requiredTrue]],
+      email: ['', [Validators.required, Validators.requiredTrue]],
+      country: ['', [Validators.required, Validators.requiredTrue]],
+      city: ['', [Validators.required, Validators.requiredTrue]],
+      zip: ['', [Validators.required, Validators.requiredTrue]],
     });
 
     this.shippingInformation = {
@@ -188,10 +189,10 @@ export class CheckoutComponent implements OnInit {
 
   private loadAuthData(): void {
     this.auth = this._authService.getUser();
-    console.log(this.auth);
+    this.form.patchValue({ email: this.auth.user.email });
   }
 
-  generateOrder(): void {
+  public generateOrder(): void {
     if (!this.customerID) return;
 
     var orderData = { id: this.customerID, amount: this.orderTotal };
@@ -279,56 +280,38 @@ export class CheckoutComponent implements OnInit {
     };
   }
 
-  applyCouponCode(): void {
-    if (!this.couponCode) return; // Case empty string
+  public async applyCouponCode(): Promise<void> {
     // if(this.couponApplied.find(element => element == this.couponCode) ==  this.couponCode) return; // Case coupon has been applied
 
-    this._checkoutService
-      .applyCouponCode(this.couponCode)
-      .subscribe((response) => {
-        console.log(response);
+    const response = await lastValueFrom(
+      this._checkoutService.applyCouponCode(this.couponCode),
+    );
 
-        if (response.status === 'error') {
-          this.couponCodeMessage = 'This code is not valid. Try again.';
-
-          setTimeout(() => {
-            this.couponCodeMessage = '';
-          }, 1000);
-
-          return;
-        }
-
-        this.couponCode = '';
-        if ((response.coupon.type = 'Percentage'))
-          this.orderTotal = (this.orderTotal * response.coupon.value) / 100;
-
-        this.couponApplied = response.coupon;
-        this.discount += this.couponApplied.value;
-        //this.couponApplied.push(newCoupon);
-      });
+    console.log(response);
   }
 
-  calculateSubtotal(): void {
-    // for (let item of this.cart) {
-    //   if (item.product?.price && item.amount) {
-    //     this.subtotal += item.product?.price * item.amount;
-    //   }
-    // }
+  public calculateSubtotal(): number {
+    return this.cart.items.reduce((accum, current) => {
+      return (accum += current.product.price * current.qty);
+    }, 0);
   }
 
-  calculatePriceTimesQty(price: number, amount: number): number {
+  public calculatePriceTimesQty(price: number, amount: number): number {
     return price * amount;
   }
 
-  calculateOrderTotal(): void {
-    this.orderTotal = 0;
-    this.orderTotal += this.subtotal + +this.shippingCost;
-    if (this.discount != 0)
-      this.orderTotal = (this.orderTotal * this.discount) / 100;
-    this.sale.total = this.orderTotal;
+  public calculateOrderTotal(): number {
+    let subtotal = this.calculateSubtotal();
+
+    // this.orderTotal += subtotal + this.shippingCost;
+    // if (this.discount != 0)
+    //   this.orderTotal = (this.orderTotal * this.discount) / 100;
+    // this.sale.total = this.orderTotal;
+
+    return subtotal;
   }
 
-  addShippingCost(methodPrice: any, methodType: any) {
+  public addShippingCost(methodPrice: any, methodType: any) {
     this.isShippingSelected = true;
 
     // calculate order total
@@ -369,7 +352,6 @@ export class CheckoutComponent implements OnInit {
     }
 
     this.cart = response.cart;
-    console.log(response);
   }
 
   // getSaleDetails(): void {
@@ -390,29 +372,36 @@ export class CheckoutComponent implements OnInit {
 
   deleteProductCart(productID: any): void {}
 
-  getDefaultDirection(): void {
-    if (!this.customerID) return;
-    this._directionService
-      .getDefaultDirection(this.customerID)
-      .subscribe((response) => {
-        if (!response.direction) {
-          this.directionExists = false;
-        }
+  public async getDefaultDirection(): Promise<void> {
+    const response = await lastValueFrom(
+      this._directionService.getDefaultDirection(this.auth.user._id),
+    );
 
-        this.directionExists = true;
-        this.defaultDirection = response.direction;
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
 
-        this.sale.shippingAddress = this.defaultDirection;
-      });
+    if (!response.address) {
+      return;
+    }
+
+    this.defaultDirection = response.address;
+    this.form.patchValue({
+      address: this.defaultDirection.address,
+      zip: this.defaultDirection.zip,
+      city: this.defaultDirection.district,
+      country: this.defaultDirection.country,
+    });
   }
 
-  getShippingMethods(): void {
+  public getShippingMethods(): void {
     this._checkoutService.getShippingMethods().subscribe((response) => {
       this.shipping = response;
     });
   }
 
-  paypalSelected() {
+  public paypalSelected() {
     var ccMethod = document.getElementById('cc-input') as HTMLInputElement;
     ccMethod.checked = false;
 
@@ -420,7 +409,7 @@ export class CheckoutComponent implements OnInit {
     this.isCCSelected = false;
   }
 
-  ccSelected() {
+  public ccSelected() {
     var paypalMethod = document.getElementById(
       'paypal-input',
     ) as HTMLInputElement;
@@ -430,7 +419,7 @@ export class CheckoutComponent implements OnInit {
     this.isCCSelected = true;
   }
 
-  async getActiveOrder(): Promise<any> {
+  public async getActiveOrder(): Promise<any> {
     this._stripeService
       .getActiveOrder(this.customerID)
       .subscribe((response) => {

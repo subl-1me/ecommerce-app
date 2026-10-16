@@ -144,7 +144,10 @@
         </div>
 
         <!-- Shipping info -->
-        <div class="section-card" *ngIf="!isOrderComplete">
+        <div
+          class="section-card"
+          *ngIf="!isOrderComplete && defaultDirection._id"
+        >
           <div class="section-header">
             <div class="step-badge">2</div>
             <div>
@@ -161,6 +164,7 @@
                   id="email"
                   type="email"
                   class="form-control form-control-custom"
+                  name="email"
                   formControlName="email"
                   placeholder="you@example.com"
                 />
@@ -208,6 +212,30 @@
             </div>
           </form>
         </div>
+
+        <!-- Empty shipping info -->
+        <div
+          class="section-card"
+          *ngIf="!isOrderComplete && !defaultDirection._id"
+        >
+          <div class="section-header">
+            <div class="step-badge">2</div>
+            <div>
+              <h4 class="section-title">Shipping Information</h4>
+              <p class="section-subtitle">Where should we deliver your order</p>
+            </div>
+          </div>
+
+          <div class="section-body text-center">
+            <h4 class="section-title">No address found.</h4>
+            <p class="section-subtitle">
+              Add some addressses in your Profile Section
+            </p>
+            <button type="button" class="btn btn-success mt-2">
+              <a [routerLink]="['/directions']">Add Addres</a>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Right: Order summary + Payment -->
@@ -220,7 +248,7 @@
             <div class="summary-list">
               <div class="summary-row">
                 <span class="summary-label">Subtotal</span>
-                <span class="summary-value">${{ subtotal }}</span>
+                <span class="summary-value">${{ calculateSubtotal() }}</span>
               </div>
 
               <div class="summary-row">
@@ -262,15 +290,20 @@
                 <div class="promo-input-group">
                   <input
                     class="form-control form-control-custom"
+                    name="code"
+                    [(ngModel)]="couponCode"
                     placeholder="Coupon / Promo code"
                   />
+                  <button class="btn btn-add-cart" (click)="applyCouponCode()">
+                    Apply
+                  </button>
                 </div>
               </div>
             </div>
 
             <div class="summary-total">
               <span class="total-label">Total</span>
-              <span class="total-amount">${{ orderTotal }}</span>
+              <span class="total-amount">${{ calculateOrderTotal() }}</span>
             </div>
           </div>
 

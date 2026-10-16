@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Direction } from 'src/app/models/direction';
+import { Direction, DirectionInput } from 'src/app/models/direction';
 
 import { DirectionService } from 'src/app/services/direction.service';
+import { Auth } from 'src/app/models/auth';
+import { AuthService } from 'src/app/services/auth.service';
 
 // Icons
 import { faMap } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-directions',
@@ -16,21 +19,31 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
   providers: [DirectionService],
 })
 export class DirectionsComponent implements OnInit {
-  public direction: Direction;
-  public directions: Array<Direction>;
+  public direction: DirectionInput;
+  public directions: Direction[] = [];
   public customerID: any;
+  public auth: Auth = {
+    jwt: '',
+    user: null,
+  };
 
   // Icons
   faMap = faMap;
   faPlus = faPlus;
   faTrash = faTrash;
 
-  constructor(private _directionService: DirectionService) {
-    this.directions = [];
-    this.customerID = localStorage.getItem('_id');
+  constructor(
+    private _directionService: DirectionService,
+    private _authService: AuthService,
+  ) {
     this.direction = {
       principal: false,
-      customer: this.customerID,
+      customer: '',
+      phone: '',
+      dni: '',
+      zip: '',
+      addressee: '',
+      address: '',
       region: 'Chihuahua',
       province: 'Juarez',
       country: 'Mexico',
@@ -39,10 +52,16 @@ export class DirectionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadUserAuth();
     this.getDirections();
   }
 
+  private loadUserAuth(): void {
+    this.auth = this._authService.getUser();
+  }
+
   onSubmit(form: any): void {
+    this.direction.customer = this.auth.user._id;
     this._directionService
       .addDirection(this.direction)
       .subscribe((response) => {
@@ -52,16 +71,17 @@ export class DirectionsComponent implements OnInit {
       });
   }
 
-  getDirections(): void {
-    this._directionService.getDirectionList().subscribe((response) => {
-      if (response.message) {
-        this.directions = [];
-        return;
-      }
+  public async getDirections(): Promise<void> {
+    const response = await lastValueFrom(
+      this._directionService.getDirectionList(),
+    );
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
 
-      this.directions = response.directions;
-      console.log(this.directions);
-    });
+    console.log(response);
+    this.directions = response.addresses;
   }
 
   deleteDirection(directionID: any): void {

@@ -22,21 +22,17 @@ const add = async function (req, res) {
 };
 
 const coupons = async function (req, res) {
-  if (!req.user || req.user.role !== "Admin")
-    return res.status(403).send({ message: "You are not authorized." });
-
   try {
-    var couponsArray = {};
-    couponsArray = await Coupon.find();
+    const { authentication } = req;
+    if (!authentication || authentication.role !== "Admin")
+      return res
+        .status(403)
+        .send({ success: false, message: "You are not authorized." });
 
-    if (couponsArray.length == 0)
-      return res.status(200).send({ message: "No coupons found." });
-
-    return res.status(200).send({ coupons: couponsArray });
+    const coupons = await Coupon.find();
+    return res.status(200).send({ success: true, coupons });
   } catch (err) {
-    return res
-      .status(500)
-      .send({ message: "Something went wrong. Try again." });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 

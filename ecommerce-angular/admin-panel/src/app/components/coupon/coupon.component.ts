@@ -37,16 +37,18 @@ export class CouponComponent implements OnInit {
   }
 
   getCoupons(): void {
-    this._couponService.coupons(this.token).subscribe((response) => {
-      if (!response.coupons) {
-        this.responseMessage = response.message;
-        return;
-      }
+    this._couponService
+      .coupons(this._identityService.getAuth().jwt)
+      .subscribe((response) => {
+        if (!response.coupons) {
+          this.responseMessage = response.message;
+          return;
+        }
 
-      this.responseMessage = '';
-      console.log(response);
-      this.coupons = response.coupons;
-    });
+        this.responseMessage = '';
+        console.log(response);
+        this.coupons = response.coupons;
+      });
   }
 
   addSuccess(event: any): void {
