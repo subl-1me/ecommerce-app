@@ -47,7 +47,7 @@
     </div>
 
     <!-- Not logged -->
-    <div class="login-prompt" *ngIf="!customerID">
+    <div class="login-prompt" *ngIf="auth.jwt === '' || !auth.user">
       <div class="prompt-icon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -69,7 +69,7 @@
     </div>
 
     <!-- Checkout Content -->
-    <div class="row g-4" *ngIf="customerID">
+    <div class="row g-4" *ngIf="auth.jwt !== '' && auth.user">
       <!-- Left: Order Summary -->
       <div class="col-12 col-lg-7">
         <!-- Review -->
@@ -83,7 +83,7 @@
           </div>
 
           <!-- Empty cart -->
-          <div class="empty-cart" *ngIf="cart.length === 0">
+          <div class="empty-cart" *ngIf="cart.items.length === 0">
             <div class="empty-cart-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -105,27 +105,39 @@
           </div>
 
           <!-- Cart items -->
-          <div class="cart-list" *ngIf="cart.length > 0">
-            <div class="cart-row" *ngFor="let item of cart">
+          <div class="cart-list" *ngIf="cart.items.length > 0">
+            <div class="cart-row" *ngFor="let item of cart.items">
               <div class="cart-image-wrapper">
-                <img class="cart-image" />
+                <img class="cart-image" [src]="item.product.gallery[0].path" />
               </div>
 
               <div class="cart-details">
-                <!-- <h6 class="cart-item-title">{{ item.product?.title }}</h6> -->
+                <h6 class="cart-item-title">{{ item.product.slug }}</h6>
 
                 <div class="cart-meta">
-                  <!-- <span class="meta-item">Qty: {{ item.amount }}</span> -->
-                  <!-- <span class="meta-item">Size: {{ item.size }}</span> -->
+                  <span class="meta-item">Qty: {{ item.qty }}</span>
+                  <span class="meta-item">Size: {{ item.size }}</span>
                   <span class="meta-item meta-color">
-                    <span class="color-dot"></span>
-                    Color
+                    <span
+                      class="color-dot"
+                      [style.background]="item.color"
+                    ></span>
+                    {{ item.color }}
                   </span>
+                </div>
+
+                <div class="item-link">
+                  <a
+                    class="meta-item"
+                    [routerLink]="['/products/detail/', item.product._id]"
+                    target="_blank"
+                    >See product</a
+                  >
                 </div>
               </div>
 
               <div class="cart-price">
-                <!-- ${{ calculatePrice(item.product?.price, item.amount) }} -->
+                ${{ calculatePriceTimesQty(item.product.price, item.qty) }}
               </div>
             </div>
           </div>

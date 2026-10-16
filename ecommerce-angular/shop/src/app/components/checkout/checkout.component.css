@@ -316,6 +316,14 @@
   flex-shrink: 0;
 }
 
+.cart-price-down {
+  color: #60b586;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
 /* Form */
 .form-label {
   display: block;

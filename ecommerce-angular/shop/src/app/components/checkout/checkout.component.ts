@@ -1,29 +1,27 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 
-import { Cart } from '../../models/cart';
 import { CartService } from 'src/app/services/cart.service';
-
-import { Sale } from 'src/app/models/sale';
 import { SaleService } from 'src/app/services/sale.service';
-
-import { SaleDetails } from 'src/app/models/saleDetail';
-import { ShippingInformation } from 'src/app/models/ShippingInformation';
-
-import { Direction } from 'src/app/models/direction';
 import { DirectionService } from 'src/app/services/direction.service';
-
-import { Shipping } from 'src/app/models/shipping';
 import { CheckoutService } from 'src/app/services/checkout.service';
-
-import { CouponApplied } from 'src/app/models/couponApplied';
-
-import { GLOBAL } from 'src/app/services/CONST';
-import { environment } from 'src/environments/environment';
+import { AuthService } from 'src/app/services/auth.service';
 
 // Payments
 import { IPayPalConfig, ICreateOrderRequest } from 'ngx-paypal';
 import { StripeService } from 'src/app/services/stripe.service';
+
+import { Cart } from '../../models/cart';
+import { Sale } from 'src/app/models/sale';
+import { SaleDetails } from 'src/app/models/saleDetail';
+import { ShippingInformation } from 'src/app/models/ShippingInformation';
+import { Direction } from 'src/app/models/direction';
+import { Shipping } from 'src/app/models/shipping';
+import { CouponApplied } from 'src/app/models/couponApplied';
+import { Auth } from 'src/app/models/auth';
+
+import { GLOBAL } from 'src/app/services/CONST';
+import { environment } from 'src/environments/environment';
 
 // Icons
 import {
@@ -39,6 +37,7 @@ import { faCreditCard } from '@fortawesome/free-solid-svg-icons';
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { Order } from 'src/app/models/order';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-checkout',
@@ -76,6 +75,10 @@ export class CheckoutComponent implements OnInit {
   faChevronDown = faChevronDown;
 
   public customerID: any;
+  public auth: Auth = {
+    jwt: '',
+    user: null,
+  };
 
   public productHrefUrl: string;
   public defaultDirection: Direction;
@@ -102,8 +105,7 @@ export class CheckoutComponent implements OnInit {
 
   public discount: number;
 
-  public cart: Array<Cart>;
-
+  public cart: Cart;
   public card: any;
 
   constructor(
@@ -112,10 +114,13 @@ export class CheckoutComponent implements OnInit {
     private _checkoutService: CheckoutService,
     private _saleService: SaleService,
     private _stripeService: StripeService,
+    private _authService: AuthService,
     private fb: FormBuilder,
   ) {
     this.customerID = localStorage.getItem('_id');
-    this.cart = [];
+    this.cart = {
+      items: [],
+    };
     this.saleDetails = [];
     this.defaultDirection = {};
     this.shipping = [];
@@ -172,13 +177,18 @@ export class CheckoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initPaypalConfig();
-
+    // this.initPaypalConfig();
+    this.loadAuthData();
     this.getCart();
     //this.calculateOrderTotal();
     this.getDefaultDirection();
     this.getShippingMethods();
-    this.getActiveOrder();
+    // this.getActiveOrder();
+  }
+
+  private loadAuthData(): void {
+    this.auth = this._authService.getUser();
+    console.log(this.auth);
   }
 
   generateOrder(): void {
@@ -306,7 +316,7 @@ export class CheckoutComponent implements OnInit {
     // }
   }
 
-  calculatePrice(price: any, amount: any): number {
+  calculatePriceTimesQty(price: number, amount: number): number {
     return price * amount;
   }
 
@@ -349,21 +359,17 @@ export class CheckoutComponent implements OnInit {
     // })
   }
 
-  getCart(): void {
-    if (!this.customerID) return;
+  public async getCart(): Promise<void> {
+    const response = await lastValueFrom(
+      this._cartService.getCart(this.auth.user.cart._id),
+    );
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
 
-    this._cartService.getCart(this.customerID).subscribe((response) => {
-      if (!response.cart) return;
-
-      console.log(response);
-      this.cart = response.cart;
-
-      if (this.subtotal == 0) this.calculateSubtotal();
-      this.calculateOrderTotal();
-
-      this.saleDetails = [];
-      // this.getSaleDetails();
-    });
+    this.cart = response.cart;
+    console.log(response);
   }
 
   // getSaleDetails(): void {

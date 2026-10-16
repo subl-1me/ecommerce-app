@@ -32,12 +32,10 @@ export class StripeComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private _stripeService: StripeService,
-    private _saleService: SaleService
+    private _saleService: SaleService,
   ) {
     //this.stripe = window.Stripe(environment.stripe_pk);
-    this.stripe = window.Stripe(
-      'pk_test_51L1yDyIX0ejDpXz2xriFFkc2ov5XmwysFD5u0BAJJbtt5RLUnxKJY5X0QWVW4gqYxaukYilaFyA8OBPFMtNE2KfS005oWRzBCH'
-    );
+    this.stripe = window.Stripe(environment.stripe_pk);
     this.form = this.fb.group({
       amount: [
         '',
