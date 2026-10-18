@@ -1,23 +1,20 @@
 "use strict";
 
-var Coupon = require("../models/coupon");
+const Coupon = require("../models/coupon");
+const CouponService = require("../services/coupon.service");
 
 const add = async function (req, res) {
-  if (!req.user || req.user.role !== "Admin")
-    return res.status(403).send({ message: "You are not authorized." });
-
   try {
-    var params = req.body;
+    const { authentication } = req;
+    if (!authentication || authentication.role !== "Admin")
+      return res
+        .status(403)
+        .send({ success: false, message: "You are not authorized." });
 
-    let newCoupon = await Coupon.create(params);
-    if (!newCoupon)
-      return res.status(200).send({ message: "Error adding coupon." });
-
-    return res.status(200).send({ coupon: newCoupon });
+    const coupon = await CouponService.insert(req.body);
+    return res.status(200).send({ success: false, coupon });
   } catch (err) {
-    return res
-      .status(500)
-      .send({ message: "Something went wrong. Try again." });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
@@ -29,54 +26,52 @@ const coupons = async function (req, res) {
         .status(403)
         .send({ success: false, message: "You are not authorized." });
 
-    const coupons = await Coupon.find();
+    const coupons = await CouponService.items();
     return res.status(200).send({ success: true, coupons });
   } catch (err) {
     return res.status(500).send({ success: false, message: err.message });
   }
 };
 
-const remove = async function (req, res) {
-  if (!req.user || req.user.role !== "Admin")
-    return res.status(403).send({ message: "You are not authorized." });
-  if (!req.params["id"])
-    return res.status(200).send({ message: "Coupon ID is required." });
-
-  var couponID = req.params["id"];
-
+const removeById = async function (req, res) {
   try {
-    var removedCoupon = await Coupon.findByIdAndDelete(couponID);
+    const { authentication } = req;
+    const { id } = req.params;
+    if (!authentication || authentication.role !== "Admin")
+      return res
+        .status(403)
+        .send({ success: false, message: "You are not authorized." });
 
-    return res.status(200).send({ message: "success" });
+    if (!id)
+      return res
+        .status(200)
+        .send({ success: false, message: "Coupon ID is required." });
+
+    await CouponService.removeItemById(id);
+    return res.status(200).send({ success: true });
   } catch (err) {
-    return res
-      .status(500)
-      .send({ message: "Something went wrong. Try again." });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
-const coupon = async function (req, res) {
-  if (!req.params["code"])
-    return res.status(200).send({ message: "Coupon code is required." });
-
+const couponByCode = async function (req, res) {
   try {
-    const couponCode = req.params["code"];
-
-    const coupon = await Coupon.findOne({ code: couponCode });
-    if (!coupon)
+    const { code } = req.params;
+    if (!code)
       return res
         .status(200)
-        .send({ status: "error", message: "Code not found." });
+        .send({ success: false, message: "Coupon code is required." });
 
-    return res.status(200).send({ coupon: coupon });
+    const coupon = await CouponService.itemByCode(code);
+    return res.status(200).send({ success: true, coupon });
   } catch (err) {
-    return res.status(500).send({ message: "Something went wrong." });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
 module.exports = {
   add,
   coupons,
-  remove,
-  coupon,
+  removeById,
+  couponByCode,
 };

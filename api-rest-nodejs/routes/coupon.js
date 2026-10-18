@@ -8,7 +8,7 @@ const routes = express.Router();
 
 routes.post("/coupon", auth.auth, couponController.add);
 routes.get("/coupons", auth.auth, couponController.coupons);
-routes.delete("/coupon/:id", auth.auth, couponController.remove);
-routes.get("/coupon/:code", couponController.coupon);
+routes.delete("/coupon/:id", auth.auth, couponController.removeById);
+routes.get("/coupon/:code", couponController.couponByCode);
 
 module.exports = routes;
