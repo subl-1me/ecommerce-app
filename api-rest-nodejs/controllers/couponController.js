@@ -12,7 +12,7 @@ const add = async function (req, res) {
         .send({ success: false, message: "You are not authorized." });
 
     const coupon = await CouponService.insert(req.body);
-    return res.status(200).send({ success: false, coupon });
+    return res.status(200).send({ success: true, coupon });
   } catch (err) {
     return res.status(500).send({ success: false, message: err.message });
   }
