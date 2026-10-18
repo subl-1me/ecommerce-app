@@ -309,8 +309,6 @@ export class CheckoutComponent implements OnInit {
       this.discount = 0;
     }
 
-
-    console.log()
     if (this.shippingType === GLOBAL.FreeShippingStatement) {
       this.shippingCost = 0;
     } else if (this.shippingType === GLOBAL.StandardShippingStatement) {
@@ -321,7 +319,6 @@ export class CheckoutComponent implements OnInit {
       this.shippingCost = 0;
     }
 
-    console.log(this.shippingCost);
     // avid discount > subtotal
     this.discount = Math.min(this.discount, this.subtotal);
     this.orderTotal = this.subtotal - this.discount + this.shippingCost;
