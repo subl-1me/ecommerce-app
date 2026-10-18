@@ -9,63 +9,57 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class DirectionService {
+  private httpHeaders: HttpHeaders = new HttpHeaders().set(
+    'Content-Type',
+    'application/json',
+  );
   constructor(private _http: HttpClient) {}
 
-  addDirection(direction: any): Observable<any> {
-    var headers = new HttpHeaders().set('Content-Type', 'application/json');
-
+  public addDirection(direction: any): Observable<any> {
     return this._http.post(
       (environment.API_URL || GLOBAL.localUrl) + 'direction',
       direction,
       {
-        headers: headers,
-      }
+        headers: this.httpHeaders,
+      },
     );
   }
 
-  getDirectionList(): Observable<any> {
-    var headers = new HttpHeaders().set('Content-Type', 'application/json');
-
+  public getDirectionList(): Observable<any> {
     return this._http.get(
       (environment.API_URL || GLOBAL.localUrl) + 'directions',
-      { headers: headers }
+      { headers: this.httpHeaders },
     );
   }
 
-  deleteDirection(directionID: string): Observable<any> {
-    var headers = new HttpHeaders().set('Content-Type', 'application/json');
-
+  public deleteDirection(directionID: string): Observable<any> {
     return this._http.delete(
       (environment.API_URL || GLOBAL.localUrl) + 'direction/' + directionID,
       {
-        headers: headers,
-      }
+        headers: this.httpHeaders,
+      },
     );
   }
 
-  setDirectionAsDefault(
+  public setDirectionAsDefault(
     directionID: string,
-    customerID: string
+    customerID: string,
   ): Observable<any> {
-    var headers = new HttpHeaders().set('Content-Type', 'application/json');
-
     return this._http.put(
       environment.API_URL ||
         GLOBAL.localUrl + 'direction/' + directionID + '/' + customerID,
-      { headers: headers }
+      { headers: this.httpHeaders },
     );
   }
 
-  getDefaultDirection(customerID: string): Observable<any> {
-    var headers = new HttpHeaders().set('Content-Type', 'application/json');
-
+  public getDefaultAddress(customerID: string): Observable<any> {
     return this._http.get(
       (environment.API_URL || GLOBAL.localUrl) +
         'defaultDirection/' +
         customerID,
       {
-        headers: headers,
-      }
+        headers: this.httpHeaders,
+      },
     );
   }
 }

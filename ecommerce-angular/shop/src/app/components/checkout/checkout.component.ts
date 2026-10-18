@@ -182,7 +182,7 @@ export class CheckoutComponent implements OnInit {
     this.loadAuthData();
     this.getCart();
     //this.calculateOrderTotal();
-    this.getDefaultDirection();
+    this.getDefaultAddress();
     this.getShippingMethods();
     // this.getActiveOrder();
   }
@@ -372,9 +372,9 @@ export class CheckoutComponent implements OnInit {
 
   deleteProductCart(productID: any): void {}
 
-  public async getDefaultDirection(): Promise<void> {
+  public async getDefaultAddress(): Promise<void> {
     const response = await lastValueFrom(
-      this._directionService.getDefaultDirection(this.auth.user._id),
+      this._directionService.getDefaultAddress(this.auth.user._id),
     );
 
     if (!response.success) {
@@ -429,16 +429,16 @@ export class CheckoutComponent implements OnInit {
       });
   }
 
-  completeOrder(): void {
+  public completeOrder(): void {
     // this.generateOrder();
     this.isOrderComplete = true;
   }
 
-  undoOrderComplete(): void {
+  public undoOrderComplete(): void {
     this.isOrderComplete = false;
   }
 
-  removeCoupon(): void {
+  public removeCoupon(): void {
     // RESET coupon
     this.couponApplied = {
       value: 0,
