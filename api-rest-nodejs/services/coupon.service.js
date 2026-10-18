@@ -10,12 +10,12 @@ const insert = async function (body) {
 };
 
 const items = async function () {
-  const coupons = await Coupon.find();
+  const coupons = await Coupon.find().populate("addedBy");
   return coupons;
 };
 
 const removeItemById = async function (id) {
-  await Coupon.findByidAndDelete(id);
+  await Coupon.findByIdAndDelete(id);
   return;
 };
 

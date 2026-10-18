@@ -100,7 +100,7 @@
                   letter-spacing: 0.5px;
                 "
               >
-                #
+                Added by
               </th>
               <th
                 scope="col"
@@ -175,7 +175,9 @@
 
             <ng-container *ngFor="let coupon of coupons; let ind = index">
               <tr style="transition: all 0.2s ease">
-                <td class="ps-3 text-white-75">{{ ind + 1 }}</td>
+                <td class="ps-3 text-white-75">
+                  {{ coupon.addedBy.username }}
+                </td>
                 <td class="text-white-75 fw-medium">
                   <code
                     class="bg-black bg-opacity-5 rounded px-2 py-1 small"
@@ -208,7 +210,7 @@
                       border-width: 1.5px;
                       transition: all 0.2s ease;
                     "
-                    (click)="remove(coupon._id)"
+                    (click)="remove(coupon._id || '')"
                     title="Delete coupon"
                   >
                     ×

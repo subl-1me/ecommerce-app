@@ -1,6 +1,5 @@
 "use strict";
 
-const Coupon = require("../models/coupon");
 const CouponService = require("../services/coupon.service");
 
 const add = async function (req, res) {

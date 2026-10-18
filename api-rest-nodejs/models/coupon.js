@@ -4,6 +4,7 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var CouponSchema = Schema({
+  addedBy: { type: Schema.ObjectId, ref: "admin", required: true },
   code: { type: String, required: true },
   type: { type: String, required: true },
   value: { type: Number, required: true }, // Percentage or fixed price
