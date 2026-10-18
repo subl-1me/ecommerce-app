@@ -1,16 +1,13 @@
-"use strict";
-
 require("../models/itemCart");
 const CartService = require("../services/cart.service");
-const ItemCart = require("../models/itemCart");
 const ItemCartService = require("../services/item-cart.service");
 
 const create = async function (_req, res) {
   try {
     const cart = await CartService.add({ items: [] });
-    res.status(200).send({ success: true, cart });
+    return res.status(200).send({ success: true, cart });
   } catch (err) {
-    res.status(500).send({
+    return res.status(500).send({
       success: false,
       message: res.message,
     });
@@ -20,7 +17,6 @@ const create = async function (_req, res) {
 const addItem = async function (req, res) {
   try {
     const { cartId, productId } = req.params;
-
     const body = req.body;
     if (!cartId || !productId)
       res.status(200).send({
@@ -40,9 +36,9 @@ const addItem = async function (req, res) {
       product: productId,
     };
     const result = await CartService.insertItem(cart, payload);
-    res.status(200).send({ success: true, result });
+    return res.status(200).send({ success: true, result });
   } catch (err) {
-    res.status(500).send({ success: false, message: err.message });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
@@ -50,7 +46,9 @@ const getOneById = async function (req, res) {
   try {
     const cartId = req.params["cartId"];
     if (!cartId)
-      res.status(200).send({ success: false, message: "Cart ID is required." });
+      return res
+        .status(200)
+        .send({ success: false, message: "Cart ID is required." });
 
     const cart = await CartService.item(cartId);
     return res.status(200).send({ success: true, cart });
@@ -65,7 +63,7 @@ const removeItemById = async function (req, res) {
     if (!cartId || !itemId)
       return res.status(200).send({
         success: false,
-        message: "Missing required parameter (cartId | itemId).",
+        message: "Missing required parameter (cartId or itemId).",
       });
 
     const cart = await CartService.item(cartId);
@@ -84,11 +82,10 @@ const destroy = async function (req, res) {
     const cartId = req.params["cartId"];
     if (cartId)
       res.status(200).send({ success: false, message: "Cart ID is required." });
-
     const result = await CartService.remove(cartId);
-    res.status(200).send({ success: true, result });
+    return res.status(200).send({ success: true, result });
   } catch (err) {
-    res.status(500).send({ success: false, message: err.message });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 

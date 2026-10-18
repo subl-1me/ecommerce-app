@@ -1,6 +1,6 @@
 "use strict";
 const Cart = require("../models/cart");
-const ItemCart = require("../models/itemCart");
+require("../models/itemCart");
 const ItemCartService = require("../services/item-cart.service");
 
 const item = async function (id) {
