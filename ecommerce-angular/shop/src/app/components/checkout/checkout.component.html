@@ -57,7 +57,7 @@
           viewBox="0 0 16 16"
         >
           <path
-            d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"
+            d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4z"
           />
         </svg>
       </div>
@@ -82,7 +82,6 @@
             </div>
           </div>
 
-          <!-- Empty cart -->
           <div class="empty-cart" *ngIf="cart.items.length === 0">
             <div class="empty-cart-icon">
               <svg
@@ -99,21 +98,18 @@
             </div>
             <h6 class="empty-cart-title">Your cart is empty</h6>
             <p class="empty-cart-subtitle">Add some products to continue</p>
-            <a class="btn-see-products" [routerLink]="['/products']">
-              See Products
-            </a>
+            <a class="btn-see-products" [routerLink]="['/products']"
+              >See Products</a
+            >
           </div>
 
-          <!-- Cart items -->
           <div class="cart-list" *ngIf="cart.items.length > 0">
             <div class="cart-row" *ngFor="let item of cart.items">
               <div class="cart-image-wrapper">
                 <img class="cart-image" [src]="item.product.gallery[0].path" />
               </div>
-
               <div class="cart-details">
                 <h6 class="cart-item-title">{{ item.product.slug }}</h6>
-
                 <div class="cart-meta">
                   <span class="meta-item">Qty: {{ item.qty }}</span>
                   <span class="meta-item">Size: {{ item.size }}</span>
@@ -125,7 +121,6 @@
                     {{ item.color }}
                   </span>
                 </div>
-
                 <div class="item-link">
                   <a
                     class="meta-item"
@@ -135,7 +130,6 @@
                   >
                 </div>
               </div>
-
               <div class="cart-price">
                 ${{ calculatePriceTimesQty(item.product.price, item.qty) }}
               </div>
@@ -143,7 +137,7 @@
           </div>
         </div>
 
-        <!-- Shipping info -->
+        <!-- Shipping Information -->
         <div
           class="section-card"
           *ngIf="!isOrderComplete && defaultDirection._id"
@@ -169,7 +163,6 @@
                   placeholder="you@example.com"
                 />
               </div>
-
               <div class="col-12">
                 <label for="address" class="form-label">Address</label>
                 <input
@@ -179,7 +172,6 @@
                   placeholder="Street, number, interior"
                 />
               </div>
-
               <div class="col-12 col-md-4">
                 <label for="zip" class="form-label">ZIP Code</label>
                 <input
@@ -189,7 +181,6 @@
                   placeholder="00000"
                 />
               </div>
-
               <div class="col-12 col-md-4">
                 <label for="city" class="form-label">City</label>
                 <input
@@ -199,7 +190,6 @@
                   placeholder="City"
                 />
               </div>
-
               <div class="col-12 col-md-4">
                 <label for="country" class="form-label">Country</label>
                 <input
@@ -225,15 +215,128 @@
               <p class="section-subtitle">Where should we deliver your order</p>
             </div>
           </div>
-
           <div class="section-body text-center">
             <h4 class="section-title">No address found.</h4>
             <p class="section-subtitle">
-              Add some addressses in your Profile Section
+              Add some addresses in your Profile Section
             </p>
             <button type="button" class="btn btn-success mt-2">
-              <a [routerLink]="['/directions']">Add Addres</a>
+              <a [routerLink]="['/directions']">Add Address</a>
             </button>
+          </div>
+        </div>
+
+        <!-- shipping method -->
+        <div class="section-card" *ngIf="!isOrderComplete">
+          <div class="section-header">
+            <div class="step-badge">3</div>
+            <div>
+              <h4 class="section-title">Shipping Method</h4>
+              <p class="section-subtitle">
+                Choose how fast you want to receive your order
+              </p>
+            </div>
+          </div>
+
+          <div class="shipping-methods">
+            <!-- Express -->
+            <label class="shipping-option">
+              <input
+                type="radio"
+                name="shippingMethod"
+                [(ngModel)]="shippingType"
+                class="shipping-radio"
+                value="express"
+                (change)="recalculateOrderTotal()"
+              />
+              <div class="shipping-option-content">
+                <div class="shipping-option-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-4 0H1.5A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h.026z"
+                    />
+                  </svg>
+                </div>
+                <div class="shipping-option-info">
+                  <span class="shipping-option-title">Express Shipping</span>
+                  <span class="shipping-option-desc">1-2 business days</span>
+                </div>
+                <span class="shipping-option-price">$15.00</span>
+              </div>
+            </label>
+
+            <!-- Standard -->
+            <label class="shipping-option">
+              <input
+                type="radio"
+                name="shippingMethod"
+                [(ngModel)]="shippingType"
+                class="shipping-radio"
+                value="standard"
+                (change)="recalculateOrderTotal()"
+              />
+              <div class="shipping-option-content">
+                <div class="shipping-option-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5V3.5A2.5 2.5 0 0 1 8 1zm3.5 3V3.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5z"
+                    />
+                  </svg>
+                </div>
+                <div class="shipping-option-info">
+                  <span class="shipping-option-title">Standard Shipping</span>
+                  <span class="shipping-option-desc">3-5 business days</span>
+                </div>
+                <span class="shipping-option-price">$5.00</span>
+              </div>
+            </label>
+
+            <!-- Free -->
+            <label class="shipping-option">
+              <input
+                type="radio"
+                name="shippingMethod"
+                [(ngModel)]="shippingType"
+                class="shipping-radio"
+                value="free"
+                checked
+                (change)="recalculateOrderTotal()"
+              />
+              <div class="shipping-option-content">
+                <div class="shipping-option-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"
+                    />
+                  </svg>
+                </div>
+                <div class="shipping-option-info">
+                  <span class="shipping-option-title">Free Shipping</span>
+                  <span class="shipping-option-desc">7-10 business days</span>
+                </div>
+                <span class="shipping-option-price shipping-option-price-free"
+                  >Free</span
+                >
+              </div>
+            </label>
           </div>
         </div>
       </div>
@@ -248,7 +351,7 @@
             <div class="summary-list">
               <div class="summary-row">
                 <span class="summary-label">Subtotal</span>
-                <span class="summary-value">${{ calculateSubtotal() }}</span>
+                <span class="summary-value">${{ subtotal }}</span>
               </div>
 
               <div class="summary-row">
@@ -256,13 +359,14 @@
                 <span class="summary-value">${{ shippingCost }}</span>
               </div>
 
+              <!-- ============ COUPON SECTION ============ -->
               <div class="summary-row summary-discount">
                 <button
                   class="discount-toggle"
                   data-bs-toggle="collapse"
                   data-bs-target="#collapse-promo"
                 >
-                  <span>Discount</span>
+                  <span>Have a coupon?</span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="12"
@@ -276,34 +380,90 @@
                     />
                   </svg>
                 </button>
-                <span
-                  class="summary-value summary-value-discount"
-                  *ngIf="discount != 0"
-                  >-%{{ discount }}</span
-                >
-                <span class="summary-value text-muted" *ngIf="discount == 0"
-                  >—</span
-                >
               </div>
 
+              <!-- Coupon input (collapsed) -->
               <div class="collapse" id="collapse-promo">
-                <div class="promo-input-group">
+                <div class="coupon-input-wrapper">
                   <input
-                    class="form-control form-control-custom"
+                    class="coupon-input"
                     name="code"
                     [(ngModel)]="couponCode"
-                    placeholder="Coupon / Promo code"
+                    placeholder="Enter coupon code"
                   />
-                  <button class="btn btn-add-cart" (click)="applyCouponCode()">
+                  <button class="coupon-apply-btn" (click)="verifyCouponCode()">
                     Apply
                   </button>
                 </div>
+              </div>
+
+              <!-- Applied coupon -->
+              <div class="coupon-applied" *ngIf="coupon && coupon.code">
+                <div class="coupon-applied-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"
+                    />
+                  </svg>
+                </div>
+                <div class="coupon-applied-info">
+                  <span class="coupon-applied-code">{{ coupon.code }}</span>
+                  <span class="coupon-applied-desc">
+                    <ng-container *ngIf="coupon.type === percentageTypeTemplate"
+                      >{{ coupon.value }}% off</ng-container
+                    >
+                    <ng-container *ngIf="coupon.type === fixedTypeTemplate"
+                      >${{ coupon.value }} off</ng-container
+                    >
+                  </span>
+                </div>
+                <div class="coupon-applied-right">
+                  <span
+                    class="coupon-applied-amount"
+                    *ngIf="coupon.type === percentageTypeTemplate"
+                    >-{{ coupon.value }}%</span
+                  >
+                  <span
+                    class="coupon-applied-amount"
+                    *ngIf="coupon.type === fixedTypeTemplate"
+                    >-${{ discount }}</span
+                  >
+                  <button
+                    class="coupon-remove-btn"
+                    (click)="removeCoupon()"
+                    title="Remove coupon"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+
+              <!-- Discount row (only when coupon applied) -->
+              <div
+                class="summary-row summary-discount-row"
+                *ngIf="coupon && coupon.code"
+              >
+                <span class="summary-label">Discount</span>
+                <span class="summary-value summary-value-discount">
+                  <ng-container *ngIf="coupon.type === percentageTypeTemplate"
+                    >-{{ coupon.value }}%</ng-container
+                  >
+                  <ng-container *ngIf="coupon.type === fixedTypeTemplate"
+                    >-${{ discount }}</ng-container
+                  >
+                </span>
               </div>
             </div>
 
             <div class="summary-total">
               <span class="total-label">Total</span>
-              <span class="total-amount">${{ calculateOrderTotal() }}</span>
+              <span class="total-amount">${{ this.orderTotal }}</span>
             </div>
           </div>
 

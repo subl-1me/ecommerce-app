@@ -17,7 +17,7 @@ import { SaleDetails } from 'src/app/models/saleDetail';
 import { ShippingInformation } from 'src/app/models/ShippingInformation';
 import { Direction } from 'src/app/models/direction';
 import { Shipping } from 'src/app/models/shipping';
-import { CouponApplied } from 'src/app/models/couponApplied';
+import { Coupon } from 'src/app/models/coupon';
 import { Auth } from 'src/app/models/auth';
 
 import { GLOBAL } from 'src/app/services/CONST';
@@ -38,6 +38,7 @@ import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { Order } from 'src/app/models/order';
 import { lastValueFrom } from 'rxjs';
+import { CouponService } from 'src/app/services/coupon.service';
 
 @Component({
   selector: 'app-checkout',
@@ -57,8 +58,12 @@ export class CheckoutComponent implements OnInit {
   public form: FormGroup = new FormGroup({});
 
   // Coupons
-  public couponApplied: CouponApplied;
-
+  public coupon: Coupon = {
+    value: 0,
+    limit: 0,
+    code: '',
+    type: '',
+  };
   public shippingInformation: ShippingInformation;
 
   // Icons
@@ -80,13 +85,16 @@ export class CheckoutComponent implements OnInit {
     user: null,
   };
 
+  public percentageTypeTemplate = GLOBAL.CouponPercentagePrice;
+  public fixedTypeTemplate = GLOBAL.CouponFixedPrice;
+
   public productHrefUrl: string;
   public defaultDirection: Direction;
   public directionExists: boolean;
 
   public shipping: Array<Shipping>;
   public shippingCost: number;
-  public shippingType: any;
+  public shippingType: string = 'free';
 
   public sale: Sale;
   public saleDetails: Array<SaleDetails>;
@@ -112,6 +120,7 @@ export class CheckoutComponent implements OnInit {
     private _cartService: CartService,
     private _directionService: DirectionService,
     private _checkoutService: CheckoutService,
+    private _couponService: CouponService,
     private _saleService: SaleService,
     private _stripeService: StripeService,
     private _authService: AuthService,
@@ -170,7 +179,6 @@ export class CheckoutComponent implements OnInit {
 
     this.couponCode = '';
     this.couponCodeMessage = '';
-    this.couponApplied = { type: '', value: 0, code: '' };
 
     this.discount = 0;
 
@@ -181,7 +189,6 @@ export class CheckoutComponent implements OnInit {
     // this.initPaypalConfig();
     this.loadAuthData();
     this.getCart();
-    //this.calculateOrderTotal();
     this.getDefaultAddress();
     this.getShippingMethods();
     // this.getActiveOrder();
@@ -280,18 +287,48 @@ export class CheckoutComponent implements OnInit {
     };
   }
 
-  public async applyCouponCode(): Promise<void> {
-    // if(this.couponApplied.find(element => element == this.couponCode) ==  this.couponCode) return; // Case coupon has been applied
-
+  public async verifyCouponCode(): Promise<void> {
     const response = await lastValueFrom(
-      this._checkoutService.applyCouponCode(this.couponCode),
+      this._couponService.getCuponByCode(this.couponCode),
     );
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
 
-    console.log(response);
+    this.coupon = response.coupon;
+    this.recalculateOrderTotal();
   }
 
-  public calculateSubtotal(): number {
-    return this.cart.items.reduce((accum, current) => {
+  public recalculateOrderTotal(): void {
+    if (this.coupon.type === GLOBAL.CouponPercentagePrice) {
+      this.discount = this.subtotal * (this.coupon.value / 100);
+    } else if (this.coupon.type === GLOBAL.CouponFixedPrice) {
+      this.discount = this.coupon.value;
+    } else {
+      this.discount = 0;
+    }
+
+
+    console.log()
+    if (this.shippingType === GLOBAL.FreeShippingStatement) {
+      this.shippingCost = 0;
+    } else if (this.shippingType === GLOBAL.StandardShippingStatement) {
+      this.shippingCost = 5;
+    } else if (this.shippingType === GLOBAL.ExpressShippingStatement) {
+      this.shippingCost = 15;
+    } else {
+      this.shippingCost = 0;
+    }
+
+    console.log(this.shippingCost);
+    // avid discount > subtotal
+    this.discount = Math.min(this.discount, this.subtotal);
+    this.orderTotal = this.subtotal - this.discount + this.shippingCost;
+  }
+
+  public calculateOrderSubTotal(): void {
+    this.subtotal = this.cart.items.reduce((accum, current) => {
       return (accum += current.product.price * current.qty);
     }, 0);
   }
@@ -300,15 +337,11 @@ export class CheckoutComponent implements OnInit {
     return price * amount;
   }
 
-  public calculateOrderTotal(): number {
-    let subtotal = this.calculateSubtotal();
-
+  public calculateSubOrderTotal(): void {
     // this.orderTotal += subtotal + this.shippingCost;
     // if (this.discount != 0)
     //   this.orderTotal = (this.orderTotal * this.discount) / 100;
     // this.sale.total = this.orderTotal;
-
-    return subtotal;
   }
 
   public addShippingCost(methodPrice: any, methodType: any) {
@@ -319,7 +352,7 @@ export class CheckoutComponent implements OnInit {
     //   this.orderTotal -= this.shippingCost;
     // }
     // if(this.shippingCost == 0){
-    this.calculateOrderTotal();
+    // this.calculateOrderTotal();
     this.sale.shippingPrice = this.shippingCost;
     this.sale.shippingType = methodType;
     //   return;
@@ -352,6 +385,7 @@ export class CheckoutComponent implements OnInit {
     }
 
     this.cart = response.cart;
+    this.calculateOrderSubTotal();
   }
 
   // getSaleDetails(): void {
@@ -440,13 +474,14 @@ export class CheckoutComponent implements OnInit {
 
   public removeCoupon(): void {
     // RESET coupon
-    this.couponApplied = {
+    this.coupon = {
       value: 0,
       type: '',
       code: '',
+      limit: 0,
     };
 
     this.discount = 0;
-    this.calculateOrderTotal();
+    this.recalculateOrderTotal();
   }
 }
