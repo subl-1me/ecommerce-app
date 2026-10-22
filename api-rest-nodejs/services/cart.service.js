@@ -17,6 +17,12 @@ const item = async function (id) {
   return cart;
 };
 
+const toEmpty = async function (cartId) {
+  await Cart.findByIdAndUpdate(cartId, {
+    items: [],
+  });
+};
+
 const add = async function (body) {
   const cart = await Cart.create(body);
   if (!cart) {
@@ -76,4 +82,5 @@ module.exports = {
   update,
   insertItem,
   removeItem,
+  toEmpty,
 };

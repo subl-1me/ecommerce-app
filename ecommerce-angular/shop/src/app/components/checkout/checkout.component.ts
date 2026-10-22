@@ -12,7 +12,6 @@ import { IPayPalConfig, ICreateOrderRequest } from 'ngx-paypal';
 import { StripeService } from 'src/app/services/stripe.service';
 
 import { Cart } from '../../models/cart';
-import { Sale } from 'src/app/models/sale';
 import { SaleDetails } from 'src/app/models/saleDetail';
 import { ShippingInformation } from 'src/app/models/ShippingInformation';
 import { Direction } from 'src/app/models/direction';
@@ -36,9 +35,10 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons';
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { Order } from 'src/app/models/order';
 import { lastValueFrom } from 'rxjs';
 import { CouponService } from 'src/app/services/coupon.service';
+import { OrderInput } from 'src/app/models/order';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-checkout',
@@ -56,6 +56,22 @@ export class CheckoutComponent implements OnInit {
   // Payments
   public payPalConfig?: IPayPalConfig;
   public form: FormGroup = new FormGroup({});
+
+  public isProcessingPayment: boolean = false;
+  public isPaymentSucceeded: boolean = false;
+  public paymentStep: number = 0;
+  orderDetails: OrderInput = {
+    items: [],
+    customer: '',
+    address: null,
+    subtotal: 0,
+    total: 0,
+    shippingCost: 0,
+    coupon: null,
+    discount: 0,
+    paymentProviderName: 'stripe',
+    paymentStatus: 'pending',
+  };
 
   // Coupons
   public coupon: Coupon = {
@@ -96,9 +112,7 @@ export class CheckoutComponent implements OnInit {
   public shippingCost: number;
   public shippingType: string = 'free';
 
-  public sale: Sale;
   public saleDetails: Array<SaleDetails>;
-  public currentOrder: Order;
 
   public orderTotal: number;
   public subtotal: number;
@@ -121,9 +135,8 @@ export class CheckoutComponent implements OnInit {
     private _directionService: DirectionService,
     private _checkoutService: CheckoutService,
     private _couponService: CouponService,
-    private _saleService: SaleService,
-    private _stripeService: StripeService,
     private _authService: AuthService,
+    private _router: Router,
     private fb: FormBuilder,
   ) {
     this.customerID = localStorage.getItem('_id');
@@ -139,21 +152,6 @@ export class CheckoutComponent implements OnInit {
     this.isPaypalSelected = false;
     this.isCCSelected = false;
     this.isShippingSelected = false;
-
-    this.sale = {
-      customer: this.customerID,
-      transaction: '',
-      payment_method: '',
-    };
-
-    this.currentOrder = {
-      _id: '',
-      amount: 0,
-      customerID: '',
-      status: 'wait',
-      createAt: '',
-      updatedAt: '',
-    };
 
     this.form = this.fb.group({
       address: [
@@ -185,34 +183,81 @@ export class CheckoutComponent implements OnInit {
     this.directionExists = false;
   }
 
+  public handlePaymentStatus(event: any) {
+    const status = event as boolean;
+    console.log(event);
+    this.isProcessingPayment = status;
+  }
+
+  public async handlePaymentSucceeded(event: any) {
+    const status = event as boolean;
+    this.isPaymentSucceeded = status;
+
+    this.resetOrder();
+    // delete cart
+    const response = await lastValueFrom(
+      this._cartService.emptyCart(this.cart._id || ''),
+    );
+
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+
+    // reset cart
+    this.auth.user.cart.items = [];
+    this._authService.update(this.auth.user);
+  }
+
+  public handleNavigation(action: string): void {
+    switch (action) {
+      case 'continue-shopping':
+        localStorage.removeItem('activeOrderId');
+        this._router.navigate(['/products']);
+        break;
+      case 'order-details':
+        const orderId = localStorage.getItem('activeOrderId') || '';
+        localStorage.removeItem('activeOrderId');
+        this._router.navigate(['/order', orderId]);
+        break;
+      default:
+        break;
+    }
+  }
+
+  private resetOrder(): void {
+    this.orderDetails = {
+      customer: '',
+      items: [],
+      subtotal: 0,
+      discount: 0,
+      address: null,
+      coupon: null,
+      paymentProviderName: '',
+      paymentStatus: 'pending',
+      shippingCost: 0,
+      total: 0,
+    };
+  }
+
+  public handlePaymentSteps(event: any) {
+    const step = event as number;
+    this.paymentStep = step;
+  }
+
   ngOnInit(): void {
     // this.initPaypalConfig();
     this.loadAuthData();
     this.getCart();
     this.getDefaultAddress();
+    this.recalculateOrderTotal();
     this.getShippingMethods();
-    // this.getActiveOrder();
   }
 
   private loadAuthData(): void {
     this.auth = this._authService.getUser();
+    this.orderDetails.customer = this.auth.user._id;
     this.form.patchValue({ email: this.auth.user.email });
-  }
-
-  public generateOrder(): void {
-    if (!this.customerID) return;
-
-    var orderData = { id: this.customerID, amount: this.orderTotal };
-    this._stripeService.generateOrder(orderData).subscribe((response) => {
-      //if(!response.data._id) return;
-
-      const orderId = response.data._id;
-      localStorage.setItem('orderID', orderId);
-    });
-
-    /*this._stripeService.getOrder().subscribe((response) => {
-      console.log(response);
-    })*/
   }
 
   private initPaypalConfig(): void {
@@ -260,26 +305,7 @@ export class CheckoutComponent implements OnInit {
         layout: 'vertical',
       },
       onApprove: (data, actions) => {
-        actions.order.get().then((details: any) => {
-          this.sale.shippingPrice = this.shippingCost;
-          this.sale.transaction = details.id;
-          this.sale.total = this.orderTotal;
-          this.sale.status = 'Success';
-          this.sale.payment_method = 'Paypal';
-
-          this._saleService
-            .registerCustomerSale(this.sale)
-            .subscribe((response) => {
-              if (response.status !== 'SUCCESS') return;
-
-              this._saleService
-                .sendEmailSale(response.saleRegister._id)
-                .subscribe((response) => {
-                  console.log(response);
-                });
-              // this.isSaleCompleted = true;
-            });
-        });
+        actions.order.get().then((details: any) => {});
       },
       onError: (err) => {
         console.log(err);
@@ -322,54 +348,21 @@ export class CheckoutComponent implements OnInit {
     // avid discount > subtotal
     this.discount = Math.min(this.discount, this.subtotal);
     this.orderTotal = this.subtotal - this.discount + this.shippingCost;
+    this.orderDetails.total = this.orderTotal;
+    this.orderDetails.coupon = this.coupon._id ? this.coupon : null;
+    this.orderDetails.shippingCost = this.shippingCost;
+    this.orderDetails.discount = this.discount;
   }
 
   public calculateOrderSubTotal(): void {
     this.subtotal = this.cart.items.reduce((accum, current) => {
       return (accum += current.product.price * current.qty);
     }, 0);
+    this.orderDetails.subtotal = this.subtotal;
   }
 
   public calculatePriceTimesQty(price: number, amount: number): number {
     return price * amount;
-  }
-
-  public calculateSubOrderTotal(): void {
-    // this.orderTotal += subtotal + this.shippingCost;
-    // if (this.discount != 0)
-    //   this.orderTotal = (this.orderTotal * this.discount) / 100;
-    // this.sale.total = this.orderTotal;
-  }
-
-  public addShippingCost(methodPrice: any, methodType: any) {
-    this.isShippingSelected = true;
-
-    // calculate order total
-    // if(this.shippingCost != 0 ){
-    //   this.orderTotal -= this.shippingCost;
-    // }
-    // if(this.shippingCost == 0){
-    // this.calculateOrderTotal();
-    this.sale.shippingPrice = this.shippingCost;
-    this.sale.shippingType = methodType;
-    //   return;
-    // }
-    // this.orderTotal += +this.shippingCost;
-
-    // this.orderTotal += parseInt(methodPrice);
-    // this.shippingType = methodType;
-
-    // this.calculateOrderTotal();
-    // console.log(this.orderTotal);
-
-    // create payment intent (stripe)
-    // this._stripeService.createPaymentIntent(this.orderTotal, this.customerID, methodType).subscribe((response) => {
-    //   console.log(response);
-    //   if(!response.intent.client_secret) return;
-
-    //   localStorage.setItem('current_intent', response.intent.client_secret);
-
-    // })
   }
 
   public async getCart(): Promise<void> {
@@ -382,26 +375,10 @@ export class CheckoutComponent implements OnInit {
     }
 
     this.cart = response.cart;
+    this.orderDetails.items = [...this.cart.items];
+    this.orderDetails.customer = this.auth.user._id;
     this.calculateOrderSubTotal();
   }
-
-  // getSaleDetails(): void {
-  //   this.cart.forEach((item) => {
-  //     this.saleDetails.push({
-  //       product: item.product?._id,
-  //       customer: this.customerID,
-  //       subtotal: item.product?.price,
-  //       variety: item.size,
-  //       amount: item.amount,
-  //       sale: '',
-  //     });
-  //   });
-
-  //   this.sale.details = this.saleDetails;
-  //   console.log(this.saleDetails);
-  // }
-
-  deleteProductCart(productID: any): void {}
 
   public async getDefaultAddress(): Promise<void> {
     const response = await lastValueFrom(
@@ -418,6 +395,7 @@ export class CheckoutComponent implements OnInit {
     }
 
     this.defaultDirection = response.address;
+    this.orderDetails.address = response.address;
     this.form.patchValue({
       address: this.defaultDirection.address,
       zip: this.defaultDirection.zip,
@@ -448,25 +426,6 @@ export class CheckoutComponent implements OnInit {
 
     this.isPaypalSelected = false;
     this.isCCSelected = true;
-  }
-
-  public async getActiveOrder(): Promise<any> {
-    this._stripeService
-      .getActiveOrder(this.customerID)
-      .subscribe((response) => {
-        if (response.currentCustomerOrder) {
-          this.currentOrder = response.currentCustomerOrder;
-        }
-      });
-  }
-
-  public completeOrder(): void {
-    // this.generateOrder();
-    this.isOrderComplete = true;
-  }
-
-  public undoOrderComplete(): void {
-    this.isOrderComplete = false;
   }
 
   public removeCoupon(): void {

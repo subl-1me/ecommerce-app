@@ -3,7 +3,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-var directionSchema = Schema({
+const directionSchema = Schema({
   customer: { type: Schema.ObjectId, ref: "customer", required: true },
   addressee: { type: String, required: true },
   dni: { type: String, required: true },

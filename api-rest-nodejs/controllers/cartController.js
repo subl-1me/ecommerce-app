@@ -14,6 +14,22 @@ const create = async function (_req, res) {
   }
 };
 
+const toEmpty = async function (req, res) {
+  try {
+    const { cartId } = req.params;
+    if (!cartId)
+      res.status(200).send({
+        success: false,
+        message: `Cart ID is required.`,
+      });
+
+    await CartService.toEmpty(cartId);
+    return res.status(200).send({ success: true });
+  } catch (err) {
+    return res.status(500).send({ success: false, message: err.message });
+  }
+};
+
 const addItem = async function (req, res) {
   try {
     const { cartId, productId } = req.params;
@@ -95,4 +111,5 @@ module.exports = {
   destroy,
   removeItemById,
   create,
+  toEmpty,
 };

@@ -1,8 +1,31 @@
+import { Direction } from 'readline';
+import CartItem from './cartItem';
+import { Coupon } from './coupon';
+import { Customer } from './customer';
+
+export interface OrderInput {
+  customer: string;
+  items: CartItem[];
+  subtotal: number;
+  discount: number;
+  address: Direction | null;
+  total: number;
+  shippingCost: Number;
+  coupon: Coupon | null;
+  paymentProviderName: string;
+  paymentStatus: string;
+}
+
 export interface Order {
-  _id: string;
-  customerID: string;
-  amount: number;
-  status: string;
-  createAt: string;
-  updatedAt: string;
+  _id?: string;
+  customer: Customer;
+  items: CartItem[];
+  subtotal: number;
+  total: number;
+  shippingCost: Number;
+  coupon: Coupon | null;
+  paymentProviderName: string;
+  paymentStatus: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

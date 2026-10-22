@@ -44,6 +44,13 @@ export class CartService {
     );
   }
 
+  public emptyCart(cartId: string): Observable<any> {
+    return this._http.put(
+      `${environment.API_URL || GLOBAL.localUrl}cart/${cartId}/toEmpty`,
+      { headers: this.headers },
+    );
+  }
+
   public removeItem(cartId: string, itemId: string): Observable<any> {
     return this._http.delete(
       `${environment.API_URL || GLOBAL.localUrl}cart/${cartId}/remove/${itemId}`,

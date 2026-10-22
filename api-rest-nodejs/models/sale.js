@@ -4,17 +4,18 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const saleSchema = Schema({
-  customer: { type: Schema.ObjectId, ref: "customer", required: true },
-  total: { type: Number, required: true },
-  shippingType: { type: String, required: true },
-  shippingPrice: { type: Number, required: true },
-  shippingAddress: { type: Schema.ObjectId, ref: "direction", required: true },
-  shippingNote: { type: String, required: false },
-  transaction: { type: String, required: true },
-  payment_method: { type: String, required: true },
-  coupon: { type: String, required: false },
-  status: { type: String, required: false },
+  order: { type: Schema.ObjectId, ref: "order", required: true },
+  stripePaymentIntentId: { type: String, default: null },
+  paypalPaymentIntentId: { type: String, default: null },
+  amount: { type: Number, required: true },
+  status: {
+    type: String,
+    enum: ["succeeded", "failed", "pending"],
+    default: "pending",
+  },
+  paidAt: { type: Date },
   createdAt: { type: Date, default: Date.now, required: true },
+  updatedAt: { type: Date, default: Date.now, required: true },
 });
 
 module.exports = mongoose.model("sale", saleSchema);

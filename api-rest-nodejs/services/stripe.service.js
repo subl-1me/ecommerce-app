@@ -1,28 +1,28 @@
 "use strict";
-
-const stripe = require("stripe")(
-  "sk_test_51L1yDyIX0ejDpXz2NQusVQUCrRwIQQiBlib2JuDIAchzIqGUSOlChzTx2dQAmORzqOyLcWfhLY2NGOn1aCmkCqiE005e7zcbhU"
-);
+require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_PK_SECRET);
 
 // Generate payment intent
-const generatePaymentIntent = async function (data) {
+const generatePaymentIntent = async function (intent) {
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: parseFloat(data.amount) * 100,
-    currency: "usd",
-    payment_method_types: ["card"],
-    payment_method: data.payment_method,
-    description: `Prueba de pago para -> ${data.user}`,
-    receipt_email: "headshotmusic404@gmail.com",
+    amount: intent.amount,
+    currency: intent.currency,
+    automatic_payment_methods: {
+      enabled: true,
+      allow_redirects: "never",
+    },
+    confirm: true, // default for testing
+    payment_method: intent.stripe_pm,
+    description: intent.description,
   });
 
-  console.log("ok");
   return paymentIntent;
 };
 
 const generatePaymentMethod = async function (token) {
   const paymentMethod = await stripe.paymentMethods.create({
     type: "card",
-    card: { token },
+    card: { token: token.id },
   });
 
   return paymentMethod;

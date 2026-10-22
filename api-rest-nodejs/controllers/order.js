@@ -1,52 +1,44 @@
 "use strict";
 
+const OrderService = require("../services/order.service");
 const Order = require("../models/order");
-const Stripe = require("../services/stripe");
-
-// Generate new order for stripe
+const StripeService = require("../services/stripe.service");
 
 const generateOrder = async function (req, res) {
-  if (!req.body.id)
-    return res.status(200).send({ message: "Customer ID is required." });
-  if (!req.body.amount)
-    return res.status(200).send({ message: "Amount is required." });
-
-  const customerID = req.body.id;
-  const amount = req.body.amount;
-
-  // Check if there is an order with waiting status
-  const order = await Order.find({ status: "wait" });
-  if (order.length != 0)
-    return res.status(200).send({ message: "A waiting order already exists." });
-
   try {
-    const orderRes = await Order.create({
-      customerID: customerID,
-      amount: amount,
+    const { body } = req;
+    const order = await OrderService.insert({
+      customer: body.customer,
+      items: body.items,
+      discount: body.discount,
+      subtotal: body.subtotal,
+      total: body.total,
+      shippingCost: body.shippingCost,
+      coupon: body.coupon ? body.coupon._id : null,
+      paymentMethodProviderId: body.paymentMethodProviderId
+        ? body.paymentMethodProviderId
+        : null,
+      paymentProviderName: body.paymentProviderName,
     });
 
-    res.send({ data: orderRes });
-  } catch (e) {
-    res.status(500);
-    res.send({ error: "Something went wrong." });
+    return res.status(200).send({ success: true, order });
+  } catch (err) {
+    res.status(500).send({ success: false, message: err.message });
   }
 };
 
 const getActiveOrder = async function (req, res) {
-  const customerId = req.params["customerId"];
-  if (!customerId) {
-    return res.status(200).send({ message: "A customer ID is required." });
-  }
-
   try {
-    const currentCustomerOrder = await Order.findOne({
-      customerID: customerId,
-    });
-
-    return res.status(200).send({ status: "success", currentCustomerOrder });
+    const { customerId } = req.params;
+    if (!customerId) {
+      return res
+        .status(200)
+        .send({ success: false, message: "A customer ID is required." });
+    }
+    const orders = await OrderService.getItemsByCustomerId(customerId);
+    return res.status(200).send({ success: true, orders });
   } catch (err) {
-    console.log(err.message);
-    return res.status(500).send({ message: `${err.message}` });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
@@ -78,7 +70,7 @@ const updateOrder = async function (req, res) {
       { _id: req.params["orderId"] },
       {
         stripeId: resPaymentIntent.id,
-      }
+      },
     );
 
     console.log("culo el que lo lea");
@@ -92,48 +84,77 @@ const updateOrder = async function (req, res) {
   }
 };
 
-const getOrders = async function (_req, res) {
+const getOrderById = async function (req, res) {
   try {
-    var orders = await Order.find();
-    if (!orders)
-      return res.status(200).send({ message: "Orders list is empty." });
+    const { orderId } = req.params;
+    if (!orderId) {
+      return res
+        .status(200)
+        .send({ success: false, message: "Order ID is required." });
+    }
 
+    const order = await OrderService.itemById(orderId);
     return res.status(200).send({
-      status: "success",
+      success: true,
+      order,
+    });
+  } catch (err) {
+    return res.status(500).send({ success: false, message: err.message });
+  }
+};
+
+const getOrdersByCustomerId = async function (req, res) {
+  try {
+    const { customerId } = req.params;
+    if (!customerId) {
+      return res
+        .status(200)
+        .send({ success: false, message: "Customer ID is required." });
+    }
+
+    const orders = OrderService.getItemsByCustomerId(customerId);
+    return res.status(200).send({
+      success: true,
       orders: orders,
     });
   } catch (err) {
-    return res
-      .status(500)
-      .send({ message: "Something went wrong. Try again." });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
 const confirmOrder = async function (req, res) {
-  if (!req.params["orderId"])
-    return res.status(200).send({ message: "Order ID is requried." });
-
-  const Orderid = req.params["orderId"];
-
   try {
-    await Order.findByIdAndDelete(Orderid);
+    const { orderId } = req.params;
+    if (!orderId)
+      return res
+        .status(200)
+        .send({ sucess: false, message: "Order ID is required." });
 
+    const order = await OrderService.itemById(orderId);
+    if (!order) {
+      return res
+        .status(200)
+        .send({ sucess: false, message: "Order ID is required." });
+    }
+
+    const updatedOrder = await OrderService.confirmItem(order._id);
     return res.status(200).send({
-      status: 200,
-      message: "Order completed successfully.",
+      success: true,
+      order: updatedOrder,
     });
   } catch (err) {
     return res.status(500).send({
       status: 500,
-      message: "Something went wrong trying to update order. Try again.",
+      message: err.message,
     });
   }
 };
 
 module.exports = {
   generateOrder,
-  getOrders,
+  getOrdersByCustomerId,
   updateOrder,
   confirmOrder,
   getActiveOrder,
+  getOrderById,
 };

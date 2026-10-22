@@ -8,7 +8,8 @@ const orderController = require("../controllers/order");
 routes.post("/order", orderController.generateOrder);
 routes.patch("/order/:orderId", orderController.updateOrder);
 routes.get("/activeOrder/:customerId", orderController.getActiveOrder);
-routes.get("/orders", orderController.getOrders);
+routes.get("/orders/:customerId", orderController.getOrdersByCustomerId);
+routes.get("/order/:orderId", orderController.getOrderById);
 routes.patch("/order/confirm/:orderId", orderController.confirmOrder);
 
 module.exports = routes;
