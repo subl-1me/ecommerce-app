@@ -246,7 +246,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.initPaypalConfig();
+    this.initPaypalConfig();
     this.loadAuthData();
     this.getCart();
     this.getDefaultAddress();
