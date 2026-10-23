@@ -213,6 +213,10 @@
             <div>
               <h4 class="section-title">Shipping Information</h4>
               <p class="section-subtitle">Where should we deliver your order</p>
+
+              <button type="button" class="btn btn-success mt-2">
+                <a [routerLink]="['/directions']">Add Address</a>
+              </button>
             </div>
           </div>
           <div class="section-body text-center">
@@ -383,7 +387,11 @@
               </div>
 
               <!-- Coupon input (collapsed) -->
-              <div class="collapse" id="collapse-promo">
+              <div
+                class="collapse"
+                id="collapse-promo"
+                *ngIf="!coupon || coupon.code === ''"
+              >
                 <div class="coupon-input-wrapper">
                   <input
                     class="coupon-input"

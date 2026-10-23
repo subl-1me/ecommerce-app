@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 
 import { CartService } from 'src/app/services/cart.service';
 import { SaleService } from 'src/app/services/sale.service';
@@ -235,7 +235,7 @@ export class CheckoutComponent implements OnInit {
       coupon: null,
       paymentProviderName: '',
       paymentStatus: 'pending',
-      shippingCost: 0,
+      shippingCost: 0, // free
       total: 0,
     };
   }
@@ -250,7 +250,6 @@ export class CheckoutComponent implements OnInit {
     this.loadAuthData();
     this.getCart();
     this.getDefaultAddress();
-    this.recalculateOrderTotal();
     this.getShippingMethods();
   }
 
@@ -378,6 +377,7 @@ export class CheckoutComponent implements OnInit {
     this.orderDetails.items = [...this.cart.items];
     this.orderDetails.customer = this.auth.user._id;
     this.calculateOrderSubTotal();
+    this.recalculateOrderTotal();
   }
 
   public async getDefaultAddress(): Promise<void> {
