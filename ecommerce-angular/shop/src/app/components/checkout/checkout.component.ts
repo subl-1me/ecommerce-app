@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { CartService } from 'src/app/services/cart.service';
 import { SaleService } from 'src/app/services/sale.service';
@@ -15,9 +15,11 @@ import { Cart } from '../../models/cart';
 import { SaleDetails } from 'src/app/models/saleDetail';
 import { ShippingInformation } from 'src/app/models/ShippingInformation';
 import { Direction } from 'src/app/models/direction';
-import { Shipping } from 'src/app/models/shipping';
+import { ShippingMethod } from 'src/app/models/shippingMethod';
 import { Coupon } from 'src/app/models/coupon';
 import { Auth } from 'src/app/models/auth';
+import { Config } from 'src/app/models/config';
+import { ConfigsService } from 'src/app/services/configs.service';
 
 import { GLOBAL } from 'src/app/services/CONST';
 import { environment } from 'src/environments/environment';
@@ -39,6 +41,7 @@ import { lastValueFrom } from 'rxjs';
 import { CouponService } from 'src/app/services/coupon.service';
 import { OrderInput } from 'src/app/models/order';
 import { Router } from '@angular/router';
+import CartItem from 'src/app/models/cartItem';
 
 @Component({
   selector: 'app-checkout',
@@ -60,7 +63,7 @@ export class CheckoutComponent implements OnInit {
   public isProcessingPayment: boolean = false;
   public isPaymentSucceeded: boolean = false;
   public paymentStep: number = 0;
-  orderDetails: OrderInput = {
+  public orderDetails: OrderInput = {
     items: [],
     customer: '',
     address: null,
@@ -69,8 +72,25 @@ export class CheckoutComponent implements OnInit {
     shippingCost: 0,
     coupon: null,
     discount: 0,
+    shippingMethod: {
+      time: '',
+      title: '',
+      price: 0,
+    },
     paymentProviderName: 'stripe',
     paymentStatus: 'pending',
+  };
+
+  public config: Config = {
+    categories: [],
+    _id: '',
+    logo: {
+      path: '',
+      public_id: '',
+    },
+    shippingMethods: [],
+
+    shopName: '',
   };
 
   // Coupons
@@ -108,7 +128,6 @@ export class CheckoutComponent implements OnInit {
   public defaultDirection: Direction;
   public directionExists: boolean;
 
-  public shipping: Array<Shipping>;
   public shippingCost: number;
   public shippingType: string = 'free';
 
@@ -133,7 +152,7 @@ export class CheckoutComponent implements OnInit {
   constructor(
     private _cartService: CartService,
     private _directionService: DirectionService,
-    private _checkoutService: CheckoutService,
+    private _configService: ConfigsService,
     private _couponService: CouponService,
     private _authService: AuthService,
     private _router: Router,
@@ -145,7 +164,6 @@ export class CheckoutComponent implements OnInit {
     };
     this.saleDetails = [];
     this.defaultDirection = {};
-    this.shipping = [];
     this.shippingCost = 0;
     this.productHrefUrl = environment.API_URL || GLOBAL.localUrl;
 
@@ -236,6 +254,11 @@ export class CheckoutComponent implements OnInit {
       paymentProviderName: '',
       paymentStatus: 'pending',
       shippingCost: 0, // free
+      shippingMethod: {
+        price: 0,
+        time: '',
+        title: '',
+      },
       total: 0,
     };
   }
@@ -250,7 +273,23 @@ export class CheckoutComponent implements OnInit {
     this.loadAuthData();
     this.getCart();
     this.getDefaultAddress();
-    this.getShippingMethods();
+    this.loadConfig();
+  }
+
+  private async loadConfig(): Promise<void> {
+    const response = await lastValueFrom(this._configService.getShopConfigs());
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+
+    this.config = response.config;
+    const freeShipping = this.config.shippingMethods.find(
+      (method) => method.title === 'Free',
+    );
+    this.orderDetails.shippingMethod.price = freeShipping?.price || 0;
+    this.orderDetails.shippingMethod.time = freeShipping?.time || '';
+    this.orderDetails.shippingMethod.title = freeShipping?.title || '';
   }
 
   private loadAuthData(): void {
@@ -325,6 +364,31 @@ export class CheckoutComponent implements OnInit {
     this.recalculateOrderTotal();
   }
 
+  public getSelectedShippingMethodTitle(): string {
+    return (
+      this.config.shippingMethods.find(
+        (method) => method.title.toLocaleLowerCase() === this.shippingType,
+      )?.title || ''
+    );
+  }
+
+  public getColorLabel(itemCart: CartItem, hex: string): string {
+    const itemVariantColors = itemCart.product.variants.find(
+      (variant) => variant.name === 'Color',
+    );
+
+    if (!itemVariantColors) {
+      return '';
+    }
+
+    let label = '';
+    for (const value of itemVariantColors.values) {
+      label = (value as any).label || ''; // parsing to shut up for a while
+    }
+
+    return label;
+  }
+
   public recalculateOrderTotal(): void {
     if (this.coupon.type === GLOBAL.CouponPercentagePrice) {
       this.discount = this.subtotal * (this.coupon.value / 100);
@@ -334,16 +398,12 @@ export class CheckoutComponent implements OnInit {
       this.discount = 0;
     }
 
-    if (this.shippingType === GLOBAL.FreeShippingStatement) {
-      this.shippingCost = 0;
-    } else if (this.shippingType === GLOBAL.StandardShippingStatement) {
-      this.shippingCost = 5;
-    } else if (this.shippingType === GLOBAL.ExpressShippingStatement) {
-      this.shippingCost = 15;
-    } else {
-      this.shippingCost = 0;
-    }
-
+    const selectedShippingMethodCost = Number(
+      this.config.shippingMethods.find(
+        (method) => method.title.toLocaleLowerCase() === this.shippingType,
+      )?.price || 0,
+    );
+    this.shippingCost = selectedShippingMethodCost;
     // avid discount > subtotal
     this.discount = Math.min(this.discount, this.subtotal);
     this.orderTotal = this.subtotal - this.discount + this.shippingCost;
@@ -401,12 +461,6 @@ export class CheckoutComponent implements OnInit {
       zip: this.defaultDirection.zip,
       city: this.defaultDirection.district,
       country: this.defaultDirection.country,
-    });
-  }
-
-  public getShippingMethods(): void {
-    this._checkoutService.getShippingMethods().subscribe((response) => {
-      this.shipping = response;
     });
   }
 

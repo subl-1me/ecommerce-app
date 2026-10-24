@@ -119,6 +119,9 @@
                       [style.background]="item.color"
                     ></span>
                     {{ item.color }}
+                    <span class="small">
+                      ({{ getColorLabel(item, item.color) }})
+                    </span>
                   </span>
                 </div>
                 <div class="item-link">
@@ -244,13 +247,16 @@
 
           <div class="shipping-methods">
             <!-- Express -->
-            <label class="shipping-option">
+            <label
+              class="shipping-option"
+              *ngFor="let method of config.shippingMethods"
+            >
               <input
                 type="radio"
                 name="shippingMethod"
                 [(ngModel)]="shippingType"
                 class="shipping-radio"
-                value="express"
+                value="{{ method.title.toLocaleLowerCase() }}"
                 (change)="recalculateOrderTotal()"
               />
               <div class="shipping-option-content">
@@ -268,15 +274,18 @@
                   </svg>
                 </div>
                 <div class="shipping-option-info">
-                  <span class="shipping-option-title">Express Shipping</span>
-                  <span class="shipping-option-desc">1-2 business days</span>
+                  <span class="shipping-option-title"
+                    >{{ method.title }} Shipping</span
+                  >
+                  <span class="shipping-option-desc">{{ method.time }}</span>
                 </div>
-                <span class="shipping-option-price">$15.00</span>
+                <span class="shipping-option-price"
+                  >${{ method.price }}.00</span
+                >
               </div>
             </label>
 
-            <!-- Standard -->
-            <label class="shipping-option">
+            <!-- <label class="shipping-option">
               <input
                 type="radio"
                 name="shippingMethod"
@@ -307,7 +316,6 @@
               </div>
             </label>
 
-            <!-- Free -->
             <label class="shipping-option">
               <input
                 type="radio"
@@ -340,7 +348,7 @@
                   >Free</span
                 >
               </div>
-            </label>
+            </label> -->
           </div>
         </div>
       </div>
@@ -360,7 +368,12 @@
 
               <div class="summary-row">
                 <span class="summary-label">Shipping cost</span>
-                <span class="summary-value">${{ shippingCost }}</span>
+                <span class="summary-value"
+                  >${{ shippingCost }}
+                  <span class="small">
+                    ({{ getSelectedShippingMethodTitle() }})
+                  </span>
+                </span>
               </div>
 
               <!-- ============ COUPON SECTION ============ -->

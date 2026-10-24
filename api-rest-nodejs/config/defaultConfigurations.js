@@ -8,6 +8,23 @@ const createInitialEcommerceConfig = async function () {
   const testConfig = {
     categories: ["Shirts", "Hats", "Shoes", "Hoddies", "Gloves"],
     shopName: "My Ecommerce Testing",
+    shippingMethods: [
+      {
+        title: "Express",
+        time: "1 - 2 business days",
+        price: "40",
+      },
+      {
+        title: "Free",
+        time: "7 - 10 business days",
+        price: "0",
+      },
+      {
+        title: "Standard",
+        time: "3 - 5 business days",
+        price: "25",
+      },
+    ],
     logo: {
       public_id: constans.defaultLogo.public_id,
       path: constans.defaultLogo.path,

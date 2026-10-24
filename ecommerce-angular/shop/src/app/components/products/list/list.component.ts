@@ -52,6 +52,7 @@ export class ListComponent implements OnInit {
         path: '',
         public_id: '',
       },
+      shippingMethods: [], 
       shopName: '',
       categories: [],
     };

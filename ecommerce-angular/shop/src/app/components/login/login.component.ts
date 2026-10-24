@@ -30,6 +30,8 @@ export class LoginComponent implements OnInit {
         path: '',
         public_id: '',
       },
+      shippingMethods: [],
+
       shopName: '',
     };
     this.customer = {

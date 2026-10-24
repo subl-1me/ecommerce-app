@@ -60,6 +60,8 @@ export class NavbarComponent implements OnInit {
       _id: '',
       categories: [],
       shopName: '',
+      shippingMethods: [],
+
       logo: {
         public_id: '',
         path: '',

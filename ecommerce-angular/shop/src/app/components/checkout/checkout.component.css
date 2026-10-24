@@ -1508,6 +1508,7 @@
 
 /* ============ SUCCESS ============ */
 .payment-card-success {
+  max-width: 500px;
   padding: 2.5rem 2rem;
 }
 

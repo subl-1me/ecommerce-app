@@ -27,6 +27,8 @@ export class CategoriesCardComponent implements OnInit {
         path: '',
         public_id: '',
       },
+      shippingMethods: [],
+
       shopName: '',
       categories: [],
     };

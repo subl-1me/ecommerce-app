@@ -46,6 +46,11 @@ export class StripeComponent implements OnInit, AfterViewInit {
     address: null,
     total: 0,
     shippingCost: 0,
+    shippingMethod: {
+      time: '',
+      title: '',
+      price: 0,
+    }, 
     coupon: null,
     discount: 0,
     paymentProviderName: 'stripe',

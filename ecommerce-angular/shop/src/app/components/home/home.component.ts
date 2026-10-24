@@ -22,6 +22,8 @@ export class HomeComponent implements OnInit {
       _id: '',
       shopName: '',
       categories: [],
+      shippingMethods: [],
+ 
       logo: { path: '', public_id: '' },
     };
   }
