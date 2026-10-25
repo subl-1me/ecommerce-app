@@ -54,6 +54,27 @@ const listById = async function (req, res) {
   }
 };
 
+const getWishlist = async function (req, res) {
+  try {
+    const { id } = req.params;
+    if (!id)
+      return res
+        .status(200)
+        .send({ success: false, message: "Customer ID is required." });
+
+    const customer = await CustomerService.itemWishlist(id);
+    res.status(200).send({
+      success: true,
+      wishlist: customer.wishlist || [],
+    });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
 // register manually a customer
 const create = async function (req, res) {
   if (!req.user || req.user.role !== "Admin")
@@ -124,4 +145,5 @@ module.exports = {
   create,
   edit,
   remove,
+  getWishlist,
 };

@@ -41,6 +41,18 @@ export class CustomerService {
     );
   }
 
+  public getCustomerWishlist(customerId: string): Observable<any> {
+    var headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+    return this._http.get(
+      (environment.API_URL || GLOBAL.localUrl) +
+        'customer/' +
+        customerId +
+        '/wishlist',
+      { headers: headers },
+    );
+  }
+
   public editProfile(_id: string, customer: Customer): Observable<any> {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 

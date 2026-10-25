@@ -12,6 +12,7 @@ routes.get(
   customerController.list,
 );
 routes.get("/customer/:id", customerController.listById);
+routes.get("/customer/:id/wishlist", customerController.getWishlist);
 routes.put("/customer/:id", customerController.edit);
 routes.delete("/remove/:id", auth.auth, customerController.remove);
 

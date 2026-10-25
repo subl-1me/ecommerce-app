@@ -14,6 +14,7 @@ import { DirectionsComponent } from './components/profile/directions/directions.
 import { ContactComponent } from './components/contact/contact.component';
 import { MyOrdersComponent } from './components/profile/my-orders/my-orders.component';
 import { OrderDetailComponent } from './components/profile/order-detail/order-detail.component';
+import { WishlistViewComponent } from './components/profile/wishlist/wishlist-view.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -26,7 +27,7 @@ const routes: Routes = [
   { path: 'products/detail/:id', component: DetailComponent },
   { path: 'checkout', component: CheckoutComponent },
   { path: 'contact', component: ContactComponent },
-
+  { path: 'wishlist', component: WishlistViewComponent },
   { path: 'directions', component: DirectionsComponent },
   { path: 'my-orders', component: MyOrdersComponent },
   { path: 'order/:orderId', component: OrderDetailComponent },

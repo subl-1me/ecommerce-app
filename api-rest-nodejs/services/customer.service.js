@@ -1,5 +1,6 @@
 "use strict";
 const Customer = require("../models/customer");
+const ProductService = require("../services/product.service");
 
 const update = async function (id, body) {
   const updated = await Customer.findByIdAndUpdate(id, {
@@ -29,6 +30,11 @@ const itemsByFilter = async function (filter, value) {
   const query = { [filter]: value };
   const items = await Customer.find(query);
   return items;
+};
+
+const itemWishlist = async function (id) {
+  const customer = await Customer.findById(id).populate("wishlist");
+  return customer;
 };
 
 const insertAddress = async function (customerId, address) {
@@ -85,4 +91,5 @@ module.exports = {
   destroyById,
   insertAddress,
   removeAddress,
+  itemWishlist,
 };
