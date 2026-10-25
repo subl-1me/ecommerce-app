@@ -860,18 +860,6 @@
   }
 }
 
-/* payment modal */
-.payment-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  animation: paymentFadeIn 0.3s ease-out;
-}
-
 @keyframes paymentFadeIn {
   from {
     opacity: 0;
@@ -1263,7 +1251,7 @@
   }
 }
 
-/* ============ PAYMENT MODAL ============ */
+/* payment modal */
 .payment-modal {
   position: fixed;
   inset: 0;
@@ -1511,6 +1499,16 @@
   padding: 2.5rem 2rem;
 }
 
+.payment-card-processing {
+  position: relative;
+  max-width: 400px;
+  background: white;
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  animation: paymentCardIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .success-icon-wrapper {
   display: flex;
   align-items: center;
@@ -1665,7 +1663,8 @@
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 575.98px) {
-  .payment-card {
+  .payment-card,
+  .payment-card-processing {
     padding: 2rem 1.5rem;
     border-radius: 20px;
   }
