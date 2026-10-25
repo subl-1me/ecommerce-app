@@ -13,6 +13,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { SocketService } from 'src/app/services/socket/socket.service';
 import { lastValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cart-modal',
@@ -37,6 +38,7 @@ export class CartModalComponent implements OnInit {
     private _cartService: CartService,
     private _authService: AuthService,
     private _socketService: SocketService,
+    private _router: Router,
   ) {
     this.cart = {
       items: [],
@@ -90,7 +92,6 @@ export class CartModalComponent implements OnInit {
       alert(response.message);
       return;
     }
-    console.log(response);
     this.cart = response.cart;
   }
 
@@ -111,6 +112,11 @@ export class CartModalComponent implements OnInit {
     this.cart = response.result;
     auth.user.cart = response.result;
     this._authService.update(auth.user);
+  }
+
+  public navigateToCheckout(): void {
+    this.closeModal();
+    this._router.navigate(['/checkout']);
   }
 
   closeModal(): void {

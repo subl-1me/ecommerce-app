@@ -154,8 +154,8 @@
 
       <button
         class="btn btn-checkout"
-        [routerLink]="['/checkout']"
         [disabled]="cart.items.length === 0"
+        (click)="navigateToCheckout()"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
