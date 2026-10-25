@@ -5,4 +5,4 @@ command = "ng build --configuration production"
 API_URL="https://ecommerce-app-1-l8py.onrender.com"
 stripe_pk=""
 URL_LOCAL_SOCKETS="https://ecommerce-app-1-l8py.onrender.com"
-API_URL_LOCAL=https://ecommerce-app-1-l8py.onrender.com/api/",
+API_URL_LOCAL="https://ecommerce-app-1-l8py.onrender.com/api/"
