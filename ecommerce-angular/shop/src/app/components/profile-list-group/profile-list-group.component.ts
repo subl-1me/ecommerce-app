@@ -8,9 +8,9 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
-import { Customer } from '../../models/customer';
-
 import { CustomerService } from '../../services/customer.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { Auth } from 'src/app/models/auth';
 
 @Component({
   selector: 'app-profile-list-group',
@@ -19,8 +19,10 @@ import { CustomerService } from '../../services/customer.service';
   providers: [CustomerService],
 })
 export class ProfileListGroupComponent implements OnInit {
-  public customer: Customer;
-  public _idStorage: any;
+  public auth: Auth = {
+    jwt: '',
+    user: null,
+  };
 
   // Icons
   faUser = faUser;
@@ -31,32 +33,13 @@ export class ProfileListGroupComponent implements OnInit {
   faGear = faGear;
   faXmark = faXmark;
 
-  constructor(private _customerService: CustomerService) {
-    this.customer = {
-      username: '',
-      names: '',
-      surnames: '',
-      email: '',
-      password: '',
-      wishlist: [],
-    };
-    this._idStorage = localStorage.getItem('_id');
-  }
+  constructor(private _authService: AuthService) {}
 
   ngOnInit(): void {
-    // this.getCustomerInfo();
+    this.loadAuthData();
   }
 
-  getCustomerInfo(): void {
-    this._customerService
-      .getCustomerById(this._idStorage)
-      .subscribe((response) => {
-        if (response.status === 'error') {
-          console.log('Error Trying to Find Customer.');
-          return;
-        }
-
-        this.customer = response.customer;
-      });
+  private loadAuthData(): void {
+    this.auth = this._authService.getUser();
   }
 }
