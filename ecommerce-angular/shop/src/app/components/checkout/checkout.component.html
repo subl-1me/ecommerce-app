@@ -20,10 +20,7 @@
           </svg>
         </div>
         <div>
-          <h1 class="checkout-title" *ngIf="!isOrderComplete">Checkout</h1>
-          <h1 class="checkout-title" *ngIf="isOrderComplete">
-            Select Payment Method
-          </h1>
+          <h1 class="checkout-title">Checkout</h1>
           <p class="checkout-subtitle">
             Review your order and complete the payment
           </p>
@@ -69,11 +66,14 @@
     </div>
 
     <!-- Checkout Content -->
-    <div class="row g-4" *ngIf="auth.jwt !== '' && auth.user">
+    <div
+      class="row g-4"
+      *ngIf="auth.jwt !== '' && auth.user && cart.items.length > 0"
+    >
       <!-- Left: Order Summary -->
       <div class="col-12 col-lg-7">
         <!-- Review - SKELETON -->
-        <div class="section-card" *ngIf="!isOrderComplete && isCartLoading">
+        <div class="section-card" *ngIf="isCartLoading">
           <div class="section-header">
             <div class="step-badge">1</div>
             <div>
@@ -96,7 +96,7 @@
         </div>
 
         <!-- Review - REAL -->
-        <div class="section-card" *ngIf="!isOrderComplete && !isCartLoading">
+        <div class="section-card" *ngIf="!isCartLoading">
           <div class="section-header">
             <div class="step-badge">1</div>
             <div>
@@ -304,7 +304,7 @@
         </div>
 
         <!-- Shipping Method - SKELETON -->
-        <div class="section-card" *ngIf="!isOrderComplete && isConfigLoading">
+        <div class="section-card" *ngIf="isConfigLoading">
           <div class="section-header">
             <div class="step-badge">3</div>
             <div>
@@ -328,7 +328,7 @@
         </div>
 
         <!-- Shipping Method - REAL -->
-        <div class="section-card" *ngIf="!isOrderComplete && !isConfigLoading">
+        <div class="section-card" *ngIf="!isConfigLoading">
           <div class="section-header">
             <div class="step-badge">3</div>
             <div>
@@ -385,7 +385,7 @@
       <div class="col-12 col-lg-5">
         <div class="sticky-summary">
           <!-- Order Summary - SKELETON -->
-          <div class="summary-card" *ngIf="!isOrderComplete && isCartLoading">
+          <div class="summary-card" *ngIf="isCartLoading">
             <h5 class="summary-title">Order Summary</h5>
             <div class="summary-list">
               <div class="summary-row">
@@ -408,7 +408,7 @@
           </div>
 
           <!-- Order Summary - REAL -->
-          <div class="summary-card" *ngIf="!isOrderComplete && !isCartLoading">
+          <div class="summary-card" *ngIf="!isCartLoading">
             <h5 class="summary-title">Order Summary</h5>
 
             <div class="summary-list">
@@ -535,10 +535,8 @@
           </div>
 
           <!-- Payment -->
-          <div class="payment-card">
-            <h5 class="summary-title" *ngIf="!isOrderComplete">
-              Payment Method
-            </h5>
+          <div class="payment-card" *ngIf="isOrderComplete()">
+            <h5 class="summary-title">Payment Method</h5>
 
             <ngx-paypal
               [config]="payPalConfig"
@@ -571,118 +569,152 @@
               Secure payment
             </div>
           </div>
+
+          <div class="summary-card" *ngIf="!isOrderComplete()">
+            <div class="summary-list">
+              <span class="summary-value text-danger text-center">
+                Complete all requeriments to continue with payment.
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Processing Payment Modal -->
-<div class="payment-modal" *ngIf="isProcessingPayment">
-  <div class="payment-overlay"></div>
-  <div class="payment-card-processing">
-    <div class="payment-icon-wrapper">
-      <div class="payment-ring"></div>
-      <div class="payment-ring payment-ring-2"></div>
-      <div class="payment-icon">
+    <!-- empty cart -->
+    <div class="row g-1">
+      <div class="empty-cart" *ngIf="cart.items.length === 0">
+        <div class="empty-cart-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="36"
+            height="36"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5z"
+            />
+          </svg>
+        </div>
+        <h6 class="empty-cart-title">Your cart is empty</h6>
+        <p class="empty-cart-subtitle">Add some products to continue</p>
+        <a class="btn-see-products" [routerLink]="['/products']"
+          >See Products</a
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing Payment Modal -->
+  <div class="payment-modal" *ngIf="isProcessingPayment">
+    <div class="payment-overlay"></div>
+    <div class="payment-card-processing">
+      <div class="payment-icon-wrapper">
+        <div class="payment-ring"></div>
+        <div class="payment-ring payment-ring-2"></div>
+        <div class="payment-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="28"
+            height="28"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"
+            />
+            <path
+              d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"
+            />
+          </svg>
+        </div>
+      </div>
+      <h4 class="payment-title">Processing your payment</h4>
+      <p class="payment-subtitle">
+        Please don't close this window or refresh the page
+      </p>
+      <div class="payment-progress">
+        <div class="payment-progress-bar"></div>
+      </div>
+      <ul class="payment-steps">
+        <li
+          class="payment-step"
+          [class.active]="paymentStep >= 1"
+          [class.done]="paymentStep > 1"
+        >
+          <span class="step-dot"></span
+          ><span class="step-text">Verifying card details</span>
+        </li>
+        <li
+          class="payment-step"
+          [class.active]="paymentStep >= 2"
+          [class.done]="paymentStep > 2"
+        >
+          <span class="step-dot"></span
+          ><span class="step-text">Contacting your bank</span>
+        </li>
+        <li
+          class="payment-step"
+          [class.active]="paymentStep >= 3"
+          [class.done]="paymentStep > 3"
+        >
+          <span class="step-dot"></span
+          ><span class="step-text">Confirming payment</span>
+        </li>
+      </ul>
+      <div class="payment-secure">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="28"
-          height="28"
+          width="12"
+          height="12"
           fill="currentColor"
           viewBox="0 0 16 16"
         >
           <path
-            d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"
-          />
-          <path
-            d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"
+            d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"
           />
         </svg>
+        Secured by Stripe
       </div>
-    </div>
-    <h4 class="payment-title">Processing your payment</h4>
-    <p class="payment-subtitle">
-      Please don't close this window or refresh the page
-    </p>
-    <div class="payment-progress"><div class="payment-progress-bar"></div></div>
-    <ul class="payment-steps">
-      <li
-        class="payment-step"
-        [class.active]="paymentStep >= 1"
-        [class.done]="paymentStep > 1"
-      >
-        <span class="step-dot"></span
-        ><span class="step-text">Verifying card details</span>
-      </li>
-      <li
-        class="payment-step"
-        [class.active]="paymentStep >= 2"
-        [class.done]="paymentStep > 2"
-      >
-        <span class="step-dot"></span
-        ><span class="step-text">Contacting your bank</span>
-      </li>
-      <li
-        class="payment-step"
-        [class.active]="paymentStep >= 3"
-        [class.done]="paymentStep > 3"
-      >
-        <span class="step-dot"></span
-        ><span class="step-text">Confirming payment</span>
-      </li>
-    </ul>
-    <div class="payment-secure">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="12"
-        height="12"
-        fill="currentColor"
-        viewBox="0 0 16 16"
-      >
-        <path
-          d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"
-        />
-      </svg>
-      Secured by Stripe
     </div>
   </div>
-</div>
 
-<!-- Payment Success Modal -->
-<div class="payment-modal" *ngIf="isPaymentSucceeded">
-  <div class="payment-overlay"></div>
-  <div class="payment-card payment-card-success">
-    <div class="success-icon-wrapper">
-      <div class="success-icon">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
-          height="32"
-          fill="currentColor"
-          viewBox="0 0 16 16"
-        >
-          <path
-            d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"
-          />
-        </svg>
+  <!-- Payment Success Modal -->
+  <div class="payment-modal" *ngIf="isPaymentSucceeded">
+    <div class="payment-overlay"></div>
+    <div class="payment-card payment-card-success">
+      <div class="success-icon-wrapper">
+        <div class="success-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"
+            />
+          </svg>
+        </div>
       </div>
+      <h4 class="payment-title">Payment successful</h4>
+      <p class="payment-subtitle">
+        Your order has been confirmed. You will receive an email shortly.
+      </p>
+      <button
+        class="btn-payment-close"
+        (click)="handleNavigation('continue-shopping')"
+      >
+        Continue Shopping
+      </button>
+      <button
+        class="btn-payment-see-order"
+        (click)="handleNavigation('order-details')"
+      >
+        See Order Details
+      </button>
     </div>
-    <h4 class="payment-title">Payment successful</h4>
-    <p class="payment-subtitle">
-      Your order has been confirmed. You will receive an email shortly.
-    </p>
-    <button
-      class="btn-payment-close"
-      (click)="handleNavigation('continue-shopping')"
-    >
-      Continue Shopping
-    </button>
-    <button
-      class="btn-payment-see-order"
-      (click)="handleNavigation('order-details')"
-    >
-      See Order Details
-    </button>
   </div>
 </div>

@@ -159,7 +159,6 @@ export class CheckoutComponent implements OnInit {
 
   public orderTotal: number;
   public subtotal: number;
-  public isOrderComplete: boolean;
 
   public isPaypalSelected: boolean;
   public isCCSelected: boolean;
@@ -180,7 +179,6 @@ export class CheckoutComponent implements OnInit {
     private _couponService: CouponService,
     private _authService: AuthService,
     private _router: Router,
-    private fb: FormBuilder,
   ) {
     this.cart = {
       items: [],
@@ -207,7 +205,6 @@ export class CheckoutComponent implements OnInit {
 
     this.orderTotal = 0;
     this.subtotal = 0;
-    this.isOrderComplete = false;
 
     this.couponCode = '';
     this.couponCodeMessage = '';
@@ -337,6 +334,13 @@ export class CheckoutComponent implements OnInit {
       (method) => method.title === 'Free',
     );
     this.orderDetails.shippingMethod = freeShipping?._id || '';
+  }
+
+  public isOrderComplete(): boolean {
+    return this.orderDetails.shippingMethod &&
+      this.orderDetails.shippingInformation
+      ? true
+      : false;
   }
 
   private loadAuthData(): void {
