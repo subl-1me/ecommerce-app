@@ -1,4 +1,4 @@
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 
 import { CartService } from 'src/app/services/cart.service';
@@ -122,7 +122,6 @@ export class CheckoutComponent implements OnInit {
   faRefresh = faRefresh;
   faChevronDown = faChevronDown;
 
-  public customerID: any;
   public auth: Auth = {
     jwt: '',
     user: null,
@@ -151,6 +150,7 @@ export class CheckoutComponent implements OnInit {
   public isConfigLoading: boolean = false;
   public isAddressesLoading: boolean = false;
   public isCartLoading: boolean = false;
+  public isInvalidCoupon: boolean = false;
 
   public shippingCost: number;
   public shippingType: string = 'free';
@@ -182,7 +182,6 @@ export class CheckoutComponent implements OnInit {
     private _router: Router,
     private fb: FormBuilder,
   ) {
-    this.customerID = localStorage.getItem('_id');
     this.cart = {
       items: [],
     };
@@ -192,16 +191,6 @@ export class CheckoutComponent implements OnInit {
     this.isPaypalSelected = false;
     this.isCCSelected = false;
     this.isShippingSelected = false;
-    this.form = this.fb.group({
-      address: [
-        '',
-        [Validators.required, Validators.min(1), Validators.max(100000)],
-      ],
-      email: ['', [Validators.required, Validators.requiredTrue]],
-      country: ['', [Validators.required, Validators.requiredTrue]],
-      city: ['', [Validators.required, Validators.requiredTrue]],
-      zip: ['', [Validators.required, Validators.requiredTrue]],
-    });
 
     this.shippingInformation = {
       customer: '',
@@ -330,6 +319,10 @@ export class CheckoutComponent implements OnInit {
     this.loadConfig();
   }
 
+  public resetCouponTrigger(): void {
+    this.isInvalidCoupon = false;
+  }
+
   private async loadConfig(): Promise<void> {
     this.isConfigLoading = true;
     const response = await lastValueFrom(this._configService.getShopConfigs());
@@ -411,6 +404,11 @@ export class CheckoutComponent implements OnInit {
     );
     if (!response.success) {
       alert(response.message);
+      return;
+    }
+
+    if (!response.coupon) {
+      this.isInvalidCoupon = true;
       return;
     }
 
@@ -548,6 +546,7 @@ export class CheckoutComponent implements OnInit {
     };
 
     this.discount = 0;
+    this.couponCode = '';
     this.recalculateOrderTotal();
   }
 }

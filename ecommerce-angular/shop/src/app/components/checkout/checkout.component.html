@@ -460,11 +460,15 @@
                     name="code"
                     [(ngModel)]="couponCode"
                     placeholder="Enter coupon code"
+                    (keydown)="resetCouponTrigger()"
                   />
                   <button class="coupon-apply-btn" (click)="verifyCouponCode()">
                     Apply
                   </button>
                 </div>
+                <small class="small text-danger" *ngIf="isInvalidCoupon"
+                  >Invalid coupon code.</small
+                >
               </div>
 
               <div class="coupon-applied" *ngIf="coupon && coupon.code">
@@ -481,7 +485,7 @@
                     />
                   </svg>
                 </div>
-                <div class="coupon-applied-info"> 
+                <div class="coupon-applied-info">
                   <span class="coupon-applied-code">{{ coupon.code }}</span>
                   <span class="coupon-applied-desc">
                     <ng-container *ngIf="coupon.type === percentageTypeTemplate"
@@ -496,7 +500,7 @@
                   <span
                     class="coupon-applied-amount"
                     *ngIf="coupon.type === percentageTypeTemplate"
-                    >-{{ coupon.value }}%</span
+                    >-${{ discount }}</span
                   >
                   <span
                     class="coupon-applied-amount"
@@ -519,12 +523,7 @@
               >
                 <span class="summary-label">Discount</span>
                 <span class="summary-value summary-value-discount">
-                  <ng-container *ngIf="coupon.type === percentageTypeTemplate"
-                    >-{{ coupon.value }}%</ng-container
-                  >
-                  <ng-container *ngIf="coupon.type === fixedTypeTemplate"
-                    >-${{ discount }}</ng-container
-                  >
+                  -${{ discount }}
                 </span>
               </div>
             </div>
