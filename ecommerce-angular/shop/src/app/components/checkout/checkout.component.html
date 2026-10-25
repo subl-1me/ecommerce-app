@@ -72,8 +72,31 @@
     <div class="row g-4" *ngIf="auth.jwt !== '' && auth.user">
       <!-- Left: Order Summary -->
       <div class="col-12 col-lg-7">
-        <!-- Review -->
-        <div class="section-card" *ngIf="!isOrderComplete">
+        <!-- Review - SKELETON -->
+        <div class="section-card" *ngIf="!isOrderComplete && isCartLoading">
+          <div class="section-header">
+            <div class="step-badge">1</div>
+            <div>
+              <h4 class="section-title">Order Review</h4>
+              <p class="section-subtitle">Review the items in your cart</p>
+            </div>
+          </div>
+
+          <div class="cart-list">
+            <div class="cart-skeleton-item" *ngFor="let s of [1, 2]">
+              <div class="skeleton skeleton-image"></div>
+              <div class="cart-skeleton-info">
+                <div class="skeleton skeleton-line-lg"></div>
+                <div class="skeleton skeleton-line-md"></div>
+                <div class="skeleton skeleton-line-sm"></div>
+              </div>
+              <div class="skeleton skeleton-price"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review - REAL -->
+        <div class="section-card" *ngIf="!isOrderComplete && !isCartLoading">
           <div class="section-header">
             <div class="step-badge">1</div>
             <div>
@@ -119,9 +142,9 @@
                       [style.background]="item.color"
                     ></span>
                     {{ item.color }}
-                    <span class="small">
-                      ({{ getColorLabel(item, item.color) }})
-                    </span>
+                    <span class="small"
+                      >({{ getColorLabel(item, item.color) }})</span
+                    >
                   </span>
                 </div>
                 <div class="item-link">
@@ -140,8 +163,8 @@
           </div>
         </div>
 
-        <!-- Shipping Information -->
-        <div class="section-card" *ngIf="addresses.length > 0">
+        <!-- Shipping Information - SKELETON -->
+        <div class="section-card" *ngIf="isAddressesLoading">
           <div class="section-header">
             <div class="step-badge">2</div>
             <div>
@@ -150,7 +173,31 @@
             </div>
           </div>
 
-          <!-- Select address from saved list -->
+          <div class="address-list">
+            <div class="address-skeleton-item" *ngFor="let s of [1, 2]">
+              <div class="skeleton skeleton-icon"></div>
+              <div class="address-skeleton-info">
+                <div class="skeleton skeleton-line-lg"></div>
+                <div class="skeleton skeleton-line-md"></div>
+                <div class="skeleton skeleton-line-sm"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shipping Information - REAL -->
+        <div
+          class="section-card"
+          *ngIf="!isAddressesLoading && addresses.length > 0"
+        >
+          <div class="section-header">
+            <div class="step-badge">2</div>
+            <div>
+              <h4 class="section-title">Shipping Information</h4>
+              <p class="section-subtitle">Where should we deliver your order</p>
+            </div>
+          </div>
+
           <div class="address-selector">
             <label class="form-label">Choose a saved address</label>
             <div class="address-list">
@@ -221,8 +268,12 @@
             </a>
           </div>
         </div>
+
         <!-- Empty shipping info -->
-        <div class="section-card" *ngIf="addresses.length === 0">
+        <div
+          class="section-card"
+          *ngIf="!isAddressesLoading && addresses.length === 0"
+        >
           <div class="section-header">
             <div class="step-badge">2</div>
             <div>
@@ -252,8 +303,8 @@
           </div>
         </div>
 
-        <!-- shipping method -->
-        <div class="section-card" *ngIf="!isOrderComplete">
+        <!-- Shipping Method - SKELETON -->
+        <div class="section-card" *ngIf="!isOrderComplete && isConfigLoading">
           <div class="section-header">
             <div class="step-badge">3</div>
             <div>
@@ -265,7 +316,30 @@
           </div>
 
           <div class="shipping-methods">
-            <!-- Express -->
+            <div class="shipping-skeleton-item" *ngFor="let s of [1, 2, 3]">
+              <div class="skeleton skeleton-icon"></div>
+              <div class="shipping-skeleton-info">
+                <div class="skeleton skeleton-line-lg"></div>
+                <div class="skeleton skeleton-line-sm"></div>
+              </div>
+              <div class="skeleton skeleton-price"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shipping Method - REAL -->
+        <div class="section-card" *ngIf="!isOrderComplete && !isConfigLoading">
+          <div class="section-header">
+            <div class="step-badge">3</div>
+            <div>
+              <h4 class="section-title">Shipping Method</h4>
+              <p class="section-subtitle">
+                Choose how fast you want to receive your order
+              </p>
+            </div>
+          </div>
+
+          <div class="shipping-methods">
             <label
               class="shipping-option"
               *ngFor="let method of config.shippingMethods"
@@ -310,8 +384,31 @@
       <!-- Right: Order summary + Payment -->
       <div class="col-12 col-lg-5">
         <div class="sticky-summary">
-          <!-- Order Summary -->
-          <div class="summary-card" *ngIf="!isOrderComplete">
+          <!-- Order Summary - SKELETON -->
+          <div class="summary-card" *ngIf="!isOrderComplete && isCartLoading">
+            <h5 class="summary-title">Order Summary</h5>
+            <div class="summary-list">
+              <div class="summary-row">
+                <div class="skeleton skeleton-label"></div>
+                <div class="skeleton skeleton-value"></div>
+              </div>
+              <div class="summary-row">
+                <div class="skeleton skeleton-label"></div>
+                <div class="skeleton skeleton-value"></div>
+              </div>
+              <div class="summary-row">
+                <div class="skeleton skeleton-label"></div>
+                <div class="skeleton skeleton-value"></div>
+              </div>
+            </div>
+            <div class="summary-total">
+              <div class="skeleton skeleton-total-label"></div>
+              <div class="skeleton skeleton-total-value"></div>
+            </div>
+          </div>
+
+          <!-- Order Summary - REAL -->
+          <div class="summary-card" *ngIf="!isOrderComplete && !isCartLoading">
             <h5 class="summary-title">Order Summary</h5>
 
             <div class="summary-list">
@@ -322,15 +419,14 @@
 
               <div class="summary-row">
                 <span class="summary-label">Shipping cost</span>
-                <span class="summary-value"
-                  >${{ shippingCost }}
-                  <span class="small">
-                    ({{ getSelectedShippingMethodTitle() }})
-                  </span>
+                <span class="summary-value">
+                  ${{ shippingCost }}
+                  <span class="small"
+                    >({{ getSelectedShippingMethodTitle() }})</span
+                  >
                 </span>
               </div>
 
-              <!-- ============ COUPON SECTION ============ -->
               <div class="summary-row summary-discount">
                 <button
                   class="discount-toggle"
@@ -353,7 +449,6 @@
                 </button>
               </div>
 
-              <!-- Coupon input (collapsed) -->
               <div
                 class="collapse"
                 id="collapse-promo"
@@ -372,7 +467,6 @@
                 </div>
               </div>
 
-              <!-- Applied coupon -->
               <div class="coupon-applied" *ngIf="coupon && coupon.code">
                 <div class="coupon-applied-icon">
                   <svg
@@ -387,7 +481,7 @@
                     />
                   </svg>
                 </div>
-                <div class="coupon-applied-info">
+                <div class="coupon-applied-info"> 
                   <span class="coupon-applied-code">{{ coupon.code }}</span>
                   <span class="coupon-applied-desc">
                     <ng-container *ngIf="coupon.type === percentageTypeTemplate"
@@ -419,7 +513,6 @@
                 </div>
               </div>
 
-              <!-- Discount row (only when coupon applied) -->
               <div
                 class="summary-row summary-discount-row"
                 *ngIf="coupon && coupon.code"
@@ -488,7 +581,6 @@
 <!-- Processing Payment Modal -->
 <div class="payment-modal" *ngIf="isProcessingPayment">
   <div class="payment-overlay"></div>
-
   <div class="payment-card">
     <div class="payment-icon-wrapper">
       <div class="payment-ring"></div>
@@ -510,45 +602,37 @@
         </svg>
       </div>
     </div>
-
     <h4 class="payment-title">Processing your payment</h4>
     <p class="payment-subtitle">
       Please don't close this window or refresh the page
     </p>
-
-    <div class="payment-progress">
-      <div class="payment-progress-bar"></div>
-    </div>
-
-    <!-- Steps -->
+    <div class="payment-progress"><div class="payment-progress-bar"></div></div>
     <ul class="payment-steps">
       <li
         class="payment-step"
         [class.active]="paymentStep >= 1"
         [class.done]="paymentStep > 1"
       >
-        <span class="step-dot"></span>
-        <span class="step-text">Verifying card details</span>
+        <span class="step-dot"></span
+        ><span class="step-text">Verifying card details</span>
       </li>
       <li
         class="payment-step"
         [class.active]="paymentStep >= 2"
         [class.done]="paymentStep > 2"
       >
-        <span class="step-dot"></span>
-        <span class="step-text">Contacting your bank</span>
+        <span class="step-dot"></span
+        ><span class="step-text">Contacting your bank</span>
       </li>
       <li
         class="payment-step"
         [class.active]="paymentStep >= 3"
         [class.done]="paymentStep > 3"
       >
-        <span class="step-dot"></span>
-        <span class="step-text">Confirming payment</span>
+        <span class="step-dot"></span
+        ><span class="step-text">Confirming payment</span>
       </li>
     </ul>
-
-    <!-- Secure badge -->
     <div class="payment-secure">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -569,7 +653,6 @@
 <!-- Payment Success Modal -->
 <div class="payment-modal" *ngIf="isPaymentSucceeded">
   <div class="payment-overlay"></div>
-
   <div class="payment-card payment-card-success">
     <div class="success-icon-wrapper">
       <div class="success-icon">
@@ -586,19 +669,16 @@
         </svg>
       </div>
     </div>
-
     <h4 class="payment-title">Payment successful</h4>
     <p class="payment-subtitle">
       Your order has been confirmed. You will receive an email shortly.
     </p>
-
     <button
       class="btn-payment-close"
       (click)="handleNavigation('continue-shopping')"
     >
       Continue Shopping
     </button>
-
     <button
       class="btn-payment-see-order"
       (click)="handleNavigation('order-details')"

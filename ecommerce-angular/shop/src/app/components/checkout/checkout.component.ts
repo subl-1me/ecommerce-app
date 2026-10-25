@@ -148,6 +148,10 @@ export class CheckoutComponent implements OnInit {
   public addresses: ShippingInformation[] = [];
   public directionExists: boolean;
 
+  public isConfigLoading: boolean = false;
+  public isAddressesLoading: boolean = false;
+  public isCartLoading: boolean = false;
+
   public shippingCost: number;
   public shippingType: string = 'free';
 
@@ -228,9 +232,11 @@ export class CheckoutComponent implements OnInit {
   }
 
   private async getAddressList(): Promise<void> {
+    this.isAddressesLoading = true;
     const response = await lastValueFrom(
       this._addressService.getAddressListByCustomer(this.auth.user._id),
     );
+    this.isAddressesLoading = false;
 
     if (!response.success) {
       alert(response.message);
@@ -325,18 +331,19 @@ export class CheckoutComponent implements OnInit {
   }
 
   private async loadConfig(): Promise<void> {
+    this.isConfigLoading = true;
     const response = await lastValueFrom(this._configService.getShopConfigs());
     if (!response.success) {
       alert(response.message);
       return;
     }
+    this.isConfigLoading = false;
 
     this.config = response.config;
     const freeShipping = this.config.shippingMethods.find(
       (method) => method.title === 'Free',
     );
     this.orderDetails.shippingMethod = freeShipping?._id || '';
-    console.log(this.orderDetails);
   }
 
   private loadAuthData(): void {
@@ -473,9 +480,11 @@ export class CheckoutComponent implements OnInit {
   }
 
   public async getCart(): Promise<void> {
+    this.isCartLoading = true;
     const response = await lastValueFrom(
       this._cartService.getCart(this.auth.user.cart._id),
     );
+    this.isCartLoading = false;
     if (!response.success) {
       alert(response.message);
       return;
