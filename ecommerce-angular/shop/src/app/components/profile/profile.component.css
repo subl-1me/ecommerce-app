@@ -234,3 +234,61 @@
     min-width: auto;
   }
 }
+
+/* ============ CHANGE PASSWORD ============ */
+.password-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.btn-change-password {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: white;
+  color: #29bb6a;
+  border: 2px solid #29bb6a;
+  border-radius: 12px;
+  padding: 0.75rem 1.75rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+}
+
+.btn-change-password:hover {
+  background: #29bb6a;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(41, 187, 106, 0.35);
+}
+
+/* Select styling for language */
+select.form-control-custom {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 14px;
+  padding-right: 2.5rem;
+}
+
+select.form-control-custom:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2329bb6a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+/* Responsive */
+@media (max-width: 575.98px) {
+  .password-actions {
+    justify-content: stretch;
+  }
+
+  .btn-change-password {
+    width: 100%;
+  }
+}

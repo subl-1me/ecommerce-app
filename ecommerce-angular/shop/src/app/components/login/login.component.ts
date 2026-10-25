@@ -1,27 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { CustomerService } from 'src/app/services/customer.service';
 import { ConfigsService } from 'src/app/services/configs.service';
+import { Router } from '@angular/router';
 
 import { Customer } from 'src/app/models/customer';
 import { Config } from 'src/app/models/config';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  providers: [CustomerService],
+  providers: [CustomerService, ConfigsService],
 })
 export class LoginComponent implements OnInit {
   public customer: Customer;
-  public token: any;
   public config: Config;
 
   constructor(
     private _customerService: CustomerService,
-    private _router: Router,
     private _configService: ConfigsService,
+    private _router: Router,
   ) {
     this.config = {
       categories: [],
@@ -30,45 +30,68 @@ export class LoginComponent implements OnInit {
         path: '',
         public_id: '',
       },
+      shippingMethods: [],
+
       shopName: '',
     };
     this.customer = {
+      username: '',
+      names: '',
+      surnames: '',
       email: '',
       password: '',
+      language: 'EN',
+      cart: {
+        _id: '',
+        items: [],
+      },
+      wishlist: [],
     };
-    this.token = localStorage.getItem('token');
   }
 
   ngOnInit(): void {
-    this.isLogged();
     this.loadConfig();
   }
 
-  private loadConfig(): void {
-    this._configService.getShopConfigs().subscribe((response) => {
-      this.config = response.actualConfig[0];
-    });
+  private async loadConfig(): Promise<void> {
+    await lastValueFrom(this._configService.getShopConfigs());
   }
 
-  public onSubmit(form: any): void {
+  public async onSubmit(form: any): Promise<void> {
     if (form.invalid) {
-      console.log('Llena bien los datos, culero.');
       return;
     }
 
-    this._customerService.login(this.customer).subscribe((response) => {
-      if (!response.customer) {
-        console.log(response.message);
-        return;
-      }
+    const response = await lastValueFrom(
+      this._customerService.login(this.customer),
+    );
 
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('_id', response.customer._id);
-      location.reload();
-    });
-  }
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
 
-  isLogged(): void {
-    if (this.token && this.customer.names != '') this._router.navigate(['']);
+    if (!response.auth) {
+      alert('Unknown authentication error: ' + response.message);
+      return;
+    }
+
+    const user = {
+      _id: response.customer._id,
+      names: response.customer.names,
+      surnames: response.customer.surnames,
+      email: response.customer.email,
+      cart: response.customer.cart,
+      wishlist: response.customer.wishlist,
+      createdAt: response.customer.createdAt,
+      updatedAt: response.customer.updatedAt,
+    };
+
+    const auth = {
+      user,
+      jwt: response.jwt,
+    };
+    localStorage.setItem('auth', JSON.stringify(auth));
+    this._router.navigate(['']); // go to home
   }
 }

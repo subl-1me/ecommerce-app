@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { DirectionService } from './direction.service';
+import { CouponService } from './coupon.service';
 
-describe('DirectionService', () => {
-  let service: DirectionService;
+describe('CouponService', () => {
+  let service: CouponService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(DirectionService);
+    service = TestBed.inject(CouponService);
   });
 
   it('should be created', () => {

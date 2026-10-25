@@ -25,20 +25,20 @@
           </div>
           <div>
             <h1 class="page-title">My Orders</h1>
-            <p class="page-subtitle" *ngIf="sales.length > 0">
+            <p class="page-subtitle" *ngIf="orders.length > 0">
               Click on any order to see more details
             </p>
-            <p class="page-subtitle" *ngIf="sales.length === 0">
+            <p class="page-subtitle" *ngIf="orders.length === 0">
               Your order history will appear here
             </p>
           </div>
-          <span class="header-badge" *ngIf="sales.length > 0">
-            {{ sales.length }} {{ sales.length === 1 ? "order" : "orders" }}
+          <span class="header-badge" *ngIf="orders.length > 0">
+            {{ orders.length }} {{ orders.length === 1 ? "order" : "orders" }}
           </span>
         </div>
 
         <!-- Table card -->
-        <div class="orders-card" *ngIf="sales.length > 0">
+        <div class="orders-card" *ngIf="orders.length > 0">
           <div class="table-responsive">
             <table class="table orders-table mb-0">
               <thead>
@@ -50,11 +50,14 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let sale of sales" class="order-row">
+                <tr
+                  *ngFor="let order of orders; let i = index"
+                  class="order-row"
+                >
                   <td class="ps-4">
                     <a
                       class="transaction-link"
-                      [routerLink]="['/order/', sale.transaction]"
+                      [routerLink]="['/order/', order._id]"
                     >
                       <span class="transaction-icon">
                         <svg
@@ -68,26 +71,27 @@
                             d="M8.39 12.648a1.32 1.32 0 0 0-.015.18c0 .305.21.508.5.508.266 0 .492-.172.555-.477l.554-2.703h1.204c.421 0 .617-.234.617-.547 0-.312-.188-.53-.617-.53h-.985l.516-2.524h1.265c.43 0 .618-.227.618-.547 0-.313-.188-.524-.618-.524h-1.046l.476-2.304a1.06 1.06 0 0 0 .016-.164.51.51 0 0 0-.516-.516.54.54 0 0 0-.539.43l-.523 2.554H7.617l.477-2.304c.008-.04.015-.118.015-.164a.512.512 0 0 0-.523-.516.539.539 0 0 0-.531.43L6.53 5.484H5.414c-.43 0-.617.22-.617.532 0 .312.187.539.617.539h.906l-.515 2.523H4.609c-.421 0-.609.219-.609.531 0 .313.188.547.61.547h.976l-.516 2.492c-.008.04-.015.125-.015.18 0 .305.21.508.5.508.265 0 .492-.172.554-.477l.555-2.703h2.242l-.515 2.492zm-1-6.109h2.266l-.515 2.563H6.875l.515-2.563z"
                           />
                         </svg>
+                        {{ i + 1 }}
                       </span>
-                      {{ sale.transaction }}
+                      {{ order._id }}
                     </a>
                   </td>
 
                   <td>
                     <span class="date-text">{{
-                      sale.createdAt | date: "MMM d, y, h:mm a"
+                      order.createdAt | date: "MMM d, y, h:mm a"
                     }}</span>
                   </td>
 
                   <td>
                     <span class="status-badge">
                       <span class="status-dot"></span>
-                      {{ sale.status }}
+                      {{ order.paymentStatus }}
                     </span>
                   </td>
 
                   <td class="text-end pe-4">
-                    <span class="total-amount">${{ sale.total }}</span>
+                    <span class="total-amount">${{ order.total }}</span>
                   </td>
                 </tr>
               </tbody>
@@ -96,7 +100,7 @@
         </div>
 
         <!-- Empty state -->
-        <div class="empty-state" *ngIf="sales.length === 0">
+        <div class="empty-state" *ngIf="orders.length === 0">
           <div class="empty-icon">
             <svg
               xmlns="http://www.w3.org/2000/svg"

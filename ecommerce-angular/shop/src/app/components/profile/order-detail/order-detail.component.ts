@@ -1,20 +1,54 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { SaleService } from 'src/app/services/sale.service';
-import { Sale } from 'src/app/models/sale';
+import { Order } from 'src/app/models/order';
+import { lastValueFrom } from 'rxjs';
+import { OrderService } from 'src/app/services/order.service';
 
 @Component({
   selector: 'app-order-detail',
   templateUrl: './order-detail.component.html',
-  styleUrls: ['./order-detail.component.css']
+  styleUrls: ['./order-detail.component.css'],
 })
 export class OrderDetailComponent implements OnInit {
-
   // Icons
 
-  public order: any;
-  public transaction: any;
+  public order: Order = {
+    _id: '',
+    customer: {
+      username: '',
+      email: '',
+      wishlist: [],
+      names: '',
+      surnames: '',
+      language: 'EN',
+      password: '',
+    },
+    items: [],
+    total: 0,
+    subtotal: 0,
+    shippingInformation: {
+      customer: null,
+      email: '',
+      address: '',
+      addressee: '',
+      phone: '',
+      country: '',
+      city: '',
+      state: '',
+      zip: '',
+      default: false,
+    },
+    shippingMethod: {
+      price: 0,
+      time: '',
+      title: '',
+    },
+    paymentProviderName: '',
+    paymentStatus: 'pending',
+    coupon: null,
+  };
+  public orderId: string = '';
   public payment_method: string;
 
   public total: number;
@@ -23,41 +57,31 @@ export class OrderDetailComponent implements OnInit {
   public status: string;
 
   constructor(
-    private _saleService: SaleService,
-    private _router: ActivatedRoute
+    private _orderService: OrderService,
+    private _router: ActivatedRoute,
   ) {
-    this.order = [];
-    this.transaction = this._router.snapshot.paramMap.get('transaction');
+    this.orderId = this._router.snapshot.paramMap.get('orderId') || '';
 
     this.shippingMethod = '';
     this.createdAt = '';
     this.status = '';
     this.total = 0;
     this.payment_method = '';
-   }
+  }
 
   ngOnInit(): void {
-    this.getOrderDetail();
+    this.getOrder();
   }
 
-  getOrderDetail():void{
-    this._saleService.getSaleDetail(this.transaction).subscribe((response) => {
-      if(!response.saleDetail) return;
+  public async getOrder(): Promise<void> {
+    const response = await lastValueFrom(
+      this._orderService.getOrderById(this.orderId),
+    );
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
 
-      this.order = response.saleDetail;
-
-      this.order.forEach((element:any) => {
-        this.total += element.subtotal;
-      });
-
-      this.shippingMethod = this.order[0].sale.shippingType;
-      this.createdAt = this.order[0].sale.createdAt;
-      this.status = this.order[0].sale.status;
-      this.payment_method = this.order[0].sale.payment_method;
-      
-
-      console.log(this.order);
-    })
+    this.order = response.order;
   }
-
 }

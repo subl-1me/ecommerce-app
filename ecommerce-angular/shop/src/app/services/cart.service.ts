@@ -5,41 +5,58 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { GLOBAL } from '../services/CONST';
 
-import { Cart } from '../models/cart';
+import CartItemInput from '../models/cartItemInput';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CartService {
-  constructor(private _http: HttpClient) {}
+  public headers: HttpHeaders;
 
-  public addProductTCart(cart: Cart): Observable<any> {
-    var headers = new HttpHeaders().set('Content-Type', 'application/json');
+  constructor(private _http: HttpClient) {
+    this.headers = new HttpHeaders().set('Content-Type', 'application/json');
+  }
 
-    return this._http.post(
-      (environment.API_URL || GLOBAL.localUrl) + 'cart',
-      cart,
+  public addItem(
+    cartId: string,
+    productId: string,
+    body: CartItemInput,
+  ): Observable<any> {
+    return this._http.put(
+      `${environment.API_URL || GLOBAL.localUrl}cart/${cartId}/add/${productId}`,
+      body,
       {
-        headers: headers,
-      }
+        headers: this.headers,
+      },
     );
   }
 
-  public getCart(customerID: string): Observable<any> {
-    var headers = new HttpHeaders().set('Content-Type', 'application/json');
+  public createCart(): Observable<any> {
+    return this._http.post((environment.API_URL || GLOBAL.localUrl) + 'cart', {
+      headers: this.headers,
+    });
+  }
 
+  public getCart(cartId: string): Observable<any> {
     return this._http.get(
-      (environment.API_URL || GLOBAL.localUrl) + 'cart/' + customerID,
-      { headers: headers }
+      (environment.API_URL || GLOBAL.localUrl) + 'cart/' + cartId,
+      { headers: this.headers },
     );
   }
 
-  public removeProductCart(registerID: string): Observable<any> {
-    var headers = new HttpHeaders().set('Content-Type', 'application/json');
+  public emptyCart(cartId: string): Observable<any> {
+    return this._http.put(
+      `${environment.API_URL || GLOBAL.localUrl}cart/${cartId}/toEmpty`,
+      { headers: this.headers },
+    );
+  }
 
+  public removeItem(cartId: string, itemId: string): Observable<any> {
     return this._http.delete(
-      (environment.API_URL || GLOBAL.localUrl) + 'cart/' + registerID,
-      { headers: headers }
+      `${environment.API_URL || GLOBAL.localUrl}cart/${cartId}/remove/${itemId}`,
+      {
+        headers: this.headers,
+      },
     );
   }
 }

@@ -20,6 +20,7 @@ import { faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 // Services
 import { CustomersService } from 'src/app/services/customers.service';
 import { IdentityService } from 'src/app/services/identity.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-edit',
@@ -53,31 +54,42 @@ export class EditComponent implements OnInit {
     this.newNote = '';
     this.notes = [];
     this.selectedNotes = [];
-    this.customer = { sub: 0, notes: [] };
-    this.token = this._identityService.getToken();
+    this.customer = {
+      _id: '',
+      notes: [],
+      wishlist: [],
+      cart: { items: [] },
+      username: '',
+      email: '',
+      names: '',
+      surnames: '',
+    };
+    this.token = '';
     this.responseStatus = '';
   }
 
   ngOnInit(): void {
     this.customerId = this._router.snapshot.paramMap.get('id');
-
     this.getCustomer();
   }
 
   public resetForm(form: any) {
     if (confirm('Are you sure you want to reset all changes?')) {
-      // Resetear a los valores originales
       this.customer = {
-        sub: 0,
+        _id: '',
         names: 'John',
         surnames: 'Doe',
         email: 'john.doe@example.com',
         dni: 12345678,
         gender: 'Male',
+        username: 'johntitor',
+        wishlist: [],
+        cart: {
+          items: [],
+        },
         notes: [],
       };
       form.reset();
-      // Reactivar validación
       Object.keys(form.controls).forEach((key) => {
         form.controls[key].markAsPristine();
       });
@@ -113,13 +125,18 @@ export class EditComponent implements OnInit {
       : false;
   }
 
-  public getCustomer(): void {
-    this._customerService
-      .listById(this.token, this.customerId)
-      .subscribe((response) => {
-        this.customer = response.customer;
-        this.loadAuxNotes();
-      });
+  public async getCustomer(): Promise<void> {
+    const response = await lastValueFrom(
+      this._customerService.listById(this.customerId, this.token),
+    );
+
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+
+    this.customer = response.customer;
+    this.loadAuxNotes();
   }
 
   public resetNote(noteId: string): void {
@@ -162,21 +179,23 @@ export class EditComponent implements OnInit {
 
     return newNotes;
   }
-  public edit(form: any): void {
+
+  public async edit(form: any): Promise<void> {
     const updatedNotes = this.processNotes();
     if (updatedNotes) {
       this.customer.notes = <string[]>updatedNotes;
     }
-    this._customerService
-      .edit(this.customer, this.token, this.customerId)
-      .subscribe((response) => {
-        if (response.status == 'success') {
-          this.responseStatus = response.status;
-          this.loadAuxNotes();
-          this.newNote = '';
-        } else {
-          this.responseStatus = response.status;
-        }
-      });
+
+    const response = await lastValueFrom(
+      this._customerService.edit(this.customerId, this.customer, this.token),
+    );
+
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+
+    this.loadAuxNotes();
+    this.newNote = '';
   }
 }

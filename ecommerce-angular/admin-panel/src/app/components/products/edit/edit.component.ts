@@ -75,13 +75,14 @@ export class EditProductComponent implements OnInit {
     this.selectedFiles = [];
     this.isEdit = true;
     this.product = {
-      title: '',
+      slug: '',
       category: '',
-      content: '',
-      status: 'Draft',
+      shortDesc: '',
+      fullDesc: '',
       gallery: [],
-      description: '',
-      stock: 0,
+      variants: [],
+      sales: [],
+      stock: [],
       price: 0,
     };
     this.selectedNewStatus = '';
@@ -89,7 +90,7 @@ export class EditProductComponent implements OnInit {
     this.productStatusList = constans.productStatusList;
     this.editorContent = '';
     this.productID = this._router.snapshot.paramMap.get('id');
-    this.token = this._identityServie.getToken();
+    this.token = '';
     this.actualConfig = {
       shopName: '',
       serie: '',

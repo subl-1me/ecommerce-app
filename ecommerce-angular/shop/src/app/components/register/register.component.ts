@@ -1,6 +1,6 @@
-
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { lastValueFrom } from 'rxjs';
 
 import { Customer } from 'src/app/models/customer';
 
@@ -11,56 +11,46 @@ import { CustomerService } from 'src/app/services/customer.service';
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
-  providers: [ CustomerService ]
+  providers: [CustomerService],
 })
 export class RegisterComponent implements OnInit {
-
   public customer: Customer;
-  public token: any;
-
   public confirmPasswordTemp: string;
-
   public onSubmitMessage: string;
 
   constructor(
     private _customerService: CustomerService,
-    private _router: Router
-  ) { 
+    private _router: Router,
+  ) {
     this.customer = {
+      username: '',
       names: '',
       surnames: '',
       email: '',
       password: '',
-    }
+      wishlist: [],
+      language: 'EN',
+    };
     this.confirmPasswordTemp = '';
     this.onSubmitMessage = '';
-    this.token = localStorage.getItem('token');
   }
 
-  ngOnInit(): void {
-    this.isLogged();
-  }
+  ngOnInit(): void {}
 
-  public onSubmit(form:any):void{
-    if(form.invalid){
-      console.log('Fuck you.');
+  public async onSubmit(_form: any): Promise<void> {
+    const response = await lastValueFrom(
+      this._customerService.register(this.customer),
+    );
+
+    if (!response.success) {
+      alert(response.message);
       return;
     }
 
-    if(!this.isPasswordOk()) return;
-
-    this.onSubmitMessage = '';
-
-    this._customerService.register(this.customer).subscribe((response) => {
-      if(response.status === 'error') return;
-
-      this._router.navigate(['/login']);
-    })
-
+    this._router.navigate(['/login']);
   }
-
-  public isPasswordOk():boolean{
-    if(this.confirmPasswordTemp === this.customer.password){
+  public isPasswordOk(): boolean {
+    if (this.confirmPasswordTemp === this.customer.password) {
       this.onSubmitMessage = 'success';
       return true;
     }
@@ -68,9 +58,4 @@ export class RegisterComponent implements OnInit {
     this.onSubmitMessage = 'error';
     return false;
   }
-
-  public isLogged():void{
-    if(this.token) this._router.navigate(['']);
-  }
-
 }

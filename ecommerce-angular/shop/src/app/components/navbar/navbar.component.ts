@@ -8,31 +8,39 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
-import { Customer } from 'src/app/models/customer';
 import { Product } from 'src/app/models/product';
 
 import { CustomerService } from 'src/app/services/customer.service';
 import { ConfigsService } from 'src/app/services/configs.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { ProductsService } from 'src/app/services/products.service';
 import { Config } from 'src/app/models/config';
+import { Auth } from 'src/app/models/auth';
+import { SocketService } from 'src/app/services/socket/socket.service';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
-  providers: [CustomerService, ConfigsService, ProductsService],
+  providers: [
+    CustomerService,
+    ConfigsService,
+    ProductsService,
+    AuthService,
+    SocketService,
+  ],
 })
 export class NavbarComponent implements OnInit {
   @Output() openCartModal = new EventEmitter<boolean>();
   public config: Config;
-
-  public customer: Customer;
+  public auth: Auth;
   public _idStorage: any;
   public categories: any;
 
   public showFavsMenu: boolean;
+  public wishlist: string[];
+  public cartItemsCount: Number;
 
-  public productsFav: any;
   public loadedProducts: Array<Product>;
 
   // icons
@@ -44,70 +52,72 @@ export class NavbarComponent implements OnInit {
   faPlus = faPlus;
 
   constructor(
-    private _customerService: CustomerService,
     private _configsService: ConfigsService,
-    private _productsService: ProductsService,
+    private _authService: AuthService,
+    private _socketService: SocketService,
   ) {
     this.config = {
       _id: '',
       categories: [],
       shopName: '',
+      shippingMethods: [],
+
       logo: {
         public_id: '',
         path: '',
       },
     };
-    this.customer = {
-      names: '',
-      surnames: '',
+    this.wishlist = [];
+    this.auth = {
+      user: null,
+      jwt: '',
     };
-    this._idStorage =
-      localStorage.getItem('_id') != undefined
-        ? localStorage.getItem('_id')
-        : null;
-    this.productsFav = JSON.parse(localStorage.getItem('productsFav') || '[]');
     this.loadedProducts = [];
-
     this.showFavsMenu = false;
+    this.cartItemsCount = 0;
+    this._socketService.on('updated-wishlist').subscribe((response: any) => {
+      console.log(response);
+      this.wishlist = response.wishlist;
+    });
+
+    this._socketService.on('updated-cart').subscribe((response: any) => {
+      this.cartItemsCount = response.cart.items.length;
+    });
   }
 
   ngOnInit(): void {
-    this.getCustomer();
-    this.getCategories();
-    this.getProductsFav();
+    console.log(this._authService.isAuthenticated());
+    if (this._authService.isAuthenticated()) {
+      this.getAuth();
+      this.getCartCount();
+      this.getWishListCount();
+    }
+    this._configsService.getShopConfigs().subscribe((res) => {
+      if (res.success) {
+        this.config = res.config;
+      }
+    });
   }
 
-  getCustomer(): void {
-    this._customerService
-      .getCustomerById(this._idStorage)
-      .subscribe((response) => {
-        if (!response.customer) return;
+  getAuth(): void {
+    this.auth = this._authService.getUser();
+  }
 
-        this.customer = {
-          names: response.customer.names,
-          surnames: response.customer.surnames,
-        };
-      });
+  getWishListCount(): void {
+    const wishlist = this.auth.user.wishlist;
+    if (!wishlist) return;
+    this.wishlist = [...wishlist];
+  }
+
+  getCartCount(): void {
+    const cart = this._authService.getUser().user.cart;
+    if (!cart) return;
+    this.cartItemsCount = cart.items.length;
   }
 
   logOut(): void {
-    if (!this._idStorage) {
-      console.log('Not logged.');
-      return;
-    }
-
-    localStorage.removeItem('token');
-    localStorage.removeItem('_id');
+    localStorage.removeItem('auth');
     location.reload();
-  }
-
-  getCategories(): void {
-    this._configsService.getShopConfigs().subscribe((response) => {
-      if (!response.actualConfig) return;
-
-      this.config = response.actualConfig[0];
-      this.categories = response.actualConfig[0].categories;
-    });
   }
 
   enableFavsMenu(): void {
@@ -129,18 +139,6 @@ export class NavbarComponent implements OnInit {
     ) {
       this.showFavsMenu = false;
       return;
-    }
-  }
-
-  getProductsFav(): void {
-    for (let i = 0; i < this.productsFav.length; i++) {
-      this._productsService
-        .getProductById(this.productsFav[i])
-        .subscribe((response) => {
-          if (response.product) {
-            this.loadedProducts.push(response.product);
-          }
-        });
     }
   }
 

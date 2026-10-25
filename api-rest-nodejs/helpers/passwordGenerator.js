@@ -2,13 +2,13 @@
 
 exports.generate = function () {
   var characters =
-    'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()?><"}';
+    'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()?><"}'; // test
   var charactersLength = characters.length;
   var randomPassword = "";
 
   for (var i = 0; i < charactersLength; i++) {
     randomPassword += characters.charAt(
-      Math.floor(Math.random() * charactersLength)
+      Math.floor(Math.random() * charactersLength),
     );
   }
 

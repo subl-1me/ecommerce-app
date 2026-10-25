@@ -1,12 +1,25 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  AfterViewInit,
+  EventEmitter,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { environment } from 'src/environments/environment';
 
-import { Sale } from 'src/app/models/sale';
-import { SaleService } from 'src/app/services/sale.service';
+import { Auth } from 'src/app/models/auth';
+import { OrderInput } from 'src/app/models/order';
 
 // Services
+import { SaleService } from 'src/app/services/sale.service';
+import { OrderService } from 'src/app/services/order.service';
 import { StripeService } from 'src/app/services/stripe.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { lastValueFrom } from 'rxjs';
+import StripePaymentIntentInput from 'src/app/models/stripePaymentIntentInput';
 
 @Component({
   selector: 'app-stripe',
@@ -14,30 +27,50 @@ import { StripeService } from 'src/app/services/stripe.service';
   styleUrls: ['./stripe.component.css'],
   providers: [SaleService],
 })
-export class StripeComponent implements OnInit {
-  @Input() sale: Sale;
+export class StripeComponent implements OnInit, AfterViewInit {
+  private stripe: Stripe | null = null;
+  private stripePaymentMethodIntent: StripePaymentIntentInput = {
+    amount: 0,
+    description: '',
+    currency: 'usd', // default,
+    stripe_pm: '',
+  };
 
-  private readonly stripe: any; // window.stripe
+  @Output() isProcessingPayment = new EventEmitter<boolean>();
+  @Output() isPaymentSucceeded = new EventEmitter<boolean>();
+  @Output() paymentStep = new EventEmitter<number>();
+  @Input() orderDetails: OrderInput = {
+    items: [],
+    customer: '',
+    subtotal: 0,
+    total: 0,
+    shippingMethod: '',
+    shippingInformation: '',
+    coupon: null,
+    discount: 0,
+    paymentProviderName: 'stripe',
+    paymentStatus: 'pending',
+  };
+
   private elementStripe: any;
   public cardNumber: any;
   public cardCvc: any;
   public cardExp: any;
   public amount: any;
 
-  public isPaymentSucceeded: boolean;
-
+  private auth: Auth = {
+    jwt: '',
+    user: null,
+  };
   public form: FormGroup = new FormGroup({});
 
   //public stripe: stripe.Stripe;
   constructor(
     private fb: FormBuilder,
     private _stripeService: StripeService,
-    private _saleService: SaleService
+    private _orderService: OrderService,
+    private _authService: AuthService,
   ) {
-    //this.stripe = window.Stripe(environment.stripe_pk);
-    this.stripe = window.Stripe(
-      'pk_test_51L1yDyIX0ejDpXz2xriFFkc2ov5XmwysFD5u0BAJJbtt5RLUnxKJY5X0QWVW4gqYxaukYilaFyA8OBPFMtNE2KfS005oWRzBCH'
-    );
     this.form = this.fb.group({
       amount: [
         '',
@@ -47,17 +80,28 @@ export class StripeComponent implements OnInit {
       cardCvc: [false, [Validators.required, Validators.requiredTrue]],
       cardExp: [false, [Validators.required, Validators.requiredTrue]],
     });
-
-    this.sale = {};
-    this.isPaymentSucceeded = false;
   }
 
-  ngOnInit(): void {
-    console.log(this.sale);
-    this.createStripeElement();
+  async ngOnInit(): Promise<void> {
+    this.loadAuth();
+  }
+
+  async ngAfterViewInit(): Promise<void> {
+    this.stripe = await loadStripe(environment.stripe_pk);
+    if (this.stripe) {
+      this.createStripeElement();
+    }
+  }
+
+  private loadAuth(): void {
+    this.auth = this._authService.getUser();
   }
 
   private createStripeElement = () => {
+    if (!this.stripe) {
+      return;
+    }
+
     const style = {
       base: {
         color: '#000000',
@@ -127,61 +171,60 @@ export class StripeComponent implements OnInit {
 
   async initPay(): Promise<any> {
     try {
-      this.form.disable();
-
-      // Stripe's SDK generate token
-      const { token } = await this.stripe.createToken(this.cardNumber);
-
-      // Send token to API
-      // Get client_secret token for stripe
-      const orderID = localStorage.getItem('orderID');
-      if (!orderID) {
-        console.log('Error trying to verify your order.');
+      if (!this.stripe) {
+        alert('Error initializing Stripe component. Try again later.');
         return;
       }
 
-      // Update current Order adding stripe's ID field
-      const { data } = await this._stripeService.sendPayment(orderID, token.id);
+      this.form.disable();
+      this.isProcessingPayment.emit(true);
 
-      // STRIPE SDK will verify bank auth
-      this.stripe
-        .handleCardPayment(data.client_secret)
-        .then(async () => {
-          if (data.status !== 'requires_confirmation') return;
+      this.paymentStep.emit(1);
 
-          // Payment success
-          console.log('Payment Success');
-          this.isPaymentSucceeded = true;
+      // create stripe payment intent
+      const orderCreateRes = await lastValueFrom(
+        this._orderService.createOrder(this.orderDetails),
+      );
 
-          // delete actual order
-          this._stripeService.confirmOrder(orderID).subscribe((response) => {
-            console.log(response);
-          });
+      if (!orderCreateRes.success) {
+        alert('Error trying to create your order. Try again later.');
+        return;
+      }
 
-          // Register sale
-          this.sale.payment_method = 'Card';
-          this.sale.transaction = data.id;
-          this._saleService
-            .registerCustomerSale(this.sale)
-            .subscribe((response) => {
-              if (response.status !== 'SUCCESS') return;
+      const order = orderCreateRes.order;
+      localStorage.setItem('activeOrderId', order._id);
+      // create stripe payment method
+      this.paymentStep.emit(2);
+      const stripeRes = await this.stripe.createPaymentMethod({
+        type: 'card',
+        card: this.cardNumber,
+      });
 
-              this._saleService
-                .sendEmailSale(response.saleRegister._id)
-                .subscribe((response) => {
-                  console.log(response);
-                });
+      if (stripeRes.error) {
+        alert('Error trying to create Stripe Payment Method. Try again later.');
+        return;
+      }
 
-              console.log(response);
-            });
+      // create payment intent
+      this.stripePaymentMethodIntent.amount = order.total;
+      this.stripePaymentMethodIntent.description = `Testing payment for ${order.customer}`;
+      this.stripePaymentMethodIntent.stripe_pm = stripeRes.paymentMethod.id;
 
-          // Confirm order status
-          // await this._stripeService.confirmOrder(orderID);
-          //this.stripe.confirmCardPayment(data.client_secret);
-        })
-        .catch(() => {
-          console.log('Payment Error');
-        });
+      this.paymentStep.emit(3);
+      const paymentIntentResponse = await lastValueFrom(
+        this._stripeService.createPaymentIntent({
+          paymentIntent: this.stripePaymentMethodIntent,
+          order: order,
+        }),
+      );
+
+      if (!paymentIntentResponse.success) {
+        alert(`Stripe error: ${paymentIntentResponse.message}`);
+        return;
+      }
+
+      this.isPaymentSucceeded.emit(true);
+      this.isProcessingPayment.emit(false);
     } catch (err) {
       console.log(err);
     }

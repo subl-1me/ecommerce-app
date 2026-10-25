@@ -1,10 +1,10 @@
-'use strict'
+"use strict";
 
-const express = require('express');
-const stripeController = require('../services/stripe');
+const express = require("express");
+const stripeController = require("../controllers/stripe.controller");
 
 const routes = express.Router();
 
-routes.post('/payment_intent', stripeController.generatePaymentIntent);
+routes.post("/payment_intent", stripeController.createPaymentIntent);
 
 module.exports = routes;

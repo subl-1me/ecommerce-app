@@ -6,15 +6,13 @@ const customerController = require("../controllers/customerController");
 
 const routes = express.Router();
 
-routes.post("/customer/register", customerController.register);
-routes.post("/customer/login", customerController.login);
 routes.get(
-  "/customers/:filterBy?/:content?",
+  "/customer/filter/:filter?/:value?",
   auth.auth,
   customerController.list,
 );
 routes.get("/customer/:id", customerController.listById);
-routes.post("/create", auth.auth, customerController.create);
+routes.get("/customer/:id/wishlist", customerController.getWishlist);
 routes.put("/customer/:id", customerController.edit);
 routes.delete("/remove/:id", auth.auth, customerController.remove);
 

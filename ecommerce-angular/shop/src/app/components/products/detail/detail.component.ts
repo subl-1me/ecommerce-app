@@ -1,9 +1,10 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Product } from 'src/app/models/product';
 import { Review } from 'src/app/models/review';
 import { Cart } from 'src/app/models/cart';
+import { Auth } from 'src/app/models/auth';
 
 import { ProductsService } from 'src/app/services/products.service';
 import { ReviewService } from 'src/app/services/review.service';
@@ -16,20 +17,34 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
+import { AuthService } from 'src/app/services/auth.service';
+import { SocketService } from 'src/app/services/socket/socket.service';
+import { lastValueFrom } from 'rxjs';
+import { CustomerService } from 'src/app/services/customer.service';
+import ProductInventory from 'src/app/models/productInventory';
+import CartItemInput from 'src/app/models/cartItemInput';
 
 @Component({
   selector: 'app-detail',
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.css'],
-  providers: [ProductsService, ReviewService, CartService],
+  providers: [
+    ProductsService,
+    ReviewService,
+    CartService,
+    AuthService,
+    SocketService,
+  ],
 })
-export class DetailComponent implements OnInit, DoCheck {
+export class DetailComponent implements OnInit {
   public product: Product;
-  public productID: any;
+  public productID: string;
 
+  public auth: Auth;
   public cart: Cart;
+  public cartItem: CartItemInput;
 
-  public customerID: any;
+  public isLoading: boolean;
 
   public review: Review;
   public reviews: Array<Review>;
@@ -46,9 +61,7 @@ export class DetailComponent implements OnInit, DoCheck {
   public customersReview: any;
 
   public productsFav: any;
-
   public isAdded: boolean;
-
   public isURLCoppied: boolean;
 
   // icons
@@ -61,40 +74,46 @@ export class DetailComponent implements OnInit, DoCheck {
 
   constructor(
     private _productsService: ProductsService,
+    private _authService: AuthService,
+    private _socketService: SocketService,
     private _reviewService: ReviewService,
+    private _customerService: CustomerService,
     private _cartService: CartService,
     private _router: ActivatedRoute,
     private _route: Router,
   ) {
     this.product = {
       _id: '',
-      title: '',
-      description: '',
-      content: '',
-      stock: '',
+      slug: '',
+      shortDesc: '',
+      fullDesc: '',
+      stock: [],
+      variants: [],
       price: 0,
-      sales: '',
+      sales: [],
       rating: '',
       gallery: [],
-      coverImage: '',
       category: '',
     };
+    this.auth = {
+      user: null,
+      jwt: '',
+    };
 
-    this.customerID = localStorage.getItem('_id');
-
-    this.cart = { _id: ''  };
-
-    this.productID = this._router.snapshot.paramMap.get('id');
-    this.getProduct();
-
+    this.cartItem = {
+      qty: 1,
+      size: '',
+      color: '',
+    };
+    this.isLoading = false;
+    this.cart = { _id: '', items: [] };
+    this.productID = this._router.snapshot.paramMap.get('id') || '';
     this.isAdded = false;
     this.selectedAmount = 1;
-    this.selectedSize = 'Select Size';
+    this.selectedSize = '';
     this.invalidAmountMessage = '';
 
     this.addToCartMessage = '';
-
-    this.productsFav = JSON.parse(localStorage.getItem('productsFav') || '[]');
 
     this.showGeneral = true;
     this.showDetails = false;
@@ -104,54 +123,122 @@ export class DetailComponent implements OnInit, DoCheck {
 
     this.review = {};
     this.reviews = [];
-    this.getReviews();
 
     this.isURLCoppied = false;
   }
 
-  ngOnInit(): void {}
-
-  ngDoCheck(): void {
-    this.isProductFavorite();
+  ngOnInit(): void {
+    this.auth = this._authService.getUser();
+    this.getProduct();
+    this.getReviews();
   }
 
-  getProduct(): void {
-    this._productsService
-      .getProductById(this.productID)
-      .subscribe((response) => {
-        if (!response.product) return;
+  public async getProduct(): Promise<void> {
+    this.isLoading = true;
+    const response = await lastValueFrom(
+      this._productsService.getProductById(this.productID),
+    );
 
-        this.product = response.product;
-      });
-  }
-
-  addToFavorite(): void {
-    if (!this.productsFav) {
-      this.productsFav.push(this.productID);
-
-      localStorage.setItem('productsFav', JSON.stringify(this.productsFav));
+    if (!response.success) {
+      alert(response.message);
       return;
     }
 
-    this.productsFav.push(this.productID);
-    localStorage.setItem('productsFav', JSON.stringify(this.productsFav));
+    this.isLoading = false;
+    this.product = response.product;
   }
 
-  removeFromFavorite(): void {
-    this.productsFav = this.productsFav.filter(
-      (element: string) => element !== this.productID,
+  async addToWishlist(): Promise<void> {
+    if (this.isOnWishlist()) {
+      return;
+    }
+
+    //TODO: change this
+    let auth = this._authService.getUser();
+    let wishlist = [...auth.user.wishlist];
+    wishlist = [...wishlist, this.productID];
+    auth.user.wishlist = [...wishlist];
+    const response = await lastValueFrom(
+      this._customerService.editProfile(auth.user._id, auth.user),
+    );
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+
+    this._socketService.emit('wishlist-changes', {
+      wishlist: auth.user.wishlist,
+    });
+    this._authService.update(auth.user);
+  }
+
+  public isOnWishlist(): boolean {
+    return this.auth.user.wishlist.includes(this.productID);
+  }
+
+  public async addToCart(): Promise<void> {
+    let auth = this._authService.getUser();
+    const response = await lastValueFrom(
+      this._cartService.addItem(
+        auth.user.cart._id,
+        this.productID,
+        this.cartItem,
+      ),
     );
 
-    localStorage.setItem('productsFav', JSON.stringify(this.productsFav));
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+
+    auth.user.cart = response.result;
+    this._socketService.emit('cart-changes', { cart: auth.user.cart });
+    this._authService.update(auth.user);
+  }
+
+  public getProductColorVariants(product: Product): any {
+    const colorVariants = product.variants.find((val) => val.name === 'Color');
+    if (!colorVariants) {
+      return [];
+    }
+
+    return colorVariants.values;
+  }
+
+  public getProductSizeVariants(product: Product): any {
+    const colorVariants = product.variants.find((val) => val.name === 'Size');
+    if (!colorVariants) {
+      return [];
+    }
+
+    return colorVariants.values;
+  }
+
+  public async removeFromWishlist(): Promise<void> {
+    let auth = this._authService.getUser();
+    let wishlist = auth.user.wishlist;
+    const filtered = wishlist.filter((item: string) => item !== this.productID);
+    auth.user.wishlist = [...filtered];
+    const response = await lastValueFrom(
+      this._customerService.editProfile(auth.user._id, auth.user),
+    );
+
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+
+    this._socketService.emit('wishlist-changes', { wishlist: filtered });
+    this._authService.update(auth.user);
+  }
+
+  public calcualteTotalStock(stocks: ProductInventory[]) {
+    return stocks.reduce((accum, current) => {
+      return (accum += current.qty);
+    }, 0);
   }
 
   isProductFavorite(): boolean {
-    for (const product of this.productsFav) {
-      if (product === this.productID) {
-        return true;
-      }
-    }
-
     return false;
   }
 
@@ -179,41 +266,6 @@ export class DetailComponent implements OnInit, DoCheck {
     this.showReviews = true;
   }
 
-  // Cart Methods
-  addToCart(): void {
-    // Case user is not logged
-    if (!this.customerID) {
-      this.returnToLogin();
-      return;
-    }
-
-    if (this.selectedSize === 'Select Size') {
-      this.addToCartMessage = 'Please, select a size.';
-      return;
-    }
-
-    if (this.selectedAmount <= 0) {
-      this.invalidAmountMessage = 'You must select at least one item.';
-      return;
-    }
-
-    if (this.addToCartMessage === 'Added!') return;
-
-    this.cart.amount = this.selectedAmount;
-    this.cart.size = this.selectedSize;
-    this.cart.customer = this.customerID;
-    this.cart.product = this.productID;
-
-    this._cartService.addProductTCart(this.cart).subscribe((response) => {
-      this.invalidAmountMessage = '';
-      this.addToCartMessage = 'Added!';
-
-      setTimeout(() => {
-        this.addToCartMessage = '';
-      }, 1000);
-    });
-  }
-
   public returnToLogin(): void {
     this._route.navigate(['/login']);
   }
@@ -222,27 +274,9 @@ export class DetailComponent implements OnInit, DoCheck {
     this.addToCartMessage = '';
   }
 
-  submitReview(form: any): void {
-    this.review.customer = this.customerID;
-    this.review.product = this.productID;
+  submitReview(form: any): void {}
 
-    this._reviewService
-      .postReview(this.review, this.productID)
-      .subscribe((response) => {
-        this.getReviews();
-        this.disableReviewForm();
-        form.reset();
-      });
-  }
-
-  getReviews(): void {
-    this._reviewService.getReviews(this.productID).subscribe((response) => {
-      if (!response.reviews) return;
-
-      this.reviews = response.reviews;
-      console.log(this.reviews);
-    });
-  }
+  getReviews(): void {}
 
   enableReviewForm(): void {
     this.showReviewForm = true;

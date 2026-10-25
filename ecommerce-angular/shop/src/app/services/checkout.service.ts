@@ -20,7 +20,7 @@ export class CheckoutService {
       (environment.API_URL || GLOBAL.localUrl) + 'paymentstripe',
       {
         token: stripeToken,
-      }
+      },
     );
   }
 
@@ -36,7 +36,7 @@ export class CheckoutService {
 
     return this._http.get(
       (environment.API_URL || GLOBAL.localUrl) + 'coupon/' + code,
-      { headers: headers }
+      { headers: headers },
     );
   }
 }

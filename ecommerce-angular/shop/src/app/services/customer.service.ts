@@ -16,9 +16,9 @@ export class CustomerService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.post(
-      (environment.API_URL || GLOBAL.localUrl) + 'customer/register',
+      (environment.API_URL || GLOBAL.localUrl) + 'customer/auth/register',
       customer,
-      { headers: headers }
+      { headers: headers },
     );
   }
 
@@ -26,9 +26,9 @@ export class CustomerService {
     var headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this._http.post(
-      (environment.API_URL || GLOBAL.localUrl) + 'customer/login',
+      (environment.API_URL || GLOBAL.localUrl) + 'customer/auth/login',
       customer,
-      { headers: headers }
+      { headers: headers },
     );
   }
 
@@ -37,7 +37,19 @@ export class CustomerService {
 
     return this._http.get(
       (environment.API_URL || GLOBAL.localUrl) + 'customer/' + _id,
-      { headers: headers }
+      { headers: headers },
+    );
+  }
+
+  public getCustomerWishlist(customerId: string): Observable<any> {
+    var headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+    return this._http.get(
+      (environment.API_URL || GLOBAL.localUrl) +
+        'customer/' +
+        customerId +
+        '/wishlist',
+      { headers: headers },
     );
   }
 
@@ -47,7 +59,7 @@ export class CustomerService {
     return this._http.put(
       (environment.API_URL || GLOBAL.localUrl) + 'customer/' + _id,
       customer,
-      { headers: headers }
+      { headers: headers },
     );
   }
 }

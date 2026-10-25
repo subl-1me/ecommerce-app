@@ -1,152 +1,76 @@
 "use strict";
 
-var Customer = require("../models/customer");
-var Direction = require("../models/direction");
-
-var bcrypt = require("bcrypt-nodejs");
-var jwt = require("../helpers/jwt");
-var credentials = require("../helpers/safeCredentials");
-var generator = require("../helpers/passwordGenerator");
-
-const register = async function (req, res) {
-  //
-  var data = req.body;
-  var customerArray = [];
-
-  // Check if email is already taken
-  customerArray = await Customer.find({
-    email: data.email,
-  });
-
-  if (customerArray.length == 0) {
-    // check await
-    // register
-    if (data.password) {
-      bcrypt.hash(data.password, null, null, async function (err, hash) {
-        if (hash) {
-          data.password = hash;
-          var reg = await Customer.create(data);
-          res.status(200).send({
-            message: "User created sucessfully",
-            user: reg,
-          });
-        } else {
-          res.status(200).send({ message: "Error bcrypting password" });
-        }
-      });
-    } else {
-      res.status(200).send({
-        message: "There is not a password",
-      });
-    }
-  } else {
-    res.status(200).send({
-      message: "Email already taken. Try with another",
-    });
-  }
-};
-
-const login = async function (req, res) {
-  var data = req.body;
-  var customerArray = [];
-
-  customerArray = await Customer.find({ email: data.email });
-
-  if (customerArray.length == 0) {
-    res.status(200).send({ message: "User doesnt exists." });
-  } else {
-    // login
-    let customer = customerArray[0];
-
-    bcrypt.compare(
-      data.password,
-      customer.password,
-      async function (error, check) {
-        if (check) {
-          res.status(200).send({
-            customer: customer,
-            token: jwt.createToken(customer),
-            message: "Login successfully.",
-          });
-        } else {
-          res.status(200).send({ message: "Password doesnt match." });
-        }
-      },
-    );
-  }
-};
+const Customer = require("../models/customer");
+const CustomerService = require("../services/customer.service");
+const credentials = require("../helpers/safeCredentials");
+const generator = require("../helpers/passwordGenerator");
 
 // get customers list
 const list = async function (req, res) {
-  if (!req.user || req.user.role !== "Admin")
-    return res.status(403).send({ message: "You are not authorized." });
+  try {
+    const { authentication } = req;
+    if (!authentication || authentication.role !== "Admin")
+      return res
+        .status(403)
+        .send({ success: false, message: "You are not authorized." });
 
-  const filterBy = req.query.filterBy;
-  var content = req.query.content; // content that user send to search
+    const filter = req.query.filter;
+    const value = req.query.value;
 
-  var customersArray = [];
+    const customers = filter
+      ? await CustomerService.itemsByFilter(filter, value)
+      : await CustomerService.items();
 
-  // no filters
-  if (filterBy == undefined && content == undefined) {
-    customersArray = await Customer.find();
-
-    var safeArray = [];
-
-    //safe user
-    customersArray.forEach((cust) => {
-      safeArray.push(credentials.safeCredentials(cust));
+    return res.status(200).send({
+      success: true,
+      list: customers,
     });
-
-    res.status(200).send({
-      status: "success",
-      customers: safeArray,
+  } catch (err) {
+    return res.status(500).send({
+      success: false,
+      message: err.message,
     });
-  }
-
-  content = new RegExp(content, "i");
-
-  if (filterBy == "email") {
-    customersArray = await Customer.find({ email: content });
-    var safeArray = [];
-
-    //safe user
-    customersArray.forEach((cust) => {
-      safeArray.push(credentials.safeCredentials(cust));
-    });
-
-    if (customersArray.length == 0) {
-      res.status(200).send({
-        message: "user does not exists",
-        status: "error",
-      });
-    } else {
-      res.status(200).send({
-        filter: "email",
-        customers: safeArray,
-      });
-    }
   }
 };
 
 const listById = async function (req, res) {
-  if (!req.params["id"])
-    return res.status(200).send({ message: "An user ID is required." });
-
-  var id = req.params["id"];
-
-  //await new Promise(resolve => setTimeout(resolve, 3000));
-
   try {
-    var user = await Customer.findById({ _id: id });
+    const { id } = req.params;
+    if (!id)
+      return res
+        .status(200)
+        .send({ success: false, message: "Customer ID is required." });
 
+    const customer = await CustomerService.item(id);
     res.status(200).send({
-      status: "success",
-      customer: credentials.safeCredentials(user),
+      success: true,
+      customer: credentials.safeCredentials(customer),
     });
   } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+const getWishlist = async function (req, res) {
+  try {
+    const { id } = req.params;
+    if (!id)
+      return res
+        .status(200)
+        .send({ success: false, message: "Customer ID is required." });
+
+    const customer = await CustomerService.itemWishlist(id);
     res.status(200).send({
-      status: "error",
-      message: "User does not exists.",
+      success: true,
+      wishlist: customer.wishlist || [],
+    });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: err.message,
     });
   }
 };
@@ -170,66 +94,56 @@ const create = async function (req, res) {
 };
 
 const edit = async function (req, res) {
-  if (!req.params["id"])
-    return res.status(200).send({ message: "An user ID is required." });
-
-  var id = req.params["id"];
-  var params = req.body;
-
   try {
-    var updatedCustomer = await Customer.findByIdAndUpdate(id, {
-      names: params.names,
-      surnames: params.surnames,
-      email: params.email,
-      gender: params.gender,
-      dni: params.dni,
-      birthday: params.birthday,
-      country: params.country,
-      phone: params.phone,
-      notes: params.notes,
-      city: params.city,
-    });
+    const { id } = req.params;
+    if (!id)
+      return res
+        .status(200)
+        .send({ success: false, message: "Customer ID is required." });
 
-    return res.status(200).send({
-      status: "success",
-      updatedCustomer: credentials.safeCredentials(updatedCustomer),
+    const result = await CustomerService.update(id, req.body);
+    res.status(200).send({
+      success: true,
+      changes: credentials.safeCredentials(result),
     });
   } catch (err) {
-    return res.status(200).send({
-      status: "error",
-      message: "User not found",
+    res.status(500).send({
+      success: false,
+      message: err.message,
     });
   }
 };
 
 const remove = async function (req, res) {
-  if (!req.user || req.user.role !== "Admin")
-    return res.status(403).send({ message: "You are not authorized." });
-  if (!req.params["id"])
-    return res.status(200).send({ message: "An user ID is required." });
-
-  var id = req.params["id"];
-
   try {
-    await Customer.findByIdAndDelete({ _id: id });
+    const { authentication } = req;
+    const { id } = req.params;
+    if (!authentication || authentication.role !== "Admin")
+      return res
+        .status(403)
+        .send({ success: false, message: "You are not authorized." });
+    if (!id)
+      return res
+        .status(200)
+        .send({ success: false, message: "User ID is required." });
 
+    const result = await CustomerService.destroyById(id);
     return res.status(200).send({
-      status: "success",
+      success: true,
     });
   } catch (err) {
-    return res.status(400).send({
-      status: "error",
-      message: "User does not exists.",
+    return res.status(500).send({
+      success: false,
+      message: err.message,
     });
   }
 };
 
 module.exports = {
-  register,
-  login,
   list,
   listById,
   create,
   edit,
   remove,
+  getWishlist,
 };

@@ -20,10 +20,7 @@
           </svg>
         </div>
         <div>
-          <h1 class="checkout-title" *ngIf="!isOrderComplete">Checkout</h1>
-          <h1 class="checkout-title" *ngIf="isOrderComplete">
-            Select Payment Method
-          </h1>
+          <h1 class="checkout-title">Checkout</h1>
           <p class="checkout-subtitle">
             Review your order and complete the payment
           </p>
@@ -47,7 +44,7 @@
     </div>
 
     <!-- Not logged -->
-    <div class="login-prompt" *ngIf="!customerID">
+    <div class="login-prompt" *ngIf="auth.jwt === '' || !auth.user">
       <div class="prompt-icon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -57,7 +54,7 @@
           viewBox="0 0 16 16"
         >
           <path
-            d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"
+            d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4z"
           />
         </svg>
       </div>
@@ -69,11 +66,14 @@
     </div>
 
     <!-- Checkout Content -->
-    <div class="row g-4" *ngIf="customerID">
+    <div
+      class="row g-4"
+      *ngIf="auth.jwt !== '' && auth.user && cart.items.length > 0"
+    >
       <!-- Left: Order Summary -->
       <div class="col-12 col-lg-7">
-        <!-- Review -->
-        <div class="section-card" *ngIf="!isOrderComplete">
+        <!-- Review - SKELETON -->
+        <div class="section-card" *ngIf="isCartLoading">
           <div class="section-header">
             <div class="step-badge">1</div>
             <div>
@@ -82,8 +82,30 @@
             </div>
           </div>
 
-          <!-- Empty cart -->
-          <div class="empty-cart" *ngIf="cart.length === 0">
+          <div class="cart-list">
+            <div class="cart-skeleton-item" *ngFor="let s of [1, 2]">
+              <div class="skeleton skeleton-image"></div>
+              <div class="cart-skeleton-info">
+                <div class="skeleton skeleton-line-lg"></div>
+                <div class="skeleton skeleton-line-md"></div>
+                <div class="skeleton skeleton-line-sm"></div>
+              </div>
+              <div class="skeleton skeleton-price"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review - REAL -->
+        <div class="section-card" *ngIf="!isCartLoading">
+          <div class="section-header">
+            <div class="step-badge">1</div>
+            <div>
+              <h4 class="section-title">Order Review</h4>
+              <p class="section-subtitle">Review the items in your cart</p>
+            </div>
+          </div>
+
+          <div class="empty-cart" *ngIf="cart.items.length === 0">
             <div class="empty-cart-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -99,44 +121,50 @@
             </div>
             <h6 class="empty-cart-title">Your cart is empty</h6>
             <p class="empty-cart-subtitle">Add some products to continue</p>
-            <a class="btn-see-products" [routerLink]="['/products']">
-              See Products
-            </a>
+            <a class="btn-see-products" [routerLink]="['/products']"
+              >See Products</a
+            >
           </div>
 
-          <!-- Cart items -->
-          <div class="cart-list" *ngIf="cart.length > 0">
-            <div class="cart-row" *ngFor="let item of cart">
+          <div class="cart-list" *ngIf="cart.items.length > 0">
+            <div class="cart-row" *ngFor="let item of cart.items">
               <div class="cart-image-wrapper">
-                <img
-                  [src]="item.product?.coverImage"
-                  class="cart-image"
-                  [alt]="item.product?.title"
-                />
+                <img class="cart-image" [src]="item.product.gallery[0].path" />
               </div>
-
               <div class="cart-details">
-                <h6 class="cart-item-title">{{ item.product?.title }}</h6>
-
+                <h6 class="cart-item-title">{{ item.product.slug }}</h6>
                 <div class="cart-meta">
-                  <span class="meta-item">Qty: {{ item.amount }}</span>
+                  <span class="meta-item">Qty: {{ item.qty }}</span>
                   <span class="meta-item">Size: {{ item.size }}</span>
                   <span class="meta-item meta-color">
-                    <span class="color-dot"></span>
-                    Color
+                    <span
+                      class="color-dot"
+                      [style.background]="item.color"
+                    ></span>
+                    {{ item.color }}
+                    <span class="small"
+                      >({{ getColorLabel(item, item.color) }})</span
+                    >
                   </span>
                 </div>
+                <div class="item-link">
+                  <a
+                    class="meta-item"
+                    [routerLink]="['/products/detail/', item.product._id]"
+                    target="_blank"
+                    >See product</a
+                  >
+                </div>
               </div>
-
               <div class="cart-price">
-                ${{ calculatePrice(item.product?.price, item.amount) }}
+                ${{ calculatePriceTimesQty(item.product.price, item.qty) }}
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Shipping info -->
-        <div class="section-card" *ngIf="!isOrderComplete">
+        <!-- Shipping Information - SKELETON -->
+        <div class="section-card" *ngIf="isAddressesLoading">
           <div class="section-header">
             <div class="step-badge">2</div>
             <div>
@@ -145,68 +173,242 @@
             </div>
           </div>
 
-          <form [formGroup]="form">
-            <div class="row g-3">
-              <div class="col-12">
-                <label for="email" class="form-label">Email</label>
-                <input
-                  id="email"
-                  type="email"
-                  class="form-control form-control-custom"
-                  formControlName="email"
-                  placeholder="you@example.com"
-                />
-              </div>
-
-              <div class="col-12">
-                <label for="address" class="form-label">Address</label>
-                <input
-                  id="address"
-                  class="form-control form-control-custom"
-                  formControlName="address"
-                  placeholder="Street, number, interior"
-                />
-              </div>
-
-              <div class="col-12 col-md-4">
-                <label for="zip" class="form-label">ZIP Code</label>
-                <input
-                  id="zip"
-                  class="form-control form-control-custom"
-                  formControlName="zip"
-                  placeholder="00000"
-                />
-              </div>
-
-              <div class="col-12 col-md-4">
-                <label for="city" class="form-label">City</label>
-                <input
-                  id="city"
-                  class="form-control form-control-custom"
-                  formControlName="city"
-                  placeholder="City"
-                />
-              </div>
-
-              <div class="col-12 col-md-4">
-                <label for="country" class="form-label">Country</label>
-                <input
-                  id="country"
-                  class="form-control form-control-custom"
-                  formControlName="country"
-                  placeholder="Country"
-                />
+          <div class="address-list">
+            <div class="address-skeleton-item" *ngFor="let s of [1, 2]">
+              <div class="skeleton skeleton-icon"></div>
+              <div class="address-skeleton-info">
+                <div class="skeleton skeleton-line-lg"></div>
+                <div class="skeleton skeleton-line-md"></div>
+                <div class="skeleton skeleton-line-sm"></div>
               </div>
             </div>
-          </form>
+          </div>
+        </div>
+
+        <!-- Shipping Information - REAL -->
+        <div
+          class="section-card"
+          *ngIf="!isAddressesLoading && addresses.length > 0"
+        >
+          <div class="section-header">
+            <div class="step-badge">2</div>
+            <div>
+              <h4 class="section-title">Shipping Information</h4>
+              <p class="section-subtitle">Where should we deliver your order</p>
+            </div>
+          </div>
+
+          <div class="address-selector">
+            <label class="form-label">Choose a saved address</label>
+            <div class="address-list">
+              <label
+                class="address-option"
+                *ngFor="let address of addresses; index as i"
+              >
+                <input
+                  type="radio"
+                  name="selectedAddress"
+                  class="address-radio"
+                  [value]="address"
+                  (change)="toggleTargetAddress($event)"
+                  [(ngModel)]="shippingAux"
+                />
+                <div class="address-option-content">
+                  <div class="address-option-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="address-option-info">
+                    <span class="address-option-title"
+                      >Address #{{ i + 1 }}</span
+                    >
+                    <span class="address-option-line"
+                      >To: {{ address.addressee }}</span
+                    >
+                    <span class="address-option-line"
+                      >{{ address.email }} - {{ address.phone }}</span
+                    >
+                    <span class="address-option-line"
+                      >{{ address.address }} #{{ address.zip }}</span
+                    >
+                    <span class="address-option-line"
+                      >{{ address.city }}, {{ address.state }},
+                      {{ address.country }}</span
+                    >
+                  </div>
+                  <span class="address-option-badge" *ngIf="address.default"
+                    >Default</span
+                  >
+                </div>
+              </label>
+            </div>
+
+            <a class="address-manage-link" [routerLink]="['/directions']">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"
+                />
+              </svg>
+              Manage addresses
+            </a>
+          </div>
+        </div>
+
+        <!-- Empty shipping info -->
+        <div
+          class="section-card"
+          *ngIf="!isAddressesLoading && addresses.length === 0"
+        >
+          <div class="section-header">
+            <div class="step-badge">2</div>
+            <div>
+              <h4 class="section-title">Shipping Information</h4>
+              <p class="section-subtitle">Where should we deliver your order</p>
+            </div>
+          </div>
+          <div class="section-body text-center">
+            <h4 class="section-title">No address found.</h4>
+            <p class="section-subtitle">
+              Add some addresses in your Profile Section
+            </p>
+            <a class="address-manage-link" [routerLink]="['/directions']">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"
+                />
+              </svg>
+              Manage addresses
+            </a>
+          </div>
+        </div>
+
+        <!-- Shipping Method - SKELETON -->
+        <div class="section-card" *ngIf="isConfigLoading">
+          <div class="section-header">
+            <div class="step-badge">3</div>
+            <div>
+              <h4 class="section-title">Shipping Method</h4>
+              <p class="section-subtitle">
+                Choose how fast you want to receive your order
+              </p>
+            </div>
+          </div>
+
+          <div class="shipping-methods">
+            <div class="shipping-skeleton-item" *ngFor="let s of [1, 2, 3]">
+              <div class="skeleton skeleton-icon"></div>
+              <div class="shipping-skeleton-info">
+                <div class="skeleton skeleton-line-lg"></div>
+                <div class="skeleton skeleton-line-sm"></div>
+              </div>
+              <div class="skeleton skeleton-price"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shipping Method - REAL -->
+        <div class="section-card" *ngIf="!isConfigLoading">
+          <div class="section-header">
+            <div class="step-badge">3</div>
+            <div>
+              <h4 class="section-title">Shipping Method</h4>
+              <p class="section-subtitle">
+                Choose how fast you want to receive your order
+              </p>
+            </div>
+          </div>
+
+          <div class="shipping-methods">
+            <label
+              class="shipping-option"
+              *ngFor="let method of config.shippingMethods"
+            >
+              <input
+                type="radio"
+                name="shippingMethod"
+                [value]="method._id"
+                [(ngModel)]="orderDetails.shippingMethod"
+                class="shipping-radio"
+                (change)="recalculateOrderTotal()"
+              />
+              <div class="shipping-option-content">
+                <div class="shipping-option-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-4 0H1.5A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h.026z"
+                    />
+                  </svg>
+                </div>
+                <div class="shipping-option-info">
+                  <span class="shipping-option-title"
+                    >{{ method.title }} Shipping</span
+                  >
+                  <span class="shipping-option-desc">{{ method.time }}</span>
+                </div>
+                <span class="shipping-option-price"
+                  >${{ method.price }}.00</span
+                >
+              </div>
+            </label>
+          </div>
         </div>
       </div>
 
       <!-- Right: Order summary + Payment -->
       <div class="col-12 col-lg-5">
         <div class="sticky-summary">
-          <!-- Order Summary -->
-          <div class="summary-card" *ngIf="!isOrderComplete">
+          <!-- Order Summary - SKELETON -->
+          <div class="summary-card" *ngIf="isCartLoading">
+            <h5 class="summary-title">Order Summary</h5>
+            <div class="summary-list">
+              <div class="summary-row">
+                <div class="skeleton skeleton-label"></div>
+                <div class="skeleton skeleton-value"></div>
+              </div>
+              <div class="summary-row">
+                <div class="skeleton skeleton-label"></div>
+                <div class="skeleton skeleton-value"></div>
+              </div>
+              <div class="summary-row">
+                <div class="skeleton skeleton-label"></div>
+                <div class="skeleton skeleton-value"></div>
+              </div>
+            </div>
+            <div class="summary-total">
+              <div class="skeleton skeleton-total-label"></div>
+              <div class="skeleton skeleton-total-value"></div>
+            </div>
+          </div>
+
+          <!-- Order Summary - REAL -->
+          <div class="summary-card" *ngIf="!isCartLoading">
             <h5 class="summary-title">Order Summary</h5>
 
             <div class="summary-list">
@@ -217,7 +419,12 @@
 
               <div class="summary-row">
                 <span class="summary-label">Shipping cost</span>
-                <span class="summary-value">${{ shippingCost }}</span>
+                <span class="summary-value">
+                  ${{ shippingCost }}
+                  <span class="small"
+                    >({{ getSelectedShippingMethodTitle() }})</span
+                  >
+                </span>
               </div>
 
               <div class="summary-row summary-discount">
@@ -226,7 +433,7 @@
                   data-bs-toggle="collapse"
                   data-bs-target="#collapse-promo"
                 >
-                  <span>Discount</span>
+                  <span>Have a coupon?</span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="12"
@@ -240,37 +447,96 @@
                     />
                   </svg>
                 </button>
-                <span
-                  class="summary-value summary-value-discount"
-                  *ngIf="discount != 0"
-                  >-%{{ discount }}</span
-                >
-                <span class="summary-value text-muted" *ngIf="discount == 0"
-                  >—</span
+              </div>
+
+              <div
+                class="collapse"
+                id="collapse-promo"
+                *ngIf="!coupon || coupon.code === ''"
+              >
+                <div class="coupon-input-wrapper">
+                  <input
+                    class="coupon-input"
+                    name="code"
+                    [(ngModel)]="couponCode"
+                    placeholder="Enter coupon code"
+                    (keydown)="resetCouponTrigger()"
+                  />
+                  <button class="coupon-apply-btn" (click)="verifyCouponCode()">
+                    Apply
+                  </button>
+                </div>
+                <small class="small text-danger" *ngIf="isInvalidCoupon"
+                  >Invalid coupon code.</small
                 >
               </div>
 
-              <div class="collapse" id="collapse-promo">
-                <div class="promo-input-group">
-                  <input
-                    class="form-control form-control-custom"
-                    placeholder="Coupon / Promo code"
-                  />
+              <div class="coupon-applied" *ngIf="coupon && coupon.code">
+                <div class="coupon-applied-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"
+                    />
+                  </svg>
                 </div>
+                <div class="coupon-applied-info">
+                  <span class="coupon-applied-code">{{ coupon.code }}</span>
+                  <span class="coupon-applied-desc">
+                    <ng-container *ngIf="coupon.type === percentageTypeTemplate"
+                      >{{ coupon.value }}% off</ng-container
+                    >
+                    <ng-container *ngIf="coupon.type === fixedTypeTemplate"
+                      >${{ coupon.value }} off</ng-container
+                    >
+                  </span>
+                </div>
+                <div class="coupon-applied-right">
+                  <span
+                    class="coupon-applied-amount"
+                    *ngIf="coupon.type === percentageTypeTemplate"
+                    >-${{ discount }}</span
+                  >
+                  <span
+                    class="coupon-applied-amount"
+                    *ngIf="coupon.type === fixedTypeTemplate"
+                    >-${{ discount }}</span
+                  >
+                  <button
+                    class="coupon-remove-btn"
+                    (click)="removeCoupon()"
+                    title="Remove coupon"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+
+              <div
+                class="summary-row summary-discount-row"
+                *ngIf="coupon && coupon.code"
+              >
+                <span class="summary-label">Discount</span>
+                <span class="summary-value summary-value-discount">
+                  -${{ discount }}
+                </span>
               </div>
             </div>
 
             <div class="summary-total">
               <span class="total-label">Total</span>
-              <span class="total-amount">${{ orderTotal }}</span>
+              <span class="total-amount">${{ this.orderTotal }}</span>
             </div>
           </div>
 
           <!-- Payment -->
-          <div class="payment-card">
-            <h5 class="summary-title" *ngIf="!isOrderComplete">
-              Payment Method
-            </h5>
+          <div class="payment-card" *ngIf="isOrderComplete()">
+            <h5 class="summary-title">Payment Method</h5>
 
             <ngx-paypal
               [config]="payPalConfig"
@@ -281,7 +547,12 @@
               <span class="divider-text">Or pay with card</span>
             </div>
 
-            <app-stripe [sale]="sale"></app-stripe>
+            <app-stripe
+              [orderDetails]="orderDetails"
+              (paymentStep)="handlePaymentSteps($event)"
+              (isPaymentSucceeded)="handlePaymentSucceeded($event)"
+              (isProcessingPayment)="handlePaymentStatus($event)"
+            ></app-stripe>
 
             <div class="secure-badge">
               <svg
@@ -298,8 +569,152 @@
               Secure payment
             </div>
           </div>
+
+          <div class="summary-card" *ngIf="!isOrderComplete()">
+            <div class="summary-list">
+              <span class="summary-value text-danger text-center">
+                Complete all requeriments to continue with payment.
+              </span>
+            </div>
+          </div>
         </div>
       </div>
+    </div>
+
+    <!-- empty cart -->
+    <div class="row g-1">
+      <div class="empty-cart" *ngIf="cart.items.length === 0">
+        <div class="empty-cart-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="36"
+            height="36"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5z"
+            />
+          </svg>
+        </div>
+        <h6 class="empty-cart-title">Your cart is empty</h6>
+        <p class="empty-cart-subtitle">Add some products to continue</p>
+        <a class="btn-see-products" [routerLink]="['/products']"
+          >See Products</a
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing Payment Modal -->
+  <div class="payment-modal" *ngIf="isProcessingPayment">
+    <div class="payment-overlay"></div>
+    <div class="payment-card-processing">
+      <div class="payment-icon-wrapper">
+        <div class="payment-ring"></div>
+        <div class="payment-ring payment-ring-2"></div>
+        <div class="payment-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="28"
+            height="28"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"
+            />
+            <path
+              d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"
+            />
+          </svg>
+        </div>
+      </div>
+      <h4 class="payment-title">Processing your payment</h4>
+      <p class="payment-subtitle">
+        Please don't close this window or refresh the page
+      </p>
+      <div class="payment-progress">
+        <div class="payment-progress-bar"></div>
+      </div>
+      <ul class="payment-steps">
+        <li
+          class="payment-step"
+          [class.active]="paymentStep >= 1"
+          [class.done]="paymentStep > 1"
+        >
+          <span class="step-dot"></span
+          ><span class="step-text">Verifying card details</span>
+        </li>
+        <li
+          class="payment-step"
+          [class.active]="paymentStep >= 2"
+          [class.done]="paymentStep > 2"
+        >
+          <span class="step-dot"></span
+          ><span class="step-text">Contacting your bank</span>
+        </li>
+        <li
+          class="payment-step"
+          [class.active]="paymentStep >= 3"
+          [class.done]="paymentStep > 3"
+        >
+          <span class="step-dot"></span
+          ><span class="step-text">Confirming payment</span>
+        </li>
+      </ul>
+      <div class="payment-secure">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"
+          />
+        </svg>
+        Secured by Stripe
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Success Modal -->
+  <div class="payment-modal" *ngIf="isPaymentSucceeded">
+    <div class="payment-overlay"></div>
+    <div class="payment-card payment-card-success">
+      <div class="success-icon-wrapper">
+        <div class="success-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"
+            />
+          </svg>
+        </div>
+      </div>
+      <h4 class="payment-title">Payment successful</h4>
+      <p class="payment-subtitle">
+        Your order has been confirmed. You will receive an email shortly.
+      </p>
+      <button
+        class="btn-payment-close"
+        (click)="handleNavigation('continue-shopping')"
+      >
+        Continue Shopping
+      </button>
+      <button
+        class="btn-payment-see-order"
+        (click)="handleNavigation('order-details')"
+      >
+        See Order Details
+      </button>
     </div>
   </div>
 </div>

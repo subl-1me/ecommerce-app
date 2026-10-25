@@ -16,6 +16,8 @@ import { environment } from 'src/environments/environment';
 
 import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
+import { lastValueFrom } from 'rxjs';
+import ProductInventory from 'src/app/models/productInventory';
 
 @Component({
   selector: 'app-list',
@@ -53,7 +55,7 @@ export class ListComponent implements OnInit, DoCheck {
     private _identityService: IdentityService,
     private _modalService: ModalService,
   ) {
-    this.token = this._identityService.getToken();
+    this.token = '';
     this.selectedProduct = null;
     this.products = [];
     this.titleFilter = '';
@@ -61,18 +63,25 @@ export class ListComponent implements OnInit, DoCheck {
   }
 
   ngOnInit(): void {
-    this.list();
+    this.getList();
   }
 
   ngDoCheck(): void {}
 
-  list(): void {
-    this._productService.list(this.token).subscribe((res) => {
-      if (res.status == 'success') {
-        this.products = res.products;
-        console.log(this.products);
-      }
-    });
+  public getTotalStockNumber(productStock: ProductInventory[]): number {
+    return productStock.reduce((accum, current) => {
+      return (accum += current.qty);
+    }, 0);
+  }
+
+  public async getList(): Promise<void> {
+    const response = await lastValueFrom(this._productService.list(this.token));
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+
+    this.products = response.products;
   }
 
   filter(): void {
@@ -117,12 +126,11 @@ export class ListComponent implements OnInit, DoCheck {
     var arrayToExport: any[] = [];
     this.products.forEach((product) => {
       arrayToExport.push({
-        title: product.title,
+        slug: product.slug,
         category: product.category,
         price: product.price,
         rating: product.rating,
         sales: product.sales,
-        stock: product.stock,
       });
     });
 

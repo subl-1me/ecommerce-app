@@ -49,7 +49,7 @@ export class ConfigsComponent implements OnInit {
       },
       categories: [],
     };
-    this.token = this._identityService.getToken();
+    this.token = '';
     this.logoUploadMessage = '';
     this.addCategoryMessage = '';
   }

@@ -1,19 +1,17 @@
-import { Customer } from './customer';
-import { Direction } from './direction';
-import { SaleDetails } from './saleDetail';
+import { Order } from './order';
 
-export interface Sale{
-    customer?: Customer,
-    nSale?: String,
-    total?: Number,
-    details?: Array<SaleDetails>,
-    shippingType?: String,
-    shippingPrice?: Number,
-    shippingAddress?: Direction,
-    shippingNote?: String,
-    payment_method?: String,
-    transaction?: String,
-    coupon?: String,
-    status?: String,
-    createdAt?: Date
+export interface Sale {
+  _id: string;
+  order: Order;
+  amount: number;
+  status: string;
+  stripePaymentIntentId: string | null;
+  paypalPaymentIntentId: string | null;
+  paidAt: Date;
+  createAt: Date;
+  updateAt: Date;
+}
+
+export interface SaleInput {
+  customer: string;
 }

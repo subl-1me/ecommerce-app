@@ -14,29 +14,14 @@
               border: 2px solid rgba(255, 255, 255, 0.1);
             "
           >
-            <span class="text-white fs-2">📦</span>
+            <span class="text-white fs-2">P</span>
           </div>
           <div>
-            <h1 class="text-white mb-0 fw-bold" *ngIf="!isEdit">
-              Create a Product
-            </h1>
-            <h1 class="text-white mb-0 fw-bold" *ngIf="isEdit">
-              Edit a Product
-            </h1>
-            <small class="text-white-50" *ngIf="!isEdit"
+            <h1 class="text-white mb-0 fw-bold">Create a Product</h1>
+            <small class="text-white-50"
               >Add a new product to your inventory</small
             >
-            <small class="text-white-50" *ngIf="isEdit"
-              >Update product information</small
-            >
           </div>
-        </div>
-        <div *ngIf="isEdit">
-          <span
-            class="badge bg-primary bg-opacity-25 text-white rounded-pill px-3 py-2"
-          >
-            ID: {{ product._id || "N/A" }}
-          </span>
         </div>
       </div>
     </div>
@@ -50,7 +35,7 @@
           color: #ffc107;
         "
       >
-        <span style="font-size: 1.2rem">⚠️</span>
+        <span style="font-size: 1.2rem">*</span>
         <div>
           <strong class="d-block">Required Fields</strong>
           <p class="mb-0 small">
@@ -64,12 +49,12 @@
       <form #createForm="ngForm" (ngSubmit)="startCreation()">
         <h4 class="text-white mb-3">Principal Details</h4>
         <div class="row g-3">
-          <div class="col-md-6">
+          <div class="col-md-12">
             <div class="form-floating" style="color: white">
               <input
                 type="text"
                 name="title"
-                [(ngModel)]="product.title"
+                [(ngModel)]="product.slug"
                 class="form-control"
                 id="titleInput"
                 placeholder="Product name"
@@ -82,9 +67,9 @@
                   transition: all 0.3s ease;
                 "
               />
-              <label for="titleInput" style="color: rgba(255, 255, 255, 0.6)">
-                * Title
-              </label>
+              <label for="titleInput" style="color: rgba(255, 255, 255, 0.6)"
+                >* Title</label
+              >
             </div>
             <div
               *ngIf="
@@ -97,41 +82,7 @@
             </div>
           </div>
 
-          <div class="col-md-3">
-            <div class="form-floating" style="color: white">
-              <input
-                type="number"
-                name="stock"
-                [(ngModel)]="product.stock"
-                class="form-control"
-                id="stockInput"
-                placeholder="100"
-                required
-                min="0"
-                style="
-                  border-radius: 12px;
-                  border: 1px solid rgba(255, 255, 255, 0.15);
-                  background: rgba(255, 255, 255, 0.08);
-                  color: white;
-                  transition: all 0.3s ease;
-                "
-              />
-              <label for="stockInput" style="color: rgba(255, 255, 255, 0.6)">
-                * Stock
-              </label>
-            </div>
-            <div
-              *ngIf="
-                createForm.submitted && createForm.controls['stock']?.invalid
-              "
-              class="text-danger small mt-1"
-              style="color: #ff6b6b !important"
-            >
-              Valid stock is required
-            </div>
-          </div>
-
-          <div class="col-md-3">
+          <div class="col-md-4">
             <div class="form-floating" style="color: white">
               <input
                 type="text"
@@ -149,9 +100,9 @@
                   transition: all 0.3s ease;
                 "
               />
-              <label for="priceInput" style="color: rgba(255, 255, 255, 0.6)">
-                * Price ($)
-              </label>
+              <label for="priceInput" style="color: rgba(255, 255, 255, 0.6)"
+                >* Price ($)</label
+              >
             </div>
             <div
               *ngIf="
@@ -164,7 +115,7 @@
             </div>
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-8">
             <div class="form-floating" style="color: white">
               <select
                 class="form-select"
@@ -180,10 +131,10 @@
                   transition: all 0.3s ease;
                 "
               >
-                <option selected disabled class="text-white-50">
+                <option selected disabled value="" class="text-white-50">
                   Choose a category...
                 </option>
-                <ng-container *ngFor="let category of actualConfig.categories">
+                <ng-container *ngFor="let category of config.categories">
                   <option class="p-2 text-white" value="{{ category }}">
                     {{ category }}
                   </option>
@@ -192,9 +143,8 @@
               <label
                 for="categorySelect"
                 style="color: rgba(255, 255, 255, 0.6)"
+                >* Category</label
               >
-                * Category
-              </label>
             </div>
             <div
               *ngIf="
@@ -214,7 +164,7 @@
                 id="descriptionInput"
                 rows="3"
                 name="description"
-                [(ngModel)]="product.description"
+                [(ngModel)]="product.shortDesc"
                 placeholder="Brief description of the product..."
                 style="
                   border-radius: 12px;
@@ -231,17 +181,16 @@
               <label
                 for="descriptionInput"
                 style="color: rgba(255, 255, 255, 0.6)"
+                >* Short Description</label
               >
-                * Short Description
-              </label>
             </div>
             <div class="d-flex justify-content-between mt-1">
-              <small style="color: rgba(255, 255, 255, 0.3)">
-                Brief description of the product
-              </small>
-              <small style="color: rgba(255, 255, 255, 0.3)">
-                {{ product.description?.length || 0 }} characters
-              </small>
+              <small style="color: rgba(255, 255, 255, 0.3)"
+                >Brief description of the product</small
+              >
+              <small style="color: rgba(255, 255, 255, 0.3)"
+                >{{ product.shortDesc.length || 0 }} characters</small
+              >
             </div>
             <div
               *ngIf="
@@ -254,12 +203,7 @@
               Description is required
             </div>
           </div>
-        </div>
 
-        <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1)" />
-
-        <h4 class="text-white mb-3">* Full Description</h4>
-        <div class="row g-3">
           <div class="col-md-12">
             <div class="form-floating" style="color: white">
               <textarea
@@ -267,7 +211,7 @@
                 id="fullDescriptionInput"
                 rows="6"
                 name="content"
-                [(ngModel)]="product.content"
+                [(ngModel)]="product.fullDesc"
                 placeholder="Detailed description of the product..."
                 style="
                   border-radius: 12px;
@@ -284,24 +228,403 @@
               <label
                 for="fullDescriptionInput"
                 style="color: rgba(255, 255, 255, 0.6)"
+                >Full Description (Optional)</label
               >
-                Full Description (Optional)
-              </label>
             </div>
             <div class="d-flex justify-content-between mt-1">
-              <small style="color: rgba(255, 255, 255, 0.3)">
-                Detailed description with features, specifications, etc.
-              </small>
-              <small style="color: rgba(255, 255, 255, 0.3)">
-                {{ product.content?.length || 0 }} characters
-              </small>
+              <small style="color: rgba(255, 255, 255, 0.3)"
+                >Detailed description with features, specifications, etc.</small
+              >
+              <small style="color: rgba(255, 255, 255, 0.3)"
+                >{{ product.fullDesc.length || 0 }} characters</small
+              >
             </div>
           </div>
         </div>
 
         <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1)" />
 
-        <h4 class="text-white mb-3">* Cover Image</h4>
+        <div
+          class="variants-section p-4 rounded-3"
+          style="
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+          "
+        >
+          <div
+            class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2"
+          >
+            <div>
+              <h3 class="text-white mb-0">Product Variants</h3>
+              <small class="text-white-50">
+                Add the options your product has (sizes, colors, materials,
+                capacity, etc.)
+              </small>
+            </div>
+            <span
+              class="badge bg-primary bg-opacity-25 text-white rounded-pill px-3 py-2"
+            >
+              {{ variantTypes.length }}
+              {{ variantTypes.length === 1 ? "variant" : "variants" }}
+            </span>
+          </div>
+
+          <hr
+            class="opacity-25"
+            style="border-color: rgba(255, 255, 255, 0.1)"
+          />
+
+          <!-- Add variant type -->
+          <div
+            class="variant-add-row d-flex flex-wrap gap-2 align-items-end mb-4"
+          >
+            <div class="variant-type-wrapper flex-grow-1">
+              <label class="variant-label" for="variantTypeInput"
+                >Variant type</label
+              >
+              <div class="form-floating" style="color: white">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="variantTypeInput"
+                  placeholder="e.g. Size, Color, Material, Capacity"
+                  name="newVariantType"
+                  [(ngModel)]="newVariantType"
+                  style="
+                    border-radius: 12px;
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    background: rgba(255, 255, 255, 0.08);
+                    color: white;
+                    transition: all 0.3s ease;
+                  "
+                />
+                <label
+                  for="variantTypeInput"
+                  style="color: rgba(255, 255, 255, 0.6)"
+                >
+                  Type
+                </label>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-outline-light rounded-pill px-4 variant-add-btn"
+              style="
+                border-color: rgba(255, 255, 255, 0.3);
+                transition: all 0.3s ease;
+              "
+              (click)="addNewVariant()"
+            >
+              Add Variant
+            </button>
+          </div>
+
+          <!-- Value -->
+          <div class="color-picker mb-4" *ngIf="showValuePrompt">
+            <div class="row g-3">
+              <div class="col-md-12">
+                <div
+                  class="colors-section p-3 rounded-3"
+                  style="
+                    background: rgba(255, 255, 255, 0.03);
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                  "
+                >
+                  <div class="d-flex flex-wrap gap-3 align-items-end mb-1">
+                    <div class="color-name-wrapper">
+                      <div class="form-floating" style="color: white">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="sizeInput"
+                          placeholder="e.g. Leather, 100L, Formal"
+                          name="sizeName"
+                          [(ngModel)]="selectedSize"
+                          style="
+                            border-radius: 12px;
+                            border: 1px solid rgba(255, 255, 255, 0.15);
+                            background: rgba(255, 255, 255, 0.08);
+                            color: white;
+                            transition: all 0.3s ease;
+                          "
+                        />
+                        <label
+                          for="sizeInput"
+                          style="color: rgba(255, 255, 255, 0.6)"
+                        >
+                          Value
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick presets -->
+          <div class="variant-presets mb-4">
+            <span class="variant-presets-label">Common types:</span>
+            <button
+              type="button"
+              class="variant-preset-chip"
+              *ngFor="let preset of variantPresets"
+              (click)="addPresetVariant(preset)"
+            >
+              {{ preset }}
+            </button>
+            <button type="button" class="variant-preset-chip-add">
+              + Add More
+            </button>
+          </div>
+
+          <!-- Variant list -->
+          <div class="variants-list" *ngIf="variantTypes.length > 0">
+            <div
+              class="variant-card"
+              *ngFor="let variant of variantTypes; let vIndex = index"
+            >
+              <div class="variant-card-header">
+                <div class="variant-card-title-wrapper">
+                  <span class="variant-card-title">{{ variant.name }}</span>
+                  <span class="variant-card-count">
+                    {{ toStringArray(variant.values).length }}
+                    {{
+                      toStringArray(variant.values).length === 1
+                        ? "option"
+                        : "options"
+                    }}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  class="variant-card-remove"
+                  aria-label="Remove variant"
+                  (click)="removeVariantType(vIndex)"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div class="variant-card-body">
+                <!-- size -->
+                <div
+                  class="variant-values-input d-flex gap-2 flex-wrap align-items-end"
+                  *ngIf="variant.name === 'Size'"
+                >
+                  <div class="form-floating" style="color: white">
+                    <select
+                      class="form-select"
+                      id="sizeSelect"
+                      name="newVariantValue"
+                      [(ngModel)]="newVariantValue"
+                      style="
+                        border-radius: 12px;
+                        border: 1px solid rgba(255, 255, 255, 0.15);
+                        background: rgba(255, 255, 255, 0.08);
+                        color: white;
+                        transition: all 0.3s ease;
+                      "
+                    >
+                      <option selected disabled value="" class="text-white-50">
+                        Choose a size...
+                      </option>
+                      <ng-container *ngFor="let size of sizePresets">
+                        <option
+                          class="p-2 text-white"
+                          [value]="size"
+                          *ngIf="!isSizeIncludedOnVariant(size)"
+                        >
+                          {{ size }}
+                        </option>
+                      </ng-container>
+                    </select>
+                    <label
+                      for="sizeSelect"
+                      style="color: rgba(255, 255, 255, 0.6)"
+                    >
+                      Size
+                    </label>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-outline-light rounded-pill px-4 variant-value-add-btn"
+                    style="
+                      border-color: rgba(255, 255, 255, 0.3);
+                      transition: all 0.3s ease;
+                    "
+                    (click)="addValueToVariant(variant.name)"
+                  >
+                    Add
+                  </button>
+                </div>
+
+                <!--  Color Picker -->
+                <div class="color-picker" *ngIf="variant.name === 'Color'">
+                  <div class="row g-3">
+                    <div class="col-md-12">
+                      <div class="colors-section p-1 rounded-3">
+                        <div
+                          class="d-flex flex-wrap gap-3 align-items-end mb-3"
+                        >
+                          <div class="color-picker-wrapper">
+                            <label class="color-picker-label" for="colorPicker"
+                              >Pick a color</label
+                            >
+                            <input
+                              type="color"
+                              id="colorPicker"
+                              class="form-control form-control-color color-picker-input"
+                              value="#29bb6a"
+                              name="newColorHex"
+                              [(ngModel)]="metaData.hex"
+                            />
+                          </div>
+
+                          <div class="color-name-wrapper">
+                            <div class="form-floating" style="color: white">
+                              <input
+                                type="text"
+                                class="form-control"
+                                id="colorNameInput"
+                                placeholder="Black"
+                                name="colorName"
+                                [(ngModel)]="newColorName"
+                                style="
+                                  border-radius: 12px;
+                                  border: 1px solid rgba(255, 255, 255, 0.15);
+                                  background: rgba(255, 255, 255, 0.08);
+                                  color: white;
+                                  transition: all 0.3s ease;
+                                "
+                              />
+                              <label
+                                for="colorNameInput"
+                                style="color: rgba(255, 255, 255, 0.6)"
+                                >Color name</label
+                              >
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            class="btn btn-outline-light rounded-pill px-4 variant-value-add-btn"
+                            style="
+                              border-color: rgba(255, 255, 255, 0.3);
+                              transition: all 0.3s ease;
+                            "
+                            (click)="addValueToVariant(variant.name)"
+                          >
+                            Add
+                          </button>
+                        </div>
+
+                        <!-- <div class="colors-list" *ngIf="colorsMapAux.size > 0">
+                    <div
+                      class="color-chip"
+                      *ngFor="let color of colorsMapAux.values()"
+                    >
+                      <span
+                        class="color-chip-swatch"
+                        [style.background]="color.hex"
+                      ></span>
+                      <span class="color-chip-name"
+                        >{{ color.name }} ~ {{ color.hex }}</span
+                      >
+                      <button
+                        type="button"
+                        class="color-chip-remove"
+                        aria-label="Remove color"
+                        (click)="removeFromColorList(color.name)"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  </div> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- If contains a list of strings -->
+                <!-- size chips -->
+                <ng-container *ngIf="variant.name === 'Size'">
+                  <span
+                    class="variant-chip"
+                    *ngFor="let value of variant.values"
+                  >
+                    <span class="variant-chip-text">{{ value.label }}</span>
+                    <button
+                      type="button"
+                      class="variant-chip-remove"
+                      aria-label="Remove option"
+                      (click)="removeValueFromVariant(vIndex, value)"
+                    >
+                      ×
+                    </button>
+                  </span>
+                </ng-container>
+
+                <!-- Color chips -->
+                <ng-container *ngIf="variant.name === 'Color'">
+                  <div
+                    class="color-chip me-2"
+                    *ngFor="let value of variant.values"
+                  >
+                    <span
+                      class="color-chip-swatch"
+                      [style.background]="getHex(value)"
+                    ></span>
+                    <span class="color-chip-name"
+                      >{{ value.label }} - {{ getHex(value) }}</span
+                    >
+                    <button
+                      type="button"
+                      class="color-chip-remove"
+                      aria-label="Remove color"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </ng-container>
+
+                <!-- <div class="variant-empty" *ngIf="variant.values.length === 0">
+                  No options yet. Type one and press Enter or click "Add".
+                </div> -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          <div class="variants-empty" *ngIf="variantTypes.length === 0">
+            <div class="variants-empty-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="28"
+                height="28"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z"
+                />
+              </svg>
+            </div>
+            <h6 class="variants-empty-title">No variants added</h6>
+            <p class="variants-empty-subtitle">
+              Add variants to offer different options of the same product.
+            </p>
+            <p class="variants-empty-hint">
+              Examples: Size (S, M, L), Color (Black, White), Material (Cotton,
+              Polyester), Capacity (128GB, 256GB)
+            </p>
+          </div>
+        </div>
+
+        <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1)" />
+
+        <h4 class="text-white mb-3">Gallery</h4>
         <div class="row g-3 align-items-center">
           <div class="col-md-12">
             <div
@@ -311,17 +634,108 @@
                 background: rgba(255, 255, 255, 0.02);
               "
             >
-              <div class="position-relative" *ngIf="tempCoverImage">
+              <div
+                class="position-relative"
+                *ngFor="
+                  let preview of previewsAux;
+                  let i = index;
+                  trackBy: trackByFn
+                "
+                style="cursor: pointer"
+              >
                 <img
-                  id="tempImage"
+                  [src]="preview.url"
                   class="rounded shadow-sm d-block"
                   style="
-                    width: 520px;
-                    height: 520px;
+                    width: 320px;
+                    height: 320px;
                     object-fit: cover;
                     border: 2px solid rgba(255, 255, 255, 0.1);
                   "
                 />
+
+                <div
+                  *ngIf="!preview.isCover && !preview.toRemove"
+                  class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center rounded"
+                  style="background: rgba(0, 0, 0, 0.4); cursor: pointer"
+                  (click)="toggleCoverImage(preview)"
+                >
+                  <small
+                    class="text-white text-center"
+                    style="
+                      font-size: 0.8rem;
+                      font-weight: 500;
+                      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+                      line-height: 1.2;
+                      padding: 4px 8px;
+                      background: rgba(0, 0, 0, 0.3);
+                      border-radius: 4px;
+                    "
+                  >
+                    Click to Set as Cover
+                  </small>
+                </div>
+
+                <div
+                  *ngIf="preview.isCover"
+                  class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center rounded"
+                  style="background: rgba(0, 0, 0, 0.197); cursor: pointer"
+                  (click)="toggleCoverImage(preview)"
+                >
+                  <small
+                    class="text-white text-center"
+                    style="
+                      font-size: 0.8rem;
+                      font-weight: 500;
+                      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+                      line-height: 1.2;
+                      padding: 4px 8px;
+                      background: rgba(0, 0, 0, 0.3);
+                      border-radius: 4px;
+                    "
+                  >
+                    Current Cover
+                  </small>
+                </div>
+
+                <div
+                  *ngIf="preview.toRemove"
+                  class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center rounded"
+                  style="background: rgba(175, 5, 5, 0.4); cursor: pointer"
+                >
+                  <small
+                    class="text-white text-center"
+                    style="
+                      font-size: 0.8rem;
+                      font-weight: 500;
+                      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+                      line-height: 1.2;
+                      padding: 4px 8px;
+                      background: rgba(0, 0, 0, 0.3);
+                      border-radius: 4px;
+                    "
+                  >
+                    Removed
+                  </small>
+                </div>
+
+                <button
+                  *ngIf="!preview.toRemove"
+                  type="button"
+                  class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0"
+                  style="
+                    transform: translate(50%, -50%);
+                    width: 24px;
+                    height: 24px;
+                    padding: 0;
+                    font-size: 0.6rem;
+                    line-height: 1;
+                    z-index: 2;
+                  "
+                  (click)="$event.stopPropagation(); removePreview(preview)"
+                >
+                  ×
+                </button>
               </div>
 
               <div class="flex-grow-1">
@@ -329,7 +743,7 @@
                   <div
                     class="d-flex align-items-center justify-content-center text-center"
                     style="
-                      height: 520px;
+                      height: 320px;
                       background: rgba(255, 255, 255, 0.05);
                       border-radius: 12px;
                       border: 1px solid rgba(255, 255, 255, 0.05);
@@ -338,26 +752,13 @@
                     <label
                       for="fileUpload"
                       class="btn btn-outline-light"
-                      *ngIf="!tempCoverImage"
                       style="
                         border-color: rgba(255, 255, 255, 0.3);
                         cursor: pointer;
                         transition: all 0.3s ease;
                       "
                     >
-                      Add Cover Image
-                    </label>
-                    <label
-                      for="fileUpload"
-                      class="btn btn-outline-light"
-                      *ngIf="tempCoverImage"
-                      style="
-                        border-color: rgba(255, 255, 255, 0.3);
-                        cursor: pointer;
-                        transition: all 0.3s ease;
-                      "
-                    >
-                      Change Cover Image
+                      Add Images
                     </label>
                     <input
                       type="file"
@@ -371,17 +772,19 @@
                     <small class="text-white-50 ms-2"
                       >PNG, JPG, JPEG (max 5MB)</small
                     >
-
-                    <div class="text-warning small text-center ms-2">
-                      You could upload more photos later on edit section.
-                    </div>
                   </div>
                 </div>
+                <small
+                  *ngIf="!hasSelectedCover()"
+                  class="text-danger fw-bold text-center"
+                >
+                  You must select or upload at least 1 cover image.
+                </small>
                 <div *ngIf="fileChoosenError" class="text-danger small">
-                  ⚠️ {{ fileChoosenError }}
+                  × {{ fileChoosenError }}
                 </div>
                 <div *ngIf="fileUploadError != ''" class="text-danger small">
-                  ⚠️ {{ fileUploadError }}
+                  × {{ fileUploadError }}
                 </div>
               </div>
             </div>
@@ -401,9 +804,8 @@
             <h3 class="text-white mb-0">Special Options</h3>
             <span
               class="badge bg-primary bg-opacity-25 text-white rounded-pill px-3 py-2"
+              >Advanced Management</span
             >
-              Advanced Management
-            </span>
           </div>
 
           <hr

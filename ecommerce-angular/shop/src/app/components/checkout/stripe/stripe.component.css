@@ -3,7 +3,7 @@
 }
 
 .stripe-form-card {
-  background: white;
+  background: #ededed90;
   border-radius: 20px;
   padding: 1.75rem;
   border: 1px solid rgba(0, 0, 0, 0.04);
@@ -85,7 +85,7 @@
   padding: 0.75rem 1rem;
   transition: all 0.3s ease;
   min-height: 46px;
-  display: flex;
+  display: block;
   align-items: center;
 }
 
@@ -189,5 +189,28 @@
   .btn-pay {
     padding: 0.8rem;
     font-size: 0.88rem;
+  }
+}
+
+/* ============ SIMPLE SPINNER ============ */
+.spinner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.spinner-ring {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 4px solid rgba(41, 187, 106, 0.15);
+  border-top-color: #29bb6a;
+  animation: spinnerSpin 0.8s linear infinite;
+}
+
+@keyframes spinnerSpin {
+  to {
+    transform: rotate(360deg);
   }
 }

@@ -1,0 +1,40 @@
+<div class="product-card">
+  <div
+    class="product-image-wrapper"
+    [routerLink]="['/products/detail', product._id]"
+  >
+    <img
+      [src]="product.gallery[0].path"
+      class="product-image"
+      alt="{{ product.slug }}"
+    />
+    <span class="product-overlay">View Details</span>
+  </div>
+
+  <div class="product-body">
+    <h6 class="product-title">{{ product.slug }}</h6>
+    <p class="product-price">${{ product.price }}</p>
+
+    <button
+      class="btn btn-add-cart"
+      (click)="navigateToProductDetails(product._id)"
+    >
+      See Product
+    </button>
+
+    <button
+      class="btn btn-favorite mt-2"
+      (click)="addToWishlist(product._id)"
+      *ngIf="!isOnWishlist(product._id)"
+    >
+      Add to Wishlist
+    </button>
+    <button
+      class="btn btn-favorite-active mt-2"
+      (click)="removeFromWishlist(product._id)"
+      *ngIf="isOnWishlist(product._id)"
+    >
+      Remove from Wishlist
+    </button>
+  </div>
+</div>

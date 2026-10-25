@@ -1,11 +1,8 @@
-import { Product } from './product';
-import { Customer } from './customer';
+import CartItem from './cartItem';
 
 export interface Cart {
-  _id: string;
-  customer?: Customer;
-  product?: Product;
-  size?: string;
-  amount?: number;
+  _id?: string;
+  items: CartItem[];
   createdAt?: string;
+  updatedAt?: string;
 }

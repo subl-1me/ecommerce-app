@@ -1,20 +1,21 @@
+import ProductImage from './productImage';
+import ProductInventory from './productInventory';
+import ProductVariant from './productVariant';
+import Sale from './sale';
+
 export interface Product {
   _id?: string;
-  title: string;
-  description: string;
-  content: string;
-  gallery: Image[];
+  slug: string;
+  shortDesc: string;
+  fullDesc: string;
+  gallery: ProductImage[];
+  variants: ProductVariant[];
+  stock: ProductInventory[];
   price: number;
-  stock: number;
   category: string;
+  sales: Sale[];
   status?: string;
-  sales?: string;
+  reviews?: any;
   rating?: string;
   updatedAt?: string;
-}
-
-interface Image {
-  tempId: string;
-  public_id: string | null;
-  path: string;
 }

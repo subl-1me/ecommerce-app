@@ -4,32 +4,26 @@ import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { GLOBAL } from './CONST';
+import StripePaymentIntentInput from '../models/stripePaymentIntentInput';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StripeService {
+  private httpHeaders: HttpHeaders = new HttpHeaders().set(
+    'Content-Type',
+    'application/json',
+  );
+
   constructor(private _http: HttpClient) {}
 
-  public createPaymentIntent(
-    amount: number,
-    customerID: any,
-    paymentMethod: string
-  ): Observable<any> {
-    var headers = new HttpHeaders().set('Content-Type', 'application/json');
-
-    var data = {
-      amount: amount,
-      customerID: customerID,
-      paymentMethod: paymentMethod,
-    };
-
+  public createPaymentIntent(body: any): Observable<any> {
     return this._http.post(
       (environment.API_URL || GLOBAL.localUrl) + 'payment_intent',
-      data,
+      body,
       {
-        headers: headers,
-      }
+        headers: this.httpHeaders,
+      },
     );
   }
 
@@ -40,7 +34,7 @@ export class StripeService {
       (environment.API_URL || GLOBAL.localUrl) + 'activeOrder/' + customerId,
       {
         headers: headers,
-      }
+      },
     );
   }
 
@@ -52,7 +46,7 @@ export class StripeService {
       orderData,
       {
         headers: headers,
-      }
+      },
     );
   }
 
@@ -63,7 +57,7 @@ export class StripeService {
       .patch(
         (environment.API_URL || GLOBAL.localUrl) + 'order/' + orderID,
         { token: token },
-        { headers: headers }
+        { headers: headers },
       )
       .toPromise();
   }
@@ -75,7 +69,7 @@ export class StripeService {
       (environment.API_URL || GLOBAL.localUrl) + 'order/confirm/' + orderId,
       {
         headers: headers,
-      }
+      },
     );
   }
 

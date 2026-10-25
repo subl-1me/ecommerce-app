@@ -32,11 +32,14 @@ import { OrderDetailComponent } from './components/profile/order-detail/order-de
 import { ReviewComponent } from './components/review/review.component';
 import { WishlistComponent } from './components/navbar/wishlist/wishlist.component';
 import { ReviewsComponent } from './components/products/reviews/reviews.component';
+import { WishlistViewComponent } from './components/profile/wishlist/wishlist-view.component';
 import { CategoryShowerComponent } from './components/home/category-shower/category-shower.component';
 import { LatestsProductsComponent } from './components/home/latests-products/latests-products.component';
 import { RouterModule } from '@angular/router';
 import { TrendingProductsComponent } from './components/home/trending-products/trending-products.component';
 import { CategoriesCardComponent } from './components/products/categories-card/categories-card.component';
+import { PriceFilterComponent } from './components/products/price-filter/price-filter.component';
+import { ProductCardComponent } from './components/products/list/product-card/product-card.component';
 import { CooldownAdviseComponent } from './components/cooldown-advise/cooldown-advise.component';
 
 @NgModule({
@@ -62,11 +65,14 @@ import { CooldownAdviseComponent } from './components/cooldown-advise/cooldown-a
     OrderDetailComponent,
     ReviewComponent,
     WishlistComponent,
+    WishlistViewComponent,
     ReviewsComponent,
     CategoryShowerComponent,
     LatestsProductsComponent,
     TrendingProductsComponent,
     CategoriesCardComponent,
+    PriceFilterComponent,
+    ProductCardComponent,
     CooldownAdviseComponent,
   ],
   imports: [
@@ -79,6 +85,7 @@ import { CooldownAdviseComponent } from './components/cooldown-advise/cooldown-a
     ReactiveFormsModule,
     NgxStarRatingModule,
     RouterModule,
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

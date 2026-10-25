@@ -1,15 +1,12 @@
-'use strict'
+"use strict";
 
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var cartSchema = Schema({
-    customer: { type: Schema.ObjectId, ref: 'customer', required: true },
-    product: { type: Schema.ObjectId, ref: 'product', require: true },
-    amount: { type: Number, require: true },
-    size: { type: String, require: true },
-    createdAt: { type: Date, default: Date.now, require: true }
+  items: [{ type: Schema.ObjectId, ref: "itemCart", required: true }],
+  createdAt: { type: Date, default: Date.now, required: true },
+  updatedAt: { type: Date, default: Date.now, required: true },
 });
 
-module.exports = mongoose.model('cart', cartSchema);
-
+module.exports = mongoose.model("cart", cartSchema);

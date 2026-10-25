@@ -14,6 +14,7 @@ export class CategoryShowerComponent implements OnInit {
     this.config = {
       _id: '',
       shopName: '',
+      shippingMethods: [],
       categories: [],
       logo: { path: '', public_id: '' },
     };

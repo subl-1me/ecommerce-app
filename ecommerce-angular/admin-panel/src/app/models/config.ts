@@ -1,7 +1,7 @@
 export interface Config {
   _id?: any;
   categories: Array<Category>;
-  shopName?: string;
+  shopName: string;
   serie?: string;
   correlation?: string;
   logo: Image;

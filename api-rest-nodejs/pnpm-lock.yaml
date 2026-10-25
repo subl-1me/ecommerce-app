@@ -8,9 +8,9 @@ importers:
 
   .:
     dependencies:
-      bcrypt-nodejs:
-        specifier: ^0.0.3
-        version: 0.0.3
+      bcryptjs:
+        specifier: ^3.0.3
+        version: 3.0.3
       cloudinary:
         specifier: ^2.11.0
         version: 2.11.0
@@ -220,9 +220,9 @@ packages:
     resolution: {integrity: sha512-lGe34o6EHj9y3Kts9R4ZYs/Gr+6N7MCaMlIFA3F1R2O5/m7K06AxfSeO5530PEERE6/WyEg3lsuyw4GHlPZHog==}
     engines: {node: ^4.5.0 || >= 5.9}
 
-  bcrypt-nodejs@0.0.3:
-    resolution: {integrity: sha512-NmTbLm867btBHCBZ222FQXkQKzecB0KG6pTXFa6NeTVZaSnLfCsx7EK2PL3J+kX8xJThUquEBbhimRCKKZX9zA==}
-    deprecated: bcrypt-nodejs is no longer actively maintained. Please use bcrypt or bcryptjs. See https://github.com/kelektiv/node.bcrypt.js/wiki/bcrypt-vs-brypt.js to learn more about these two options
+  bcryptjs@3.0.3:
+    resolution: {integrity: sha512-GlF5wPWnSa/X5LKM1o0wz0suXIINz1iHRLvTS+sLyi7XPbe5ycmYI3DlZqVGZZtDgl4DmasFg7gOB3JYbphV5g==}
+    hasBin: true
 
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
@@ -1185,7 +1185,7 @@ snapshots:
 
   base64id@2.0.0: {}
 
-  bcrypt-nodejs@0.0.3: {}
+  bcryptjs@3.0.3: {}
 
   binary-extensions@2.3.0: {}
 

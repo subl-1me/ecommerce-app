@@ -16,13 +16,14 @@ const couponRoutes = require("./routes/coupon");
 const configRoutes = require("./routes/config");
 const reviewRoutes = require("./routes/review");
 const cartRoutes = require("./routes/cart");
-const directionRoutes = require("./routes/direction");
+const directionRoutes = require("./routes/address");
 const saleRoutes = require("./routes/sale");
 const stripeRoutes = require("./routes/stripe");
 const orderRoutes = require("./routes/order");
 const promotionRoutes = require("./routes/promotion");
 const contactRoutes = require("./routes/contact");
 const uploadRoutes = require("./routes/uploads");
+const customerAuthRoutes = require("./routes/customer.auth.routes");
 const serverRoutes = require("./routes/server.routes");
 
 const {
@@ -64,6 +65,7 @@ app.use("/api", orderRoutes);
 app.use("/api", promotionRoutes);
 app.use("/api", contactRoutes);
 app.use("/api", uploadRoutes);
+app.use("/api", customerAuthRoutes);
 app.use("/api", serverRoutes);
 
 const server = require("http").createServer(app);
@@ -75,9 +77,12 @@ const port = process.env.PORT || 4201;
 const MONGO_URI = process.env.MONGO_URI || "";
 
 socket.on("connection", function (socket) {
-  socket.on("deleteProductCart", function (data) {
-    socket.emit("cart", data);
-    console.log(data);
+  socket.on("wishlist-changes", function (payload) {
+    socket.broadcast.emit("updated-wishlist", payload);
+  });
+
+  socket.on("cart-changes", function (payload) {
+    socket.broadcast.emit("updated-cart", payload);
   });
 });
 

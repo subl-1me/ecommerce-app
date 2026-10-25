@@ -5,7 +5,8 @@ var Schema = mongoose.Schema;
 
 var ConfigSchema = Schema({
   identifier: { type: String, default: "1", required: false },
-  categories: [{ type: Object, required: true }],
+  categories: [{ type: String, required: true }],
+  shippingMethods: [{ type: Object, required: true }],
   shopName: { type: String, required: true },
   logo: { type: Object, required: true },
   serie: { type: String, required: true },

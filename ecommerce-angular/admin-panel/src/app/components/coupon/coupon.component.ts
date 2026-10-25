@@ -7,63 +7,73 @@ import { IdentityService } from 'src/app/services/identity.service';
 
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faAdd } from '@fortawesome/free-solid-svg-icons';
+import Auth from 'src/app/models/auth';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-coupon',
   templateUrl: './coupon.component.html',
   styleUrls: ['./coupon.component.css'],
-  providers: [ CouponsService, IdentityService ]
+  providers: [CouponsService, IdentityService],
 })
 export class CouponComponent implements OnInit {
-
   // Icons
   faTrash = faTrash;
   faAdd = faAdd;
 
-  public coupons = Array<Coupon>();
-  public token: any;
+  public coupons: Coupon[] = [];
   public responseMessage: String;
+  public auth: Auth = {
+    jwt: '',
+    admin: {
+      username: '',
+      email: '',
+      role: '',
+    },
+  };
 
   constructor(
     private _couponService: CouponsService,
-    private _identityService: IdentityService
-  ) { 
+    private _identityService: IdentityService,
+  ) {
     this.coupons = [];
-    this.token = this._identityService.getToken();
     this.responseMessage = '';
   }
 
   ngOnInit(): void {
+    this.loadAuth();
     this.getCoupons();
   }
 
-  getCoupons():void{
-    this._couponService.coupons(this.token).subscribe((response) => {
-      if(!response.coupons){
-        this.responseMessage = response.message;
-        return;
-      }
-
-      this.responseMessage = '';
-      console.log(response);
-      this.coupons = response.coupons;
-    })
+  private loadAuth(): void {
+    this.auth = this._identityService.getAuth();
   }
 
-  addSuccess(event:any):void{
-    if(!event) return;
+  public async getCoupons(): Promise<void> {
+    const response = await lastValueFrom(
+      this._couponService.coupons(this.auth.jwt),
+    );
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+
+    this.coupons = response.coupons;
+  }
+
+  addSuccess(event: any): void {
+    if (!event) return;
 
     this.getCoupons();
   }
 
-  remove(couponID:any):void{
-    if(!couponID) return;
-
-    this._couponService.remove(this.token, couponID).subscribe((response) => {
-      this.getCoupons();
-      if(response.message !== 'success') return;
-
-    })
+  public async remove(couponId: string): Promise<void> {
+    const response = await lastValueFrom(
+      this._couponService.remove(this.auth.jwt, couponId),
+    );
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
   }
-
 }

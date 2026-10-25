@@ -1,78 +1,70 @@
 "use strict";
 
-var Admin = require("../models/admin");
-var bcrypt = require("bcrypt-nodejs");
-var jwt = require("../helpers/jwt");
+const { safeAdmin } = require("../helpers/safeCredentials");
+const Admin = require("../models/admin");
+const AdminService = require("../services/admin.service");
 
-const adminRegister = async function (req, res) {
-  //
-  var data = req.body;
-  var adminArray = [];
-
-  // Check if email is already taken
-  adminArray = await Admin.find({
-    email: data.email,
-  });
-
-  if (adminArray.length == 0) {
-    // check await
-    // register
-    if (data.password) {
-      bcrypt.hash(data.password, null, null, async function (err, hash) {
-        if (hash) {
-          data.password = hash;
-          var reg = await Admin.create(data);
-          res.status(200).send({
-            message: "User created sucessfully",
-            user: reg,
-          });
-        } else {
-          res.status(200).send({ message: "Error bcrypting password" });
-        }
-      });
-    } else {
-      res.status(200).send({
-        message: "There is not a pssword",
+const register = async function (req, res) {
+  try {
+    const { body } = req;
+    // Check if email or username are already taken
+    const props = ["email", "username"];
+    const promises = props.map((prop) =>
+      AdminService.itemsByFilter(prop, body[prop]),
+    );
+    const results = await Promise.all(promises);
+    if (results[0].length > 0) {
+      return res.status(200).send({
+        success: false,
+        message: "Email or Username already taken.",
       });
     }
-  } else {
-    res.status(200).send({
-      message: "Email already taken. Try with another",
+
+    const response = await AdminService.create(body);
+    if (response.error) {
+      return res.status(200).send({
+        success: false,
+        message: response.message,
+      });
+    }
+
+    return res.status(200).send({
+      success: true,
+    });
+  } catch (err) {
+    return res.status(500).send({
+      success: false,
+      message: err.message,
     });
   }
 };
 
-const adminLogin = async function (req, res) {
-  var data = req.body;
-  var adminArray = [];
+const login = async function (req, res) {
+  try {
+    const { body } = req;
+    // check if exists
+    const results = await AdminService.itemsByFilter("email", body.email);
+    const admin = results.find((admin) => admin.email === body.email);
+    if (!admin) {
+      return res
+        .status(404)
+        .send({ success: false, message: "User doesn't exist." });
+    }
 
-  adminArray = await Admin.find({ email: data.email });
-
-  if (adminArray.length == 0) {
-    res.status(200).send({ message: "User does not exists." });
-  } else {
-    // login
-    let user = adminArray[0];
-
-    bcrypt.compare(data.password, user.password, async function (error, check) {
-      if (error) {
-        res.status(200).send({ message: "Something went wrong." });
-      }
-
-      if (check) {
-        res.status(200).send({
-          user: user,
-          token: jwt.createToken(user),
-          message: "Login successfully.",
-        });
-      } else {
-        res.status(200).send({ message: "Password does not match." });
-      }
+    const response = await AdminService.authenticate(body.password, admin);
+    return res.status(200).send({
+      success: true,
+      auth: response.auth,
+      jwt: response.jwt,
+      admin: safeAdmin(admin),
     });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
 module.exports = {
-  adminRegister,
-  adminLogin,
+  register,
+  login,
 };

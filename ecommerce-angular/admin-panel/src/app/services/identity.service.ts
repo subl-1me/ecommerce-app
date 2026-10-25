@@ -1,56 +1,45 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+
 import { JwtHelperService } from '@auth0/angular-jwt';
+import Auth from '../models/auth';
+import { constans } from './const';
 
 @Injectable({
   providedIn: 'root',
 })
 export class IdentityService {
   private jwtHelper: JwtHelperService = new JwtHelperService();
-  private token: any;
-  private user: any;
+  private auth: Auth = this.loadAuthSync();
 
-  constructor(private _router: Router) {
-    this.token = localStorage.getItem('token');
-    this.user = {};
+  constructor(private _router: Router) {}
+
+  public getAuth(): Auth {
+    return this.auth;
   }
 
-  getToken() {
-    if (!this.checkToken(this.token)) return null;
-
-    return localStorage.getItem('token');
-  }
-
-  isAuthenticated(allowRoles: string[]): boolean {
-    const token = localStorage.getItem('token');
-
-    if (!token) return false;
-
-    if (!this.checkToken(token)) return false; // verify is token is valid
-
-    return allowRoles.includes(this.user.role);
-  }
-
-  checkToken(token: string): boolean {
-    try {
-      const decodedUser = this.jwtHelper.decodeToken(token);
-      if (decodedUser && decodedUser.sub) {
-        this.user = decodedUser;
-      }
-    } catch (err) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('_id');
-      return false;
-    }
+  public isAuthenticated(): boolean {
+    if (!constans.allowRoles.includes(this.auth.admin.role)) return false;
+    if (this.auth.jwt === '') return false;
+    const decoded = this.jwtHelper.decodeToken(this.auth.jwt);
+    if (!decoded) return false;
     return true;
   }
 
-  logout() {
-    if (!this.getToken()) return;
+  private loadAuthSync(): Auth {
+    const raw = localStorage.getItem('auth');
+    if (!raw) {
+      return { jwt: '', admin: { role: '', email: '', username: '' } };
+    }
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return { jwt: '', admin: { role: '', email: '', username: '' } };
+    }
+  }
 
-    localStorage.removeItem('token');
-    localStorage.removeItem('_id');
-
-    this._router.navigate(['login']);
+  public logout() {
+    localStorage.removeItem('auth');
+    this._router.navigate(['/login']);
   }
 }

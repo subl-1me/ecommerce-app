@@ -1,60 +1,30 @@
 "use strict";
 
 require("dotenv").config();
+const { constans } = require("../const");
 const Product = require("../models/product");
-const ProductInventory = require("../models/productInventory");
-
-const path = require("path");
-const _fileService = require("../services/files.service");
+const ProductService = require("../services/product.service");
 const uniqid = require("uniqid");
-
-const multer = require("multer");
-const { db } = require("../models/product");
-const directoryPath = path.join(__dirname, "../uploads/products/");
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "./uploads/products");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
 
 const { UPLOADS_URL_TEST, PORT } = process.env;
 
-const upload = multer({ storage: storage }).single("image");
-
 const add = async function (req, res) {
-  if (!req.user || req.user.role !== "Admin")
-    return res.status(403).send({ message: "You are not authorized." });
-
   try {
-    var params = req.body;
-    var productName = req.body.title.toLowerCase();
-    var slug = productName;
+    const { authentication } = req;
+    if (!authentication || !constans.allowRoles.includes(authentication.role))
+      return res
+        .status(403)
+        .send({ success: false, message: "You are not authorized." });
 
-    var newProduct = await Product.create(params);
-    newProduct.slug = slug;
+    const { body } = req;
 
-    // Register Initial Inventory
-    var inventoryData = {
-      product: newProduct._id,
-      stock: params.stock,
-      admin: req.user.sub,
-    };
-
-    var newProductInventory = await ProductInventory.create(inventoryData);
-
+    const product = await ProductService.create(body);
     return res.status(200).send({
-      status: "success",
-      product: newProduct,
-      productInventory: newProductInventory,
+      success: true,
+      product,
     });
   } catch (err) {
-    console.log(err);
-    return res
-      .status(200)
-      .send({ message: "Something went wrong adding product." });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
@@ -87,59 +57,63 @@ const remove = async function (req, res) {
   return res.status(200).send({ message: "Product deleted successfully." });
 };
 
-const products = async function (req, res) {
-  var filter = req.params["title"];
-  var productsArray = {};
-
-  // if there is a filter param
-  if (filter) {
-    const title = new RegExp(filter, "i");
-    productsArray = await Product.find({ title: title });
-
-    if (productsArray.length == 0)
-      return res.status(200).send({ message: "Product not found. " });
-
-    return res.status(200).send({
-      status: "success",
-      products: productsArray,
-    });
+const products = async function (_req, res) {
+  try {
+    const products = await Product.find().populate("stock");
+    res.status(200).send({ success: true, products });
+  } catch (err) {
+    res.status(500).send({ success: false, message: err.message });
   }
+  // try{
+  // const filter = req.params["title"];
 
-  productsArray = await Product.find();
+  // // if there is a filter param
+  // if (filter) {
+  //   const title = new RegExp(filter, "i");
+  //   const products = await Product.find({ title: title });
 
-  if (productsArray.length == 0)
-    return res.status(200).send({ message: "Product not found." });
+  //   if (productsArray.length == 0)
+  //     return res.status(200).send({ message: "Product not found. " });
 
-  return res.status(200).send({
-    status: "success",
-    products: productsArray,
-  });
+  //   return res.status(200).send({
+  //     success:
+  //     products: productsArray,
+  //   });
+  // }
+
+  // productsArray = await Product.find();
+
+  // if (productsArray.length == 0)
+  //   return res.status(200).send({ message: "Product not found." });
+
+  // return res.status(200).send({
+  //   status: "success",
+  //   products: productsArray,
+  // });
+  // }catch(err){
+  //   res.status(500).send({ success: false, message: err.message})
+  // }
 };
 
 const latestProducts = async function (_req, res) {
   try {
     const latestProducts = await Product.find()
       .sort({ createdAt: -1 })
-      .limit(4);
+      .limit(10);
 
-    return res.status(200).send({ products: latestProducts });
+    return res.status(200).send({ success: true, products: latestProducts });
   } catch (err) {
-    return res.status(500).send({ message: "Something went wrong." });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
 const topSellers = async function (_req, res) {
-  /*try {
-        const topSellers = await Product.find().sort({ sales: ascending }).limit(4);
-
-        return res.status(200).send({ products: topSellers })
-    }catch(err){
-        return res.status(500).send({ message: 'Somethig went wrong.' })
-    }*/
-
-  const topSellers = await Product.find().sort({ sales: -1 }).limit(4);
-
-  return res.status(200).send({ products: topSellers });
+  try {
+    const topSellers = await Product.find().sort({ sales: -1 }).limit(10);
+    return res.status(200).send({ success: true, products: topSellers });
+  } catch (err) {
+    return res.status(500).send({ success: false, message: err.message });
+  }
 };
 
 const productsByCategory = async function (req, res) {
@@ -163,8 +137,6 @@ const edit = async function (req, res) {
 
   var id = req.params["id"];
   var params = req.body;
-
-  console.log(params);
 
   try {
     var productName = req.body.title.toLowerCase();
@@ -191,6 +163,26 @@ const edit = async function (req, res) {
     return res
       .status(200)
       .send({ message: "Something went wront updating product. Try again." });
+  }
+};
+
+const editProductStock = async function (req, res) {
+  try {
+    const { productId } = req.params;
+    if (!productId) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Product not found" });
+    }
+
+    const stock = req.body;
+    if (!stock) {
+      return res.status(400).send({ success: false, message: "Missing body." });
+    }
+
+    const updated = await ProductService.updateStock(productId, stock);
+  } catch (err) {
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
@@ -286,17 +278,17 @@ const setGalleryImages = async function (req, res) {
 };
 
 const getById = async function (req, res) {
-  if (!req.params["id"])
-    return res.status(200).send({ message: "Product ID is required." });
-
-  var id = req.params["id"];
-
   try {
-    var product = await Product.findById(id);
+    if (!req.params["id"])
+      return res
+        .status(200)
+        .send({ success: false, message: "Product ID is required." });
 
-    return res.status(200).send({ product: product });
+    const id = req.params["id"];
+    const product = await Product.findById(id).populate("stock");
+    return res.status(200).send({ success: true, product: product });
   } catch (err) {
-    return res.status(200).send({ message: "Product not found." });
+    return res.status(500).send({ success: false, message: err.message });
   }
 };
 
@@ -331,6 +323,7 @@ module.exports = {
   add,
   products,
   edit,
+  editProductStock,
   getById,
   remove,
   uploadCoverImage,

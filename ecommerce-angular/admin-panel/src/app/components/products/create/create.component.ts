@@ -1,11 +1,13 @@
-import { Component, DoCheck, OnInit } from '@angular/core';
-import { SafeUrl } from '@angular/platform-browser';
+import { Component, OnInit } from '@angular/core';
 import { constans } from 'src/app/services/const';
+import * as uniqid from 'uniqid';
+import { DomSanitizer } from '@angular/platform-browser';
 
 // Models
 import { Product } from 'src/app/models/product';
 import { Config } from '../../../models/config';
 import { ConfigService } from 'src/app/services/config/config.service';
+import MetaData from 'src/app/models/productMetadata';
 
 // Icons
 import { faSave } from '@fortawesome/free-solid-svg-icons';
@@ -14,7 +16,10 @@ import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 // Services
 import { ProductService } from 'src/app/services/product.service';
 import { IdentityService } from 'src/app/services/identity.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
+import Photo from 'src/app/types/Photo';
+import ProductVariant from 'src/app/models/productVariant';
+import VariantValue from 'src/app/models/variantValue';
 
 @Component({
   selector: 'app-creatse',
@@ -22,13 +27,35 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./create.component.css'],
   providers: [ProductService, IdentityService, ConfigService],
 })
-export class CreateComponent implements DoCheck, OnInit {
+export class CreateComponent implements OnInit {
   // Icons
   faAngleLeft = faAngleLeft;
   faSave = faSave;
 
   public product: Product;
-  public actualConfig: Config;
+  public config: Config = this.getDefaultConfig();
+
+  public newColorName: string = '';
+  public colorsMapAux = new Map<string, String>();
+  public sizePresets: string[] = ['S', 'M', 'L', 'XL'];
+  public sizesSetAux = new Set<string>();
+  public selectedSize: string = '';
+  public showColorPickerPrompt: boolean = false;
+  public showSizeSelectorPrompt: boolean = false;
+  public showValuePrompt: boolean = false;
+
+  public variantTypes: Array<ProductVariant> = [];
+  public metaData: MetaData = {};
+
+  public newVariantType: string = '';
+  public newVariantValue: string = '';
+  public variantPresets: string[] = [
+    'Size',
+    'Color',
+    'Material',
+    'Capacity',
+    'Style',
+  ];
 
   public tempCoverImage: any;
   public coverImagePath: string;
@@ -38,11 +65,10 @@ export class CreateComponent implements DoCheck, OnInit {
   public editorContent: string;
   public token: any;
 
-  public previews: SafeUrl[];
-  public selectedFiles: File[];
+  public previewsAux: Photo[] = [];
+  public selectedFiles: File[] = [];
 
   public isPreviewActive: boolean;
-  public isEdit: boolean;
   public tempImageUrl: string;
   public selectedStatus: string;
   public productStatusAxus: string;
@@ -60,104 +86,352 @@ export class CreateComponent implements DoCheck, OnInit {
     private _productService: ProductService,
     private _identityService: IdentityService,
     private _configService: ConfigService,
+    private sanitizer: DomSanitizer,
   ) {
     this.productStatusList = constans.productStatusList;
     this.tempImageUrl = '';
-    this.previews = [];
     this.productStatusAxus = 'Draft'; // default;
     this.selectedFiles = [];
     this.product = {
-      title: '',
+      slug: '',
       category: '',
-      content: '',
+      fullDesc: '',
+      sales: [],
       gallery: [],
       status: 'Draft',
-      description: '',
-      stock: 0,
+      variants: [],
+      shortDesc: '',
+      stock: [],
       price: 0,
     };
     this.selectedStatus = '';
     this.editorContent = '';
-    this.token = this._identityService.getToken();
-    this.actualConfig = {
-      shopName: '',
-      serie: '',
-      correlation: '',
-      logo: {
-        path: '',
-        public_id: '',
-      },
-      categories: [],
-    };
+    this.token = '';
     this.fileChoosenError = '';
     this.fileUploadError = '';
     this.coverImagePath = '';
 
-    this.isEdit = false;
     this.isPreviewActive = false;
   }
 
-  ngDoCheck(): void {}
-
   ngOnInit(): void {
-    this.getCategories();
+    this.getConfig();
   }
 
-  public getCategories(): void {
-    this._configService.getConfig(this.token).subscribe((response) => {
-      this.actualConfig = response.actualConfig[0];
-    });
+  public isArray(values: any): boolean {
+    return Array.isArray(values);
   }
 
-  public async startCreation() {
-    if (!this.tempCoverImage) {
-      this.fileUploadError = 'Your product requires a cover image.';
-      return;
-    }
+  public variantValueType(values: string[] | Map<string, any>): string {
+    if (Array.isArray(values)) return 'array';
 
-    this.product.status = this.selectedStatus || this.productStatusAxus;
-    const formData = new FormData();
-    formData.append('image', this.tempCoverImage);
-    const uploader = await firstValueFrom(
-      this._productService.uploadSingleImage(formData, this.token),
+    if (values instanceof Map) return 'map';
+
+    return 'undefined';
+  }
+
+  public toStringArray(values: any): string[] {
+    return Array.from(values);
+  }
+
+  public isMap(val: any): val is Map<string, string> {
+    return val instanceof Map;
+  }
+
+  private async getConfig(): Promise<void> {
+    const response = await lastValueFrom(
+      this._configService.getConfig(this._identityService.getAuth().jwt),
     );
 
-    if (!uploader.success) {
-      alert(`There was an error trying to upload cover image.`);
+    if (!response.success) {
+      alert(response.message);
       return;
     }
 
-    this.product.gallery.push({
-      tempId: uploader.image.tempId,
-      public_id: uploader.image.public_id,
-      path: uploader.image.path,
-    });
-    this._productService.create(this.token, this.product).subscribe((res) => {
-      if (res.status !== 'success') {
-        alert(res);
-        return;
-      }
-      alert('Product added successfully.');
-    });
+    this.config = response.config;
   }
 
-  public fileChoosen(event: any): void {
-    let fileMime = event.target.files[0].type;
-    if (!this.isImage(fileMime)) {
-      this.fileChoosenError = 'Please, upload a image.';
+  public addNewVariant(variantPreset?: string): void {
+    // search for variant
+    const formated = variantPreset
+      ? variantPreset.toLocaleLowerCase()
+      : this.newVariantType.toLocaleLowerCase();
+    const variant = this.variantTypes.find(
+      (v) => v.name.toLocaleLowerCase() === formated,
+    );
+    if (variant) {
       return;
     }
 
-    this.tempCoverImage = event.target.files[0];
-    var imgElement = document.getElementById('tempImage') as HTMLImageElement;
-    var fileReader = new FileReader();
+    const presets = ['size', 'color'];
+    const isPreset = presets.includes(formated);
+    if (isPreset) {
+      switch (formated) {
+        case 'size':
+          // string array
+          this.variantTypes.push({
+            name: variantPreset || this.newVariantType,
+            values: [],
+          });
+          break;
+        case 'color':
+          // complex obj
+          this.variantTypes.push({
+            name: variantPreset || this.newVariantType,
+            values: [],
+          });
+          break;
+        default:
+          break;
+      }
+    } else {
+      // custom complex obj
+      // this.variantTypes.push({
+      //   name: this.newVariantType,
+      //   values: new Map<string, { name: string; hex: string }>(),
+      // });
+    }
 
-    fileReader.readAsDataURL(this.tempCoverImage);
-    fileReader.onload = function () {
-      imgElement.src = <string>this.result;
+    console.log(this.variantTypes);
+    this.newVariantType = '';
+  }
+
+  public removeValueFromVariant(index: number, value: VariantValue): void {
+    // const variant = this.variantTypes[index];
+    // if (!variant) {
+    //   return;
+    // }
+    // let values = this.toStringArray(variant.values);
+    // values = values.filter((val) => val !== value);
+    // this.variantTypes[index].values;
+  }
+
+  public getHex(value: VariantValue): string {
+    return value.meta?.['hex'] ?? '#fff';
+  }
+
+  public removeVariantType(index: Number): void {}
+
+  public addPresetVariant(preset: string): void {
+    this.showColorPickerPrompt = false;
+    this.showSizeSelectorPrompt = false;
+    this.showValuePrompt = false;
+    // load pre-defined data  if exists
+    this.addNewVariant(preset);
+    if (preset === 'Size') {
+      this.showSizeSelectorPrompt = true;
+      return;
+    }
+
+    if (preset === 'Color') {
+      this.showColorPickerPrompt = true;
+      return;
+    }
+
+    this.showValuePrompt = true;
+  }
+
+  public addValueToVariant(variantName: string): void {
+    const variant = this.variantTypes.findIndex(
+      (v) => v.name.toLocaleLowerCase() === variantName.toLocaleLowerCase(),
+    );
+
+    if (variant === -1) {
+      alert('Variant not found.');
+      return;
+    }
+
+    let vValues = this.variantTypes[variant].values;
+    // check if already exists
+    const value = vValues.find((val) => val.label === this.newVariantValue);
+    if (value) return;
+
+    const meta: Record<string, string> = Object.fromEntries(
+      Object.entries(this.metaData).map(([key, value]) => [key, String(value)]),
+    );
+
+    const valueStructure: VariantValue = {
+      label: this.metaData.hex ? this.newColorName : this.newVariantValue,
+      meta,
+    };
+    vValues.push(valueStructure);
+    this.variantTypes[variant].values = [...vValues];
+    this.newVariantValue = '';
+    this.newColorName = '';
+    this.metaData = {};
+    console.log(this.variantTypes);
+  }
+
+  public getMapValuesArray(map: Map<string, string>): string[] {
+    return Array.from(map.values());
+  }
+
+  public getMapKeysArray(map: Map<string, string>): string[] {
+    return Array.from(map.keys());
+  }
+
+  public getColorNameByHex(
+    colorName: string,
+    variant: Map<string, string>,
+  ): string {
+    return variant.get(colorName) || '';
+  }
+
+  public isSizeIncludedOnVariant(size: string): boolean {
+    const sizes = this.variantTypes.find((variant) => variant.name === 'Size');
+    if (!sizes) return false;
+
+    const values = this.toStringArray(sizes.values);
+    if (values.includes(size)) return true;
+    return false;
+  }
+
+  public trackByFn(index: number, item: any) {
+    return index;
+  }
+
+  public toggleCoverImage(preview: Photo): void {
+    const setCover = () => {
+      // set new
+      const indexNewCover = this.previewsAux.findIndex(
+        (prev) => prev.tempId === preview.tempId,
+      );
+      if (indexNewCover === -1) {
+        return;
+      }
+
+      this.previewsAux[indexNewCover].isCover = true;
+    };
+
+    // clear current
+    const indexCurrrent = this.previewsAux.findIndex((prev) => prev.isCover);
+    if (indexCurrrent === -1) {
+      setCover();
+
+      return;
+    }
+
+    this.previewsAux[indexCurrrent].isCover = false;
+    setCover();
+  }
+
+  public removePreview(preview: Photo): void {
+    console.log(this.previewsAux);
+    const prev = this.previewsAux.findIndex(
+      (prev) => prev.tempId === preview.tempId,
+    );
+    if (prev === -1) return;
+
+    if (!preview.file) {
+      //  if image is already uploaded to cloud
+      this.previewsAux[prev].toRemove = true;
+      this.previewsAux[prev].isCover = false;
+      return;
+    }
+
+    this.previewsAux = this.previewsAux.filter(
+      (prev) => prev.tempId !== preview.tempId,
+    );
+  }
+
+  public getDefaultConfig(): Config {
+    return {
+      categories: [],
+      shopName: 'My Ecommerce Demo', // default
+      logo: {
+        path: constans.defaultEcommerceLogo.path,
+        public_id: constans.defaultEcommerceLogo.public_id,
+      },
     };
   }
 
+  public async startCreation() {
+    if (this.previewsAux.length === 0) {
+      alert('Product need at least 1 image.');
+      return;
+    }
+
+    const sortedFiles = [...this.previewsAux]
+      .sort((a, b) => (b.isCover ? 1 : 0) - (a.isCover ? 1 : 0))
+      .filter((prev) => !prev.toRemove);
+
+    const formData = new FormData();
+    sortedFiles.forEach((f) => {
+      if (f.file) {
+        formData.append('image', f.file);
+      }
+    });
+
+    const uploader = await firstValueFrom(
+      this._productService.uploadMultipleImage(formData, this.token),
+    );
+
+    if (!uploader.success) {
+      alert(uploader.error);
+      return;
+    }
+    const { uploads } = uploader;
+    this.setCoverToZeroIndex(); // re-order
+    this.product.variants = this.variantTypes;
+    this.product.gallery = [...this.product.gallery, ...uploads];
+    this.product.status = this.selectedStatus || this.productStatusAxus;
+    const response = await lastValueFrom(
+      this._productService.create(
+        this._identityService.getAuth().jwt,
+        this.product,
+      ),
+    );
+
+    if (!response.success) {
+      alert('Error creating product:' + response.message);
+      return;
+    }
+
+    alert('Added!');
+    console.log(response.product);
+  }
+
+  private setCoverToZeroIndex(): void {
+    const coverImageInd = this.previewsAux.findIndex((prev) => prev.isCover);
+    const sorted = this.moveItem(this.product.gallery, coverImageInd, 0);
+    this.product.gallery = [...sorted];
+  }
+
+  public moveItem<T>(array: T[], fromIndex: number, toIndex: number): T[] {
+    if (fromIndex === toIndex) return array;
+    if (fromIndex < 0 || fromIndex >= array.length) return array;
+    if (toIndex < 0 || toIndex >= array.length) return array;
+
+    const [item] = array.splice(fromIndex, 1);
+    array.splice(toIndex, 0, item);
+    return array;
+  }
+
+  public hasSelectedCover(): boolean {
+    return this.previewsAux.some((prev) => prev.isCover);
+  }
+
+  public fileChoosen(event: any): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const filesArray = Array.from(input.files);
+      this.selectedFiles = [...filesArray];
+      const newPreviews = filesArray.map((file) => {
+        const url = URL.createObjectURL(file);
+        return {
+          tempId: uniqid.process(),
+          file,
+          url: this.sanitizer.bypassSecurityTrustUrl(url),
+          isCover: false,
+          toRemove: false,
+        };
+      });
+
+      // this.previews.push(...newPreviews); // original
+      this.previewsAux.push(...newPreviews);
+      console.log(this.previewsAux);
+    }
+  }
   public discardSelectedPhoto(): void {
     this.tempCoverImage = null;
     this.restoreDefaultCover();

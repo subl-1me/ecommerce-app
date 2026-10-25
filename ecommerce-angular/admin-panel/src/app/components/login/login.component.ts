@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { lastValueFrom } from 'rxjs';
 
 import { AdminService } from 'src/app/services/admin.service';
 import { IdentityService } from 'src/app/services/identity.service';
@@ -8,18 +9,17 @@ import { IdentityService } from 'src/app/services/identity.service';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  providers: [ AdminService, IdentityService]
+  providers: [AdminService, IdentityService],
 })
 export class LoginComponent implements OnInit {
-  
-  public user: any = {}
+  public user: any = {};
   public responseMessage: string;
 
   constructor(
     private _adminService: AdminService,
     private _router: Router,
-    private _identityService: IdentityService
-  ) { 
+    private _identityService: IdentityService,
+  ) {
     this.responseMessage = '';
   }
 
@@ -27,28 +27,28 @@ export class LoginComponent implements OnInit {
     this.checkIdentity();
   }
 
-  login(form:any){
-    if(form.valid){
-      this._adminService.login(this.user).subscribe((response) => {
-        this.responseMessage = response.message;
+  public async login(_form: any): Promise<void> {
+    const response = await lastValueFrom(this._adminService.login(this.user));
 
-        // check token
-        if(response.token){
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('_id', response.user._id);
-          localStorage.setItem('name', response.user.names);
-
-          // go home page
-          this._router.navigate(['/']);
-        }
-      })
+    if (!response.success) {
+      alert(response.message);
+      return;
     }
+
+    const auth = {
+      jwt: response.jwt,
+      admin: response.admin,
+    };
+
+    localStorage.setItem('auth', JSON.stringify(auth));
+    // go home page
+    this._router.navigate(['/']);
+    //TOOD: send socket msg
   }
 
-  checkIdentity(){
-    if(this._identityService.getToken() != null){
+  checkIdentity() {
+    if ('' != null) {
       this._router.navigate(['/']);
     }
   }
-
 }

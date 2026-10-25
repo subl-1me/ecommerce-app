@@ -12,81 +12,85 @@ import { Customer } from '../models/customer';
   providedIn: 'root',
 })
 export class CustomersService {
-  constructor(private _http: HttpClient) {}
+  private headers: HttpHeaders;
+  constructor(private _http: HttpClient) {
+    this.headers = new HttpHeaders().set('Content-Type', 'application/json');
+  }
 
-  list(token: any): Observable<any> {
-    // get customers list
-    var headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: token,
-    });
+  public list(token: any, filter?: string, value?: string): Observable<any> {
+    this.setToken(token);
+    let endpoint = constans.endpointsAux.customer.list;
+    if (filter && value) {
+      endpoint = endpoint
+        .replace('${filter}', filter)
+        .replace('${value}', value);
+    } else {
+      endpoint = endpoint.replace('/${filter}', '').replace('/${value}', '');
+    }
 
     return this._http.get(
-      (environment.API_URL || constans.defaultUrl) + 'customers',
-      { headers: headers },
+      `${environment.API_URL || constans.defaultUrl}${endpoint}`,
+      {
+        headers: this.headers,
+      },
     );
   }
 
-  listById(token: any, id: any): Observable<any> {
-    var headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: token,
-    });
-
+  public listById(id: string, token: string): Observable<any> {
+    this.setToken(token);
+    const endpoint = constans.endpointsAux.customer.getById.replace(
+      '${id}',
+      id,
+    );
     return this._http.get(
-      (environment.API_URL || constans.defaultUrl) + 'customer/' + id,
-      { headers: headers },
+      `${environment.API_URL || constans.defaultUrl}${endpoint}`,
+      { headers: this.headers },
     );
   }
 
-  filterBy(type: string, content: string, token: any): Observable<any> {
-    let params = 'filterBy=' + type + '&' + 'content=' + content;
-    var headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: token,
-    });
-
+  public filterBy(filter: string, value: string, token: any): Observable<any> {
+    this.setToken(token);
     return this._http.get(
-      (environment.API_URL || constans.defaultUrl) + 'list/?' + params,
-      { headers: headers },
+      `${environment.API_URL || constans.defaultUrl}customers/${filter}/${value}`,
+      { headers: this.headers },
     );
   }
 
-  create(customer: Customer, token: any): Observable<any> {
-    var headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: token,
-    });
-
+  public create(customer: Customer, token: any): Observable<any> {
+    this.setToken(token);
     return this._http.post(
-      (environment.API_URL || constans.defaultUrl) + 'create',
+      `${environment.API_URL || constans.defaultUrl}create`,
       customer,
-      { headers: headers },
+      { headers: this.headers },
     );
   }
 
-  edit(customer: Customer, token: any, _id: string): Observable<any> {
-    var headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: token,
-    });
-
+  public edit(id: string, customer: Customer, token: string): Observable<any> {
+    this.setToken(token);
+    const endpoint = constans.endpointsAux.customer.editById.replace(
+      '${id}',
+      id,
+    );
     return this._http.put(
-      (environment.API_URL || constans.defaultUrl) + 'customer/' + _id,
+      `${environment.API_URL || constans.defaultUrl}${endpoint}`,
       customer,
-      { headers: headers },
+      { headers: this.headers },
     );
   }
 
-  remove(token: any, _id: string): Observable<any> {
-    var headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: token,
-    });
-
-    return this._http.delete(
-      (environment.API_URL || constans.defaultUrl) + 'remove/' + _id,
-      { headers: headers },
+  public remove(id: string, token: string): Observable<any> {
+    this.setToken(token);
+    const endpoint = constans.endpointsAux.customer.removeById.replace(
+      '${id}',
+      id,
     );
+    return this._http.delete(
+      `${environment.API_URL || constans.defaultUrl}${endpoint}`,
+      { headers: this.headers },
+    );
+  }
+
+  private setToken(token: string): void {
+    this.headers = this.headers.set('Authorization', token);
   }
 }

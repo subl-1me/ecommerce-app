@@ -1,6 +1,7 @@
 export interface Config {
   _id: any;
   categories: Array<String>;
+  shippingMethods: ShippingMethods[];
   shopName: string;
   serie?: string;
   correlation?: string;
@@ -10,4 +11,13 @@ export interface Config {
 interface Image {
   public_id: string;
   path: string;
+}
+
+interface ShippingMethods {
+  _id: string;
+  price: number;
+  title: string;
+  time: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

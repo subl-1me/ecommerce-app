@@ -35,7 +35,7 @@ export class RegisterComponent implements OnInit {
   ) {
     this.formSubmitted = false;
     this.newCustomer.password = 'none';
-    this.token = this._identityService.getToken();
+    this.token = '';
     this.responseMessage = '';
   }
 
@@ -58,12 +58,18 @@ export class RegisterComponent implements OnInit {
 
   resetForm(form: any) {
     this.newCustomer = {
-      sub: 0,
+      _id: '',
       names: '',
       surnames: '',
       email: '',
       dni: 0,
+      username: '',
       gender: '',
+      notes: [],
+      wishlist: [],
+      cart: {
+        items: [],
+      },
     };
     form.reset();
     form.controls['gender'].setValue('Choose...');
