@@ -1,26 +1,16 @@
 "use strict";
 
 const OrderService = require("../services/order.service");
-const Order = require("../models/order");
-const StripeService = require("../services/stripe.service");
+const simulateArrivalDate = require("../utils/arrivalDelay");
 
 const generateOrder = async function (req, res) {
   try {
     const { body } = req;
-    const order = await OrderService.insert({
-      customer: body.customer,
-      items: body.items,
-      discount: body.discount,
-      subtotal: body.subtotal,
-      total: body.total,
-      shippingCost: body.shippingCost,
-      coupon: body.coupon ? body.coupon._id : null,
-      paymentMethodProviderId: body.paymentMethodProviderId
-        ? body.paymentMethodProviderId
-        : null,
-      paymentProviderName: body.paymentProviderName,
-    });
-
+    // simulate arrival delay for testing
+    const arrivalDate = simulateArrivalDate(body.shippingMethod);
+    body.expectedArrival = arrivalDate;
+    console.log(body);
+    const order = await OrderService.insert(body);
     return res.status(200).send({ success: true, order });
   } catch (err) {
     res.status(500).send({ success: false, message: err.message });
@@ -39,48 +29,6 @@ const getActiveOrder = async function (req, res) {
     return res.status(200).send({ success: true, orders });
   } catch (err) {
     return res.status(500).send({ success: false, message: err.message });
-  }
-};
-
-const updateOrder = async function (req, res) {
-  if (!req.params["orderId"])
-    return res.status(200).send({ message: "An order ID is required." });
-  //if(!req.body) return res.status(200).send({ message: 'An order ID is required.' });
-
-  try {
-    // Search actual order
-    const resOrder = await Order.findOne({ _id: req.params["orderId"] });
-
-    // Generate payment method
-    const token = req.body.token;
-
-    const responseMethod = await Stripe.generatePaymentMethod(token);
-
-    // Generate payment intents
-    const resPaymentIntent = await Stripe.generatePaymentIntent({
-      amount: resOrder.amount,
-      user: resOrder.customerID,
-      payment_method: responseMethod.id,
-    });
-
-    console.log(resPaymentIntent);
-    console.log("ok2");
-    // Update stripeID field in order
-    await Order.findByIdAndUpdate(
-      { _id: req.params["orderId"] },
-      {
-        stripeId: resPaymentIntent.id,
-      },
-    );
-
-    console.log("culo el que lo lea");
-    console.log(resPaymentIntent);
-    res.send({ data: resPaymentIntent });
-  } catch (err) {
-    console.log(err.message);
-    return res
-      .status(500)
-      .send({ message: "Something was wrong. Try again later." });
   }
 };
 
@@ -153,7 +101,6 @@ const confirmOrder = async function (req, res) {
 module.exports = {
   generateOrder,
   getOrdersByCustomerId,
-  updateOrder,
   confirmOrder,
   getActiveOrder,
   getOrderById,

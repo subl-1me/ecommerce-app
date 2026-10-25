@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { CartService } from 'src/app/services/cart.service';
 import { SaleService } from 'src/app/services/sale.service';
-import { DirectionService } from 'src/app/services/direction.service';
+import { AddressService } from 'src/app/services/address.service';
 import { CheckoutService } from 'src/app/services/checkout.service';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -14,8 +14,7 @@ import { StripeService } from 'src/app/services/stripe.service';
 import { Cart } from '../../models/cart';
 import { SaleDetails } from 'src/app/models/saleDetail';
 import { ShippingInformation } from 'src/app/models/ShippingInformation';
-import { Direction } from 'src/app/models/direction';
-import { ShippingMethod } from 'src/app/models/shippingMethod';
+import { Address } from 'src/app/models/address';
 import { Coupon } from 'src/app/models/coupon';
 import { Auth } from 'src/app/models/auth';
 import { Config } from 'src/app/models/config';
@@ -50,9 +49,10 @@ import CartItem from 'src/app/models/cartItem';
   providers: [
     CartService,
     CheckoutService,
-    DirectionService,
+    AddressService,
     SaleService,
     StripeService,
+    ConfigsService,
   ],
 })
 export class CheckoutComponent implements OnInit {
@@ -63,20 +63,27 @@ export class CheckoutComponent implements OnInit {
   public isProcessingPayment: boolean = false;
   public isPaymentSucceeded: boolean = false;
   public paymentStep: number = 0;
+  public shippingAux: ShippingInformation = {
+    city: '',
+    country: '',
+    customer: null,
+    address: '',
+    addressee: '',
+    phone: '',
+    zip: '',
+    email: '',
+    state: '',
+    default: false,
+  };
   public orderDetails: OrderInput = {
     items: [],
     customer: '',
-    address: null,
     subtotal: 0,
     total: 0,
-    shippingCost: 0,
     coupon: null,
     discount: 0,
-    shippingMethod: {
-      time: '',
-      title: '',
-      price: 0,
-    },
+    shippingMethod: '',
+    shippingInformation: '',
     paymentProviderName: 'stripe',
     paymentStatus: 'pending',
   };
@@ -125,13 +132,26 @@ export class CheckoutComponent implements OnInit {
   public fixedTypeTemplate = GLOBAL.CouponFixedPrice;
 
   public productHrefUrl: string;
-  public defaultDirection: Direction;
+  public selectedAddress: Address = {
+    _id: '',
+    address: '',
+    addressee: '',
+    country: '',
+    principal: false,
+    phone: '',
+    region: '',
+    zip: '',
+    province: '',
+    district: '',
+    dni: '',
+  };
+  public addresses: ShippingInformation[] = [];
   public directionExists: boolean;
 
   public shippingCost: number;
   public shippingType: string = 'free';
 
-  public saleDetails: Array<SaleDetails>;
+  public saleDetails: SaleDetails[] = [];
 
   public orderTotal: number;
   public subtotal: number;
@@ -151,7 +171,7 @@ export class CheckoutComponent implements OnInit {
 
   constructor(
     private _cartService: CartService,
-    private _directionService: DirectionService,
+    private _addressService: AddressService,
     private _configService: ConfigsService,
     private _couponService: CouponService,
     private _authService: AuthService,
@@ -162,15 +182,12 @@ export class CheckoutComponent implements OnInit {
     this.cart = {
       items: [],
     };
-    this.saleDetails = [];
-    this.defaultDirection = {};
     this.shippingCost = 0;
     this.productHrefUrl = environment.API_URL || GLOBAL.localUrl;
 
     this.isPaypalSelected = false;
     this.isCCSelected = false;
     this.isShippingSelected = false;
-
     this.form = this.fb.group({
       address: [
         '',
@@ -183,7 +200,13 @@ export class CheckoutComponent implements OnInit {
     });
 
     this.shippingInformation = {
+      customer: '',
+      addressee: '',
+      phone: '',
+      email: '',
+      default: false,
       address: '',
+      state: '',
       city: '',
       country: '',
       zip: '',
@@ -200,10 +223,40 @@ export class CheckoutComponent implements OnInit {
 
     this.directionExists = false;
   }
+  public toggleSelectedAddress(event?: any) {
+    this.orderDetails.shippingInformation;
+  }
+
+  private async getAddressList(): Promise<void> {
+    const response = await lastValueFrom(
+      this._addressService.getAddressListByCustomer(this.auth.user._id),
+    );
+
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+
+    this.addresses = response.addresses;
+    const defaultAddress = response.addresses.find(
+      (address: any) => address.default,
+    );
+
+    if (!defaultAddress) {
+      return;
+    }
+
+    this.orderDetails.shippingInformation = defaultAddress._id;
+    this.shippingAux = defaultAddress;
+    this.selectedAddress = defaultAddress;
+  }
+
+  public toggleTargetAddress(_event: any) {
+    this.orderDetails.shippingInformation = this.shippingAux._id || '';
+  }
 
   public handlePaymentStatus(event: any) {
     const status = event as boolean;
-    console.log(event);
     this.isProcessingPayment = status;
   }
 
@@ -249,16 +302,11 @@ export class CheckoutComponent implements OnInit {
       items: [],
       subtotal: 0,
       discount: 0,
-      address: null,
       coupon: null,
       paymentProviderName: '',
       paymentStatus: 'pending',
-      shippingCost: 0, // free
-      shippingMethod: {
-        price: 0,
-        time: '',
-        title: '',
-      },
+      shippingMethod: '',
+      shippingInformation: '',
       total: 0,
     };
   }
@@ -272,7 +320,7 @@ export class CheckoutComponent implements OnInit {
     this.initPaypalConfig();
     this.loadAuthData();
     this.getCart();
-    this.getDefaultAddress();
+    this.getAddressList();
     this.loadConfig();
   }
 
@@ -287,9 +335,8 @@ export class CheckoutComponent implements OnInit {
     const freeShipping = this.config.shippingMethods.find(
       (method) => method.title === 'Free',
     );
-    this.orderDetails.shippingMethod.price = freeShipping?.price || 0;
-    this.orderDetails.shippingMethod.time = freeShipping?.time || '';
-    this.orderDetails.shippingMethod.title = freeShipping?.title || '';
+    this.orderDetails.shippingMethod = freeShipping?._id || '';
+    console.log(this.orderDetails);
   }
 
   private loadAuthData(): void {
@@ -398,18 +445,19 @@ export class CheckoutComponent implements OnInit {
       this.discount = 0;
     }
 
-    const selectedShippingMethodCost = Number(
-      this.config.shippingMethods.find(
-        (method) => method.title.toLocaleLowerCase() === this.shippingType,
-      )?.price || 0,
-    );
-    this.shippingCost = selectedShippingMethodCost;
+    const selectedShippingMethod = this.config.shippingMethods.find(
+      (method) => method._id === this.orderDetails.shippingMethod,
+    ) || {
+      price: 0,
+      time: '',
+      title: '',
+    };
+    this.shippingCost = selectedShippingMethod.price || 0;
     // avid discount > subtotal
     this.discount = Math.min(this.discount, this.subtotal);
     this.orderTotal = this.subtotal - this.discount + this.shippingCost;
     this.orderDetails.total = this.orderTotal;
     this.orderDetails.coupon = this.coupon._id ? this.coupon : null;
-    this.orderDetails.shippingCost = this.shippingCost;
     this.orderDetails.discount = this.discount;
   }
 
@@ -442,7 +490,7 @@ export class CheckoutComponent implements OnInit {
 
   public async getDefaultAddress(): Promise<void> {
     const response = await lastValueFrom(
-      this._directionService.getDefaultAddress(this.auth.user._id),
+      this._addressService.getDefaultAddress(this.auth.user._id),
     );
 
     if (!response.success) {
@@ -454,13 +502,12 @@ export class CheckoutComponent implements OnInit {
       return;
     }
 
-    this.defaultDirection = response.address;
-    this.orderDetails.address = response.address;
+    this.selectedAddress = response.address;
     this.form.patchValue({
-      address: this.defaultDirection.address,
-      zip: this.defaultDirection.zip,
-      city: this.defaultDirection.district,
-      country: this.defaultDirection.country,
+      address: this.selectedAddress.address,
+      zip: this.selectedAddress.zip,
+      city: this.selectedAddress.district,
+      country: this.selectedAddress.country,
     });
   }
 

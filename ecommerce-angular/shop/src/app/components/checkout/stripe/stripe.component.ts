@@ -43,14 +43,9 @@ export class StripeComponent implements OnInit, AfterViewInit {
     items: [],
     customer: '',
     subtotal: 0,
-    address: null,
     total: 0,
-    shippingCost: 0,
-    shippingMethod: {
-      time: '',
-      title: '',
-      price: 0,
-    }, 
+    shippingMethod: '',
+    shippingInformation: '',
     coupon: null,
     discount: 0,
     paymentProviderName: 'stripe',
@@ -180,6 +175,7 @@ export class StripeComponent implements OnInit, AfterViewInit {
         alert('Error initializing Stripe component. Try again later.');
         return;
       }
+
       this.form.disable();
       this.isProcessingPayment.emit(true);
 

@@ -3,16 +3,16 @@ import CartItem from './cartItem';
 import { Coupon } from './coupon';
 import { Customer } from './customer';
 import { ShippingMethod } from './shippingMethod';
+import { ShippingInformation } from './ShippingInformation';
 
 export interface OrderInput {
   customer: string;
   items: CartItem[];
   subtotal: number;
   discount: number;
-  address: Direction | null;
   total: number;
-  shippingMethod: ShippingMethod;
-  shippingCost: Number;
+  shippingMethod: string;
+  shippingInformation: string;
   coupon: Coupon | null;
   paymentProviderName: string;
   paymentStatus: string;
@@ -24,10 +24,12 @@ export interface Order {
   items: CartItem[];
   subtotal: number;
   total: number;
-  shippingCost: Number;
+  shippingMethod: ShippingMethod;
+  shippingInformation: ShippingInformation;
   coupon: Coupon | null;
   paymentProviderName: string;
   paymentStatus: string;
+  expectedArrival?: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }

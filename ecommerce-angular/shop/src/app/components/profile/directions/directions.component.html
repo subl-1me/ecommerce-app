@@ -24,7 +24,7 @@
             </svg>
           </div>
           <div>
-            <h1 class="page-title">My Directions</h1>
+            <h1 class="page-title">My Addresses</h1>
             <p class="page-subtitle">Manage your delivery addresses</p>
           </div>
         </div>
@@ -40,51 +40,39 @@
 
           <form #directionsForm="ngForm" (ngSubmit)="onSubmit(directionsForm)">
             <div class="row g-3">
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-4">
                 <label for="addressee" class="form-label">Addressee</label>
                 <input
                   type="text"
                   class="form-control form-control-custom"
                   id="addressee"
                   name="addressee"
-                  [(ngModel)]="direction.addressee"
+                  [(ngModel)]="shippingInformation.addressee"
                   placeholder="Who receives the package"
                 />
               </div>
 
-              <div class="col-12 col-md-6">
-                <label for="zip" class="form-label">ZIP</label>
-                <input
-                  type="text"
-                  class="form-control form-control-custom"
-                  id="zip"
-                  name="zip"
-                  [(ngModel)]="direction.zip"
-                  placeholder="00000"
-                />
-              </div>
-
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-4">
                 <label for="phone" class="form-label">Phone</label>
                 <input
                   type="tel"
                   class="form-control form-control-custom"
                   id="phone"
                   name="phone"
-                  [(ngModel)]="direction.phone"
+                  [(ngModel)]="shippingInformation.phone"
                   placeholder="(000) 000-0000"
                 />
               </div>
 
-              <div class="col-12 col-md-6">
-                <label for="dni" class="form-label">DNI</label>
+              <div class="col-12 col-md-4">
+                <label for="phone" class="form-label">Contact Email</label>
                 <input
-                  type="text"
+                  type="email"
                   class="form-control form-control-custom"
-                  id="dni"
-                  name="dni"
-                  [(ngModel)]="direction.dni"
-                  placeholder="Your ID number"
+                  id="email"
+                  name="email"
+                  [(ngModel)]="shippingInformation.email"
+                  placeholder="email@example.com"
                 />
               </div>
 
@@ -95,68 +83,88 @@
                   id="textarea"
                   name="direction"
                   rows="3"
-                  [(ngModel)]="direction.address"
+                  [(ngModel)]="shippingInformation.address"
                   placeholder="Street, number, interior, references"
                 ></textarea>
               </div>
 
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-4">
                 <label for="country" class="form-label">Country</label>
                 <select
                   class="form-select form-select-custom"
                   id="country"
                   name="country"
-                  [(ngModel)]="direction.country"
+                  required=""
+                  [value]=""
+                  [(ngModel)]="shippingInformation.country"
+                  (change)="resetFields()"
                 >
-                  <option selected disabled>Select a country</option>
-                  <option value="Mexico">Mexico</option>
-                </select>
-              </div>
-
-              <div class="col-12 col-md-6">
-                <label for="region" class="form-label">Region</label>
-                <select
-                  class="form-select form-select-custom"
-                  id="region"
-                  name="region"
-                  [(ngModel)]="direction.region"
-                >
-                  <option selected disabled>Select a region</option>
-                  <option value="Chihuahua">Chihuahua</option>
-                </select>
-              </div>
-
-              <div class="col-12 col-md-6">
-                <label for="province" class="form-label">Province</label>
-                <select
-                  class="form-select form-select-custom"
-                  id="province"
-                  name="province"
-                  [(ngModel)]="direction.province"
-                >
-                  <option selected disabled>Select a province</option>
-                  <option value="Juarez">Juarez</option>
-                </select>
-              </div>
-
-              <div class="col-12 col-md-6">
-                <label for="district" class="form-label">District</label>
-                <select
-                  class="form-select form-select-custom"
-                  id="district"
-                  name="district"
-                  [(ngModel)]="direction.district"
-                >
-                  <option selected disabled>
-                    {{
-                      direction.district
-                        ? direction.district
-                        : "Select a district"
-                    }}
+                  <option selected disabled value="">Select a country</option>
+                  <option
+                    *ngFor="let value of getCountries()"
+                    [ngValue]="value.name"
+                  >
+                    {{ value.name }}
                   </option>
                 </select>
               </div>
 
+              <div class="col-12 col-md-4" *ngIf="shippingInformation.country">
+                <label for="state" class="form-label">State</label>
+                <select
+                  class="form-select form-select-custom"
+                  id="state"
+                  name="state"
+                  [value]=""
+                  [disabled]="!this.shippingInformation.country"
+                  [(ngModel)]="shippingInformation.state"
+                >
+                  <option selected disabled value="">Select a State</option>
+                  <option
+                    *ngFor="let value of getStatesByCountry()"
+                    [ngValue]="value.name"
+                  >
+                    {{ value.name }}
+                  </option>
+                </select>
+              </div>
+
+              <div
+                class="col-12 col-md-2"
+                *ngIf="
+                  shippingInformation.state && getCitiesByState().length > 0
+                "
+              >
+                <label for="city" class="form-label">City</label>
+                <select
+                  class="form-select form-select-custom"
+                  id="city"
+                  name="city"
+                  [value]=""
+                  [disabled]="!this.shippingInformation.state"
+                  [(ngModel)]="shippingInformation.city"
+                >
+                  <option selected disabled value="">Select a city</option>
+                  <option
+                    *ngFor="let value of getCitiesByState()"
+                    [ngValue]="value.name"
+                  >
+                    {{ value.name }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-12 col-md-2">
+                <label for="zip" class="form-label">ZIP Code</label>
+                <input
+                  type="text"
+                  class="form-control form-control-custom"
+                  id="zip"
+                  name="zip"
+                  [(ngModel)]="shippingInformation.zip"
+                  placeholder="#00000"
+                />
+              </div>
               <div class="col-12">
                 <label class="default-checkbox">
                   <input
@@ -164,7 +172,7 @@
                     type="checkbox"
                     id="check"
                     name="principal"
-                    [(ngModel)]="direction.principal"
+                    [(ngModel)]="shippingInformation.default"
                   />
                   <span class="checkmark-text">Set as default address</span>
                 </label>
@@ -184,7 +192,7 @@
                     d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"
                   />
                 </svg>
-                Add Direction
+                Add
               </button>
             </div>
           </form>
@@ -192,15 +200,15 @@
 
         <!-- List -->
         <div class="list-header">
-          <h4 class="list-title">Direction List</h4>
+          <h4 class="list-title">Address List</h4>
           <span class="list-count">
-            {{ directions.length }}
-            {{ directions.length === 1 ? "address" : "addresses" }}
+            {{ shippingList.length }}
+            {{ shippingList.length === 1 ? "address" : "addresses" }}
           </span>
         </div>
 
         <!-- Empty state -->
-        <div *ngIf="directions.length === 0" class="empty-state">
+        <div *ngIf="shippingList.length === 0" class="empty-state">
           <div class="empty-icon">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -220,23 +228,24 @@
           </p>
         </div>
 
-        <!-- Directions list -->
+        <!-- address list -->
         <div class="directions-list">
-          <div *ngFor="let direction of directions" class="direction-card">
+          <div *ngFor="let shipping of shippingList" class="direction-card">
             <div class="direction-header">
               <div class="direction-main">
-                <h5 class="direction-name">{{ direction.addressee }}</h5>
-                <p class="direction-zip">ZIP: {{ direction.zip }}</p>
+                <h5 class="direction-name">To: {{ shipping.addressee }}</h5>
+                <p class="direction-zip">{{ shipping.phone }}</p>
+                <p class="direction-zip">{{ shipping.email }}</p>
               </div>
 
               <div class="direction-badge-wrapper">
-                <span *ngIf="direction.principal" class="badge-default">
+                <span *ngIf="shipping.default" class="badge-default">
                   Default
                 </span>
                 <button
-                  *ngIf="!direction.principal"
+                  *ngIf="!shipping.default"
                   class="badge-select"
-                  (click)="setDirectionAsDefault(direction._id)"
+                  (click)="setAddressAsDefault(shipping._id || '')"
                 >
                   Set as default
                 </button>
@@ -245,14 +254,15 @@
 
             <div class="direction-body">
               <span class="direction-location">
-                {{ direction.country }} · {{ direction.region }} ·
-                {{ direction.province }} · {{ direction.district }}
+                {{ shipping.address }} · #{{ shipping.zip }},
+                {{ shipping.city }}, {{ shipping.state }},
+                {{ shipping.country }}
               </span>
             </div>
 
             <button
               class="direction-remove"
-              (click)="deleteDirection(direction._id)"
+              (click)="deleteAddress(shipping._id || '')"
               aria-label="Delete address"
             >
               <svg

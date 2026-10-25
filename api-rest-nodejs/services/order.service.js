@@ -25,10 +25,13 @@ const confirmItem = async function (id) {
 };
 
 const itemById = async function (id) {
-  const order = await Order.findById(id).populate({
-    path: "items",
-    populate: { path: "product" },
-  });
+  const order = await Order.findById(id)
+    .populate({
+      path: "items",
+      populate: { path: "product" },
+    })
+    .populate("shippingInformation")
+    .populate("shippingMethod");
   return order;
 };
 

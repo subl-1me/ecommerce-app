@@ -10,6 +10,7 @@ const update = async function (id, body) {
     dni: body.dni,
     password: body.password,
     birthday: body.birthday,
+    addresses: body.addresses,
     country: body.country,
     cart: body.cart,
     wishlist: body.wishlist,
@@ -28,6 +29,32 @@ const itemsByFilter = async function (filter, value) {
   const query = { [filter]: value };
   const items = await Customer.find(query);
   return items;
+};
+
+const insertAddress = async function (customerId, address) {
+  const updatedItem = await Customer.findByIdAndUpdate(
+    customerId,
+    {
+      $push: {
+        addresses: address,
+      },
+    },
+    { new: true },
+  );
+  return updatedItem;
+};
+
+const removeAddress = async function (customerId, addressId) {
+  const updatedItem = await Customer.findByIdAndUpdate(
+    customerId,
+    {
+      $pull: {
+        addresses: addressId,
+      },
+    },
+    { new: true },
+  );
+  return updatedItem;
 };
 
 const items = async function () {
@@ -56,4 +83,6 @@ module.exports = {
   items,
   itemsByFilter,
   destroyById,
+  insertAddress,
+  removeAddress,
 };

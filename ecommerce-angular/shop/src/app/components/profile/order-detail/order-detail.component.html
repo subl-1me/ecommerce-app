@@ -41,9 +41,11 @@
 
                 <div class="info-row">
                   <span class="info-label">Shipping Method</span>
-                  <span class="info-value"></span>
+
                   <span class="info-value"
-                    >Cost: ${{ order.shippingCost }}</span
+                    >{{ order.shippingMethod.title }} - ${{
+                      order.shippingMethod.price
+                    }}</span
                   >
                 </div>
 
@@ -55,7 +57,14 @@
                 </div>
 
                 <div class="info-row">
-                  <span class="info-label">Status</span>
+                  <span class="info-label">Expected Arrival Date</span>
+                  <span class="info-value">{{
+                    order.expectedArrival | date: "medium"
+                  }}</span>
+                </div>
+
+                <div class="info-row">
+                  <span class="info-label">Payment Status</span>
                   <span class="status-badge">
                     <span class="status-dot"></span>
                     {{ order.paymentStatus }}

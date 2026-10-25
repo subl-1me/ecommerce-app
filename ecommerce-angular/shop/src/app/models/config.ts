@@ -14,7 +14,10 @@ interface Image {
 }
 
 interface ShippingMethods {
+  _id: string;
   price: number;
   title: string;
   time: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

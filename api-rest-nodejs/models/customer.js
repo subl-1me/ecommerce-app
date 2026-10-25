@@ -14,6 +14,7 @@ var customerSchema = Schema({
   phone: { type: String, required: false },
   gender: { type: String, required: false },
   birthday: { type: String, required: false },
+  addresses: { type: [{ type: Schema.ObjectId, ref: "address" }], default: [] },
   wishlist: [{ type: Schema.ObjectId, ref: "product", required: true }],
   cart: { type: Schema.ObjectId, ref: "cart", required: false },
   dni: { type: String, required: false },

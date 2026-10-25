@@ -4,50 +4,51 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { GLOBAL } from './CONST';
 import { environment } from 'src/environments/environment';
+import { ShippinInformationInput } from '../models/ShippingInformation';
+import { Address } from '../models/address';
 
 @Injectable({
   providedIn: 'root',
 })
-export class DirectionService {
+export class AddressService {
   private httpHeaders: HttpHeaders = new HttpHeaders().set(
     'Content-Type',
     'application/json',
   );
   constructor(private _http: HttpClient) {}
 
-  public addDirection(direction: any): Observable<any> {
+  public addAddress(address: ShippinInformationInput): Observable<any> {
     return this._http.post(
-      (environment.API_URL || GLOBAL.localUrl) + 'direction',
-      direction,
+      (environment.API_URL || GLOBAL.localUrl) + 'address',
+      address,
       {
         headers: this.httpHeaders,
       },
     );
   }
 
-  public getDirectionList(): Observable<any> {
+  public getAddressListByCustomer(customerId: string): Observable<any> {
     return this._http.get(
-      (environment.API_URL || GLOBAL.localUrl) + 'directions',
+      `${environment.API_URL || GLOBAL.localUrl}address/${customerId}`,
       { headers: this.httpHeaders },
     );
   }
 
-  public deleteDirection(directionID: string): Observable<any> {
+  public deleteAddress(addressId: string): Observable<any> {
     return this._http.delete(
-      (environment.API_URL || GLOBAL.localUrl) + 'direction/' + directionID,
+      (environment.API_URL || GLOBAL.localUrl) + 'address/' + addressId,
       {
         headers: this.httpHeaders,
       },
     );
   }
 
-  public setDirectionAsDefault(
-    directionID: string,
-    customerID: string,
+  public setAddressAsDefault(
+    addressId: string,
+    customerId: string,
   ): Observable<any> {
     return this._http.put(
-      environment.API_URL ||
-        GLOBAL.localUrl + 'direction/' + directionID + '/' + customerID,
+      `${environment.API_URL || GLOBAL.localUrl}address/${addressId}/${customerId}`,
       { headers: this.httpHeaders },
     );
   }
