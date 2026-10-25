@@ -5,7 +5,7 @@
 export const environment = {
   API_URL: 'https://ecommerce-app-1-l8py.onrender.com/api/', // public
   production: true,
-  stripe_pk: '',
+  stripe_pk: process.env['stripe_pk'],
   URL_LOCAL_SOCKETS: 'https://ecommerce-app-1-l8py.onrender.com',
   API_URL_LOCAL: 'https://ecommerce-app-1-l8py.onrender.com/api/',
 };

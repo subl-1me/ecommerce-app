@@ -63,8 +63,6 @@ export class StripeComponent implements OnInit, AfterViewInit {
     user: null,
   };
   public form: FormGroup = new FormGroup({});
-
-  //public stripe: stripe.Stripe;
   constructor(
     private fb: FormBuilder,
     private _stripeService: StripeService,
