@@ -40,6 +40,7 @@ export class LoginComponent implements OnInit {
       surnames: '',
       email: '',
       password: '',
+      language: 'EN',
       cart: {
         _id: '',
         items: [],

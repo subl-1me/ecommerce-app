@@ -21,6 +21,7 @@ export class OrderDetailComponent implements OnInit {
       wishlist: [],
       names: '',
       surnames: '',
+      language: 'EN',
       password: '',
     },
     items: [],

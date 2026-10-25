@@ -29,6 +29,7 @@ export class RegisterComponent implements OnInit {
       email: '',
       password: '',
       wishlist: [],
+      language: 'EN',
     };
     this.confirmPasswordTemp = '';
     this.onSubmitMessage = '';

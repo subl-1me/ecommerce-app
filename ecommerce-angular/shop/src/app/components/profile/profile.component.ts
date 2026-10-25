@@ -39,6 +39,9 @@ export class ProfileComponent implements OnInit {
   public customer: Customer;
   public auth: Auth;
 
+  public confirmPassword: string = '';
+  public newPassword: string = '';
+
   public editMessage: string;
 
   constructor(
@@ -51,6 +54,7 @@ export class ProfileComponent implements OnInit {
       surnames: '',
       email: '',
       password: '',
+      language: 'EN',
       wishlist: [],
     };
     this.auth = {
