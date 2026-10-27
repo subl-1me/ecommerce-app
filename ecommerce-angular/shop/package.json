@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve ",
     "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -21,6 +21,7 @@
     "@anrivera/countries-states-cities-database": "^1.0.0",
     "@fortawesome/angular-fontawesome": "^0.10.2",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "@ngx-env/builder": "^2.2.0",
     "@popperjs/core": "^2.11.8",
     "@stripe/stripe-js": "^1.29.0",
     "@types/stripe": "^8.0.417",
