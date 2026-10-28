@@ -3,10 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  API_URL: 'https://ecommerce-app-1-l8py.onrender.com/api/', // public
+  API_URL: '/api/', // public
   production: true,
   stripe_pk: '',
-  API_URL: '/api/',
   URL_LOCAL_SOCKETS: '/api',
   API_URL_LOCAL: '/',
 };
