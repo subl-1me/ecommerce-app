@@ -3,6 +3,7 @@ const stripe = require("stripe")(process.env.STRIPE_PK_SECRET);
 
 // Generate payment intent
 const generatePaymentIntent = async function (intent) {
+  console.log(process.env.STRIPE_PK_SECRET);
   const paymentIntent = await stripe.paymentIntents.create({
     amount: intent.amount,
     currency: intent.currency,
