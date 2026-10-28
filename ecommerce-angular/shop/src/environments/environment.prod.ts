@@ -6,7 +6,7 @@ export const environment = {
   API_URL: process.env['NG_APP_API_URL'] || '/api/', // public
   production: true,
   stripe_pk: process.env['NG_APP_STRIPE_PK'],
-  URL_LOCAL_SOCKETS: process.env['NP_APP_URL_LOCAL_SOCKETS'],
+  URL_LOCAL_SOCKETS: process.env['NG_APP_URL_LOCAL_SOCKETS'],
   API_URL_LOCAL: process.env['NG_APP_API_URL_LOCAL'],
 };
 
