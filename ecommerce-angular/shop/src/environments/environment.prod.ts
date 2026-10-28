@@ -3,8 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  API_URL: process.env['NG_APP_API_URL'] || '/api/', // public
   production: true,
+  API_URL: process.env['NG_APP_API_URL'] || '/api/', // public
   stripe_pk: process.env['NG_APP_STRIPE_PK'],
   URL_LOCAL_SOCKETS: process.env['NG_APP_URL_LOCAL_SOCKETS'],
   API_URL_LOCAL: process.env['NG_APP_API_URL_LOCAL'],

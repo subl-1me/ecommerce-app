@@ -9,16 +9,14 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./cooldown-advise.component.css'],
 })
 export class CooldownAdviseComponent implements OnInit {
-  public isProd: boolean = false;
+  public isProd: boolean = environment.production;
+  public isServerWaking: boolean = false;
+  public currentStep: number = 0;
   constructor(private _serverService: ServerService) {}
 
   ngOnInit(): void {
     this.startWakeUpFlow();
-    this.isProd = environment.production;
   }
-
-  isServerWaking = false;
-  currentStep = 0;
 
   private async startWakeUpFlow(): Promise<void> {
     if (!this.isProd) return;
