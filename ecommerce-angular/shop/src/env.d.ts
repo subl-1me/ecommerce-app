@@ -6,6 +6,7 @@ declare interface Env {
   readonly NG_APP_STRIPE_PK: string;
   readonly NP_APP_URL_LOCAL_SOCKETS: string;
   readonly NG_APP_API_URL_LOCAL: string;
+  readonly NG_APP_API_URL: string;
 }
 
 // Choose how to access the environment variables.
