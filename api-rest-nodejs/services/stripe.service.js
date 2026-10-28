@@ -1,5 +1,4 @@
 "use strict";
-require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_PK_SECRET);
 
 // Generate payment intent
