@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class SocketService {
-  public socket = io(`${process.env.NP_APP_URL_LOCAL_SOCKETS}`, {
+  public socket = io(`${environment.URL_LOCAL_SOCKETS}`, {
     transports: ['websocket'],
   });
 

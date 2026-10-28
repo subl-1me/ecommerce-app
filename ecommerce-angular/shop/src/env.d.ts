@@ -4,7 +4,7 @@ declare interface Env {
   // Replace the following with your own environment variables.
   // Example: NGX_VERSION: string;
   readonly NG_APP_STRIPE_PK: string;
-  readonly NP_APP_URL_LOCAL_SOCKETS: string;
+  readonly NG_APP_URL_LOCAL_SOCKETS: string;
   readonly NG_APP_API_URL_LOCAL: string;
   readonly NG_APP_API_URL: string;
 }

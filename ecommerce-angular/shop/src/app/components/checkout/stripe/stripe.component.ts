@@ -28,7 +28,7 @@ import StripePaymentIntentInput from 'src/app/models/stripePaymentIntentInput';
   providers: [SaleService],
 })
 export class StripeComponent implements OnInit, AfterViewInit {
-  private STRIPE_PK: string = process.env.NG_APP_STRIPE_PK;
+  private STRIPE_PK: string = environment.stripe_pk;
   private stripe: Stripe | null = null;
   private stripePaymentMethodIntent: StripePaymentIntentInput = {
     amount: 0,
